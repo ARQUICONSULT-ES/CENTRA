@@ -4,21 +4,30 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { GitHubRepository } from "@/types/github";
 
-interface WorkflowStatus {
+export interface WorkflowStatus {
   status: "queued" | "in_progress" | "completed";
   conclusion: "success" | "failure" | "cancelled" | "skipped" | null;
   html_url: string;
 }
 
-interface ReleaseInfo {
+export interface ReleaseInfo {
   tag_name: string;
   name: string;
   html_url: string;
   published_at: string;
 }
 
+export interface RepoExtraInfo {
+  workflow: WorkflowStatus | null;
+  release: ReleaseInfo | null;
+}
+
 interface RepoCardProps {
   repo: GitHubRepository;
+  // Datos pre-cargados desde batch API (opcional para retrocompatibilidad)
+  preloadedInfo?: RepoExtraInfo;
+  // Si es true, no hace fetch individual (espera los datos del batch)
+  skipIndividualFetch?: boolean;
 }
 
 // Colores de lenguajes de GitHub
@@ -66,11 +75,16 @@ function getRelativeTime(dateString: string): string {
   return "hace un momento";
 }
 
-export function RepoCard({ repo }: RepoCardProps) {
-  const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus | null>(null);
-  const [latestRelease, setLatestRelease] = useState<ReleaseInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingRelease, setIsLoadingRelease] = useState(true);
+export function RepoCard({ repo, preloadedInfo, skipIndividualFetch = false }: RepoCardProps) {
+  const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus | null>(
+    preloadedInfo?.workflow ?? null
+  );
+  const [latestRelease, setLatestRelease] = useState<ReleaseInfo | null>(
+    preloadedInfo?.release ?? null
+  );
+  // Si hay datos pre-cargados o se debe esperar el batch, no mostrar loading
+  const [isLoading, setIsLoading] = useState(!preloadedInfo && !skipIndividualFetch);
+  const [isLoadingRelease, setIsLoadingRelease] = useState(!preloadedInfo && !skipIndividualFetch);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUpdatingAlGo, setIsUpdatingAlGo] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -78,11 +92,24 @@ export function RepoCard({ repo }: RepoCardProps) {
   const [countdown, setCountdown] = useState(3);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Actualizar estados cuando llegan los datos pre-cargados
   useEffect(() => {
-    const [owner, repoName] = repo.full_name.split("/");
-    fetchWorkflowStatus(owner, repoName);
-    fetchLatestRelease(owner, repoName);
-  }, [repo.full_name]);
+    if (preloadedInfo) {
+      setWorkflowStatus(preloadedInfo.workflow);
+      setLatestRelease(preloadedInfo.release);
+      setIsLoading(false);
+      setIsLoadingRelease(false);
+    }
+  }, [preloadedInfo]);
+
+  useEffect(() => {
+    // Solo hacer fetch si no hay datos pre-cargados Y no se debe esperar el batch
+    if (!preloadedInfo && !skipIndividualFetch) {
+      const [owner, repoName] = repo.full_name.split("/");
+      fetchWorkflowStatus(owner, repoName);
+      fetchLatestRelease(owner, repoName);
+    }
+  }, [repo.full_name, preloadedInfo, skipIndividualFetch]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
