@@ -62,6 +62,14 @@ interface MissingFileDependencyInfo {
   missingDependencies: AppFileManifestDependency[]; // Dependencias que faltan
 }
 
+// Nodo del árbol de dependencias
+interface DependencyTreeNode {
+  repo: string; // URL del repo
+  depth: number; // Nivel de profundidad para indentación (0 = raíz)
+  parentRepo: string | null; // URL del repo padre (null si es raíz)
+  children: string[]; // URLs de repos hijos
+}
+
 // Respuesta del endpoint repo-dependencies
 interface RepoDependencies {
   repoFullName: string;
@@ -138,6 +146,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
   const [depDataMap, setDepDataMap] = useState<Map<string, RepoDependencies>>(new Map());
   const [appFileDependencies, setAppFileDependencies] = useState<Map<string, AppFileDependencyInfo>>(new Map());
   const [missingFileDependencies, setMissingFileDependencies] = useState<Map<string, MissingFileDependencyInfo>>(new Map());
+  const [dependencyTree, setDependencyTree] = useState<Map<string, DependencyTreeNode>>(new Map());
 
   const isSaving = saveStep.status !== 'idle' && saveStep.status !== 'completed';
 
@@ -159,6 +168,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     setDepDataMap(new Map());
     setAppFileDependencies(new Map());
     setMissingFileDependencies(new Map());
+    setDependencyTree(new Map());
     
     fetchSettings();
     fetchAppJson();
@@ -365,6 +375,94 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     return missing;
   }, []);
 
+  // Función para construir el árbol de dependencias
+  const buildDependencyTree = useCallback((
+    deps: AppDependencyProbingPath[],
+    allDepData: Map<string, RepoDependencies>
+  ): Map<string, DependencyTreeNode> => {
+    const tree = new Map<string, DependencyTreeNode>();
+    const allRepoUrls = new Set(deps.map(d => d.repo));
+    
+    // Encontrar qué repos son dependidos por otros (no son raíces)
+    const dependedByOthers = new Set<string>();
+    
+    for (const dep of deps) {
+      const parsed = parseRepoUrl(dep.repo);
+      if (!parsed) continue;
+      
+      const fullName = `${parsed.owner}/${parsed.repo}`;
+      const depData = allDepData.get(fullName);
+      
+      if (depData) {
+        for (const subDep of depData.repoDependencies) {
+          if (allRepoUrls.has(subDep.repo)) {
+            dependedByOthers.add(subDep.repo);
+          }
+        }
+      }
+    }
+    
+    // Inicializar todos los nodos
+    for (const dep of deps) {
+      tree.set(dep.repo, {
+        repo: dep.repo,
+        depth: 0,
+        parentRepo: null,
+        children: [],
+      });
+    }
+    
+    // Establecer relaciones padre-hijo
+    for (const dep of deps) {
+      const parsed = parseRepoUrl(dep.repo);
+      if (!parsed) continue;
+      
+      const fullName = `${parsed.owner}/${parsed.repo}`;
+      const depData = allDepData.get(fullName);
+      
+      if (depData) {
+        for (const subDep of depData.repoDependencies) {
+          if (allRepoUrls.has(subDep.repo)) {
+            const parentNode = tree.get(dep.repo);
+            const childNode = tree.get(subDep.repo);
+            
+            if (parentNode && childNode && childNode.parentRepo === null) {
+              // Solo asignar padre si aún no tiene uno
+              childNode.parentRepo = dep.repo;
+              parentNode.children.push(subDep.repo);
+            }
+          }
+        }
+      }
+    }
+    
+    // Calcular profundidades usando BFS desde las raíces
+    const calculateDepths = () => {
+      const roots = Array.from(tree.values()).filter(node => node.parentRepo === null);
+      
+      for (const root of roots) {
+        const queue: { url: string; depth: number }[] = [{ url: root.repo, depth: 0 }];
+        
+        while (queue.length > 0) {
+          const { url, depth } = queue.shift()!;
+          const node = tree.get(url);
+          
+          if (node) {
+            node.depth = depth;
+            
+            for (const childUrl of node.children) {
+              queue.push({ url: childUrl, depth: depth + 1 });
+            }
+          }
+        }
+      }
+    };
+    
+    calculateDepths();
+    
+    return tree;
+  }, []);
+
   // Función para obtener dependencias recursivas de un repositorio
   const fetchRecursiveDependencies = async (repoUrls: string[]): Promise<{
     allDeps: AppDependencyProbingPath[];
@@ -430,12 +528,43 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     return { allDeps, allFiles, depDataMap };
   };
 
-  // Inicializar editedDependencies cuando se carga settingsData
+  // Inicializar editedDependencies y resolver árbol cuando se carga settingsData
   useEffect(() => {
     if (settingsData?.appDependencyProbingPaths) {
-      setEditedDependencies([...settingsData.appDependencyProbingPaths]);
+      const deps = [...settingsData.appDependencyProbingPaths];
+      setEditedDependencies(deps);
+      
+      // Resolver árbol de dependencias si hay dependencias existentes
+      if (deps.length > 0) {
+        resolveExistingDependencies(deps);
+      }
     }
   }, [settingsData]);
+
+  // Función para resolver dependencias existentes al abrir el modal
+  const resolveExistingDependencies = async (deps: AppDependencyProbingPath[]) => {
+    setIsResolvingDeps(true);
+    
+    try {
+      const repoUrls = deps.map(d => d.repo);
+      const { depDataMap: newDepDataMap } = await fetchRecursiveDependencies(repoUrls);
+      
+      // Actualizar el mapa de datos de dependencias
+      setDepDataMap(newDepDataMap);
+      
+      // Construir y establecer el árbol de dependencias
+      const tree = buildDependencyTree(deps, newDepDataMap);
+      setDependencyTree(tree);
+      
+      // Calcular warnings de dependencias faltantes
+      const missing = checkMissingDependencies(deps, fileDependencies, newDepDataMap);
+      setMissingDependencies(missing);
+    } catch (error) {
+      console.error("Error resolving existing dependencies:", error);
+    } finally {
+      setIsResolvingDeps(false);
+    }
+  };
 
   const handleRemoveDependency = (index: number) => {
     const updated = editedDependencies.filter((_, i) => i !== index);
@@ -443,6 +572,9 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     // Recalcular warnings con las dependencias actualizadas
     const missing = checkMissingDependencies(updated, fileDependencies, depDataMap);
     setMissingDependencies(missing);
+    // Reconstruir árbol de dependencias
+    const tree = buildDependencyTree(updated, depDataMap);
+    setDependencyTree(tree);
   };
 
   const handleRemoveFileDependency = (fileName: string) => {
@@ -569,6 +701,10 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
       const missing = checkMissingDependencies(combinedDeps, fileDependencies, combinedDepDataMap);
       setMissingDependencies(missing);
 
+      // Construir árbol de dependencias
+      const tree = buildDependencyTree(combinedDeps, combinedDepDataMap);
+      setDependencyTree(tree);
+
     } catch (error) {
       console.error("Error resolving dependencies:", error);
       // Si hay error, al menos añadir las dependencias directas
@@ -584,6 +720,65 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
       setIsResolvingDeps(false);
     }
   };
+
+  // Función para obtener dependencias ordenadas por árbol (DFS)
+  const getSortedDependencies = useCallback((): Array<{ dep: AppDependencyProbingPath; index: number; depth: number; parentName: string | null }> => {
+    if (dependencyTree.size === 0) {
+      // Si no hay árbol construido, mostrar las dependencias sin orden especial
+      return editedDependencies.map((dep, index) => ({
+        dep,
+        index,
+        depth: 0,
+        parentName: null,
+      }));
+    }
+
+    const result: Array<{ dep: AppDependencyProbingPath; index: number; depth: number; parentName: string | null }> = [];
+    const visited = new Set<string>();
+
+    // DFS para ordenar por árbol
+    const dfs = (repoUrl: string, parentName: string | null) => {
+      if (visited.has(repoUrl)) return;
+      visited.add(repoUrl);
+
+      const node = dependencyTree.get(repoUrl);
+      const depIndex = editedDependencies.findIndex(d => d.repo === repoUrl);
+      
+      if (depIndex !== -1 && node) {
+        result.push({
+          dep: editedDependencies[depIndex],
+          index: depIndex,
+          depth: node.depth,
+          parentName,
+        });
+
+        // Visitar hijos
+        for (const childUrl of node.children) {
+          dfs(childUrl, getRepoName(repoUrl));
+        }
+      }
+    };
+
+    // Empezar desde las raíces (nodos sin padre)
+    const roots = Array.from(dependencyTree.values()).filter(node => node.parentRepo === null);
+    for (const root of roots) {
+      dfs(root.repo, null);
+    }
+
+    // Agregar cualquier dependencia que no esté en el árbol (por si acaso)
+    for (let i = 0; i < editedDependencies.length; i++) {
+      if (!visited.has(editedDependencies[i].repo)) {
+        result.push({
+          dep: editedDependencies[i],
+          index: i,
+          depth: 0,
+          parentName: null,
+        });
+      }
+    }
+
+    return result;
+  }, [editedDependencies, dependencyTree]);
 
   const handleSaveChanges = async () => {
     try {
@@ -752,11 +947,12 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                   }
                 />
               ) : editedDependencies.length > 0 || fileDependencies.length > 0 ? (
-                <div className="space-y-3">
-                  {/* Dependencias de repositorio */}
-                  {editedDependencies.map((dep, index) => {
+                <div className="space-y-2">
+                  {/* Dependencias de repositorio ordenadas por árbol */}
+                  {getSortedDependencies().map(({ dep, index, depth, parentName }) => {
                     const missingInfo = missingDependencies.get(dep.repo);
                     const hasMissing = missingInfo && (missingInfo.missingRepos.length > 0 || missingInfo.missingFiles.length > 0);
+                    const indentPx = depth * 24; // 24px por nivel
                     
                     return (
                       <div 
@@ -764,7 +960,19 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                         className={`bg-gray-900 border rounded-lg p-3 hover:border-gray-600 transition-colors ${
                           hasMissing ? 'border-yellow-500/50' : 'border-gray-700'
                         }`}
+                        style={{ marginLeft: `${indentPx}px` }}
                       >
+                        {/* Indicador de dependencia padre */}
+                        {depth > 0 && (
+                          <div className="flex items-center gap-1.5 mb-2 -mt-1">
+                            <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                            <span className="text-[10px] text-gray-500">
+                              Requerido por <span className="text-gray-400 font-medium">{parentName}</span>
+                            </span>
+                          </div>
+                        )}
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-start gap-2 flex-1 min-w-0">
                             <svg className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
