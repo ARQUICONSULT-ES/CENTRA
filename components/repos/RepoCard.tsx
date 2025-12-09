@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { GitHubRepository } from "@/types/github";
+import { DependenciesModal } from "./DependenciesModal";
 
 export interface WorkflowStatus {
   status: "queued" | "in_progress" | "completed";
@@ -118,6 +119,7 @@ export function RepoCard({
   const [isLoadingCommits, setIsLoadingCommits] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [countdown, setCountdown] = useState(3);
+  const [showDependenciesModal, setShowDependenciesModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Actualizar estados cuando llegan los datos pre-cargados
@@ -466,6 +468,14 @@ export function RepoCard({
         </div>
       )}
 
+      {/* Modal de dependencias CI/CD */}
+      <DependenciesModal
+        isOpen={showDependenciesModal}
+        onClose={() => setShowDependenciesModal(false)}
+        owner={repo.full_name.split("/")[0]}
+        repo={repo.full_name.split("/")[1]}
+      />
+
       <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col gap-2">
         {/* Header: Nombre y estado */}
         <div className="flex items-start justify-between gap-2">
@@ -578,6 +588,18 @@ export function RepoCard({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                     Actualizar archivos AL-Go
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setShowDependenciesModal(true);
+                    }}
+                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                  >
+                    <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                    </svg>
+                    Dependencias CI/CD
                   </button>
                 </div>
               </div>
