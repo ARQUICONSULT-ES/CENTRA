@@ -28,6 +28,8 @@ interface RepoCardProps {
   preloadedInfo?: RepoExtraInfo;
   // Si es true, no hace fetch individual (espera los datos del batch)
   skipIndividualFetch?: boolean;
+  // Indica si se están cargando las releases desde el batch
+  isLoadingRelease?: boolean;
 }
 
 // Colores de lenguajes de GitHub
@@ -88,7 +90,12 @@ function getRelativeTime(dateString: string): string {
   return "hace un momento";
 }
 
-export function RepoCard({ repo, preloadedInfo, skipIndividualFetch = false }: RepoCardProps) {
+export function RepoCard({ 
+  repo, 
+  preloadedInfo, 
+  skipIndividualFetch = false,
+  isLoadingRelease: externalIsLoadingRelease = false 
+}: RepoCardProps) {
   const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus | null>(
     preloadedInfo?.workflow ?? null
   );
@@ -97,7 +104,6 @@ export function RepoCard({ repo, preloadedInfo, skipIndividualFetch = false }: R
   );
   // Si hay datos pre-cargados o se debe esperar el batch, no mostrar loading
   const [isLoading, setIsLoading] = useState(!preloadedInfo && !skipIndividualFetch);
-  const [isLoadingRelease, setIsLoadingRelease] = useState(!preloadedInfo && !skipIndividualFetch);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUpdatingAlGo, setIsUpdatingAlGo] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -120,7 +126,6 @@ export function RepoCard({ repo, preloadedInfo, skipIndividualFetch = false }: R
       setWorkflowStatus(preloadedInfo.workflow);
       setLatestRelease(preloadedInfo.release);
       setIsLoading(false);
-      setIsLoadingRelease(false);
     }
   }, [preloadedInfo]);
 
@@ -169,8 +174,6 @@ export function RepoCard({ repo, preloadedInfo, skipIndividualFetch = false }: R
       }
     } catch (error) {
       console.error("Error fetching latest release:", error);
-    } finally {
-      setIsLoadingRelease(false);
     }
   };
 
@@ -495,13 +498,19 @@ export function RepoCard({ repo, preloadedInfo, skipIndividualFetch = false }: R
           )}
           
           {/* Separador */}
-          {repo.language && (isLoadingRelease || latestRelease) && (
+          {repo.language && (externalIsLoadingRelease || latestRelease) && (
             <span className="text-gray-600">•</span>
           )}
           
           {/* Release badge */}
-          {isLoadingRelease ? (
-            <div className="h-5 w-16 bg-gray-700 rounded animate-pulse" />
+          {externalIsLoadingRelease ? (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-gray-400 bg-gray-700/50">
+              <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              Obteniendo release...
+            </span>
           ) : latestRelease ? (
             <a
               href={latestRelease.html_url}
