@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GitHubRepository } from "@/types/github";
 
 interface AppDependencyProbingPath {
@@ -23,6 +23,21 @@ interface AppDependency {
   name: string;
   publisher: string;
   version: string;
+}
+
+// Información de dependencias faltantes por repositorio
+interface MissingDependencyInfo {
+  repoFullName: string;
+  missingRepos: string[]; // URLs de repos que faltan
+  missingFiles: string[]; // Nombres de archivos .app que faltan
+}
+
+// Respuesta del endpoint repo-dependencies
+interface RepoDependencies {
+  repoFullName: string;
+  repoDependencies: AppDependencyProbingPath[];
+  fileDependencies: FileDependency[];
+  error?: string;
 }
 
 interface DependenciesModalProps {
@@ -88,6 +103,9 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
   const [branches, setBranches] = useState<string[]>([]);
   const [selectedBranch, setSelectedBranch] = useState("main");
   const [isLoadingBranches, setIsLoadingBranches] = useState(false);
+  const [missingDependencies, setMissingDependencies] = useState<Map<string, MissingDependencyInfo>>(new Map());
+  const [isResolvingDeps, setIsResolvingDeps] = useState(false);
+  const [depDataMap, setDepDataMap] = useState<Map<string, RepoDependencies>>(new Map());
 
   const isSaving = saveStep.status !== 'idle' && saveStep.status !== 'completed';
 
@@ -104,6 +122,9 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     setFilesToUpload([]);
     setFilesToDelete([]);
     setSaveStep({ status: 'idle' });
+    setMissingDependencies(new Map());
+    setIsResolvingDeps(false);
+    setDepDataMap(new Map());
     
     fetchSettings();
     fetchAppJson();
@@ -207,10 +228,132 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     }
   };
 
+  // Extraer owner y repo de una URL de GitHub
+  const parseRepoUrl = (repoUrl: string): { owner: string; repo: string } | null => {
+    const match = repoUrl.match(/github\.com\/([^/]+)\/([^/@]+)/);
+    if (match) {
+      return { owner: match[1], repo: match[2] };
+    }
+    return null;
+  };
+
   // Extraer nombre del repo de la URL
   const getRepoName = (repoUrl: string): string => {
     const match = repoUrl.match(/github\.com\/[^/]+\/([^/@]+)/);
     return match ? match[1] : repoUrl;
+  };
+
+  // Función para verificar dependencias faltantes
+  const checkMissingDependencies = useCallback((
+    deps: AppDependencyProbingPath[],
+    files: FileDependency[],
+    allDepData: Map<string, RepoDependencies>
+  ): Map<string, MissingDependencyInfo> => {
+    const missing = new Map<string, MissingDependencyInfo>();
+    const currentRepoUrls = new Set(deps.map(d => d.repo));
+    const currentFileNames = new Set(files.map(f => f.name));
+
+    for (const dep of deps) {
+      const parsed = parseRepoUrl(dep.repo);
+      if (!parsed) continue;
+
+      const fullName = `${parsed.owner}/${parsed.repo}`;
+      const depData = allDepData.get(fullName);
+      
+      if (!depData) continue;
+
+      const missingRepos: string[] = [];
+      const missingFiles: string[] = [];
+
+      // Verificar dependencias de repositorio
+      for (const subDep of depData.repoDependencies) {
+        if (!currentRepoUrls.has(subDep.repo)) {
+          missingRepos.push(subDep.repo);
+        }
+      }
+
+      // Verificar dependencias de archivo
+      for (const fileDep of depData.fileDependencies) {
+        if (!currentFileNames.has(fileDep.name)) {
+          missingFiles.push(fileDep.name);
+        }
+      }
+
+      if (missingRepos.length > 0 || missingFiles.length > 0) {
+        missing.set(dep.repo, {
+          repoFullName: fullName,
+          missingRepos,
+          missingFiles,
+        });
+      }
+    }
+
+    return missing;
+  }, []);
+
+  // Función para obtener dependencias recursivas de un repositorio
+  const fetchRecursiveDependencies = async (repoUrls: string[]): Promise<{
+    allDeps: AppDependencyProbingPath[];
+    allFiles: FileDependency[];
+    depDataMap: Map<string, RepoDependencies>;
+  }> => {
+    const allDeps: AppDependencyProbingPath[] = [];
+    const allFiles: FileDependency[] = [];
+    const depDataMap = new Map<string, RepoDependencies>();
+    const processedUrls = new Set<string>();
+    const urlsToProcess = [...repoUrls];
+
+    while (urlsToProcess.length > 0) {
+      const currentUrl = urlsToProcess.shift()!;
+      
+      if (processedUrls.has(currentUrl)) continue;
+      processedUrls.add(currentUrl);
+
+      const parsed = parseRepoUrl(currentUrl);
+      if (!parsed) continue;
+
+      try {
+        const res = await fetch(
+          `/api/github/repo-dependencies?owner=${parsed.owner}&repo=${parsed.repo}&ref=main`,
+          { cache: "no-store" }
+        );
+
+        if (res.ok) {
+          const data: RepoDependencies = await res.json();
+          const fullName = `${parsed.owner}/${parsed.repo}`;
+          depDataMap.set(fullName, data);
+
+          // Agregar dependencias de repositorio encontradas
+          for (const dep of data.repoDependencies) {
+            // Verificar si ya existe en la lista actual
+            const exists = allDeps.some(d => d.repo === dep.repo) ||
+                          editedDependencies.some(d => d.repo === dep.repo);
+            
+            if (!exists) {
+              allDeps.push(dep);
+              // Añadir a la cola para procesar sus dependencias
+              if (!processedUrls.has(dep.repo)) {
+                urlsToProcess.push(dep.repo);
+              }
+            }
+          }
+
+          // Agregar dependencias de archivo encontradas
+          for (const file of data.fileDependencies) {
+            const fileExists = allFiles.some(f => f.name === file.name) ||
+                              fileDependencies.some(f => f.name === file.name);
+            
+            if (!fileExists) {
+              allFiles.push(file);
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching dependencies for ${currentUrl}:`, error);
+      }
+    }
+
+    return { allDeps, allFiles, depDataMap };
   };
 
   // Inicializar editedDependencies cuando se carga settingsData
@@ -223,11 +366,18 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
   const handleRemoveDependency = (index: number) => {
     const updated = editedDependencies.filter((_, i) => i !== index);
     setEditedDependencies(updated);
+    // Recalcular warnings con las dependencias actualizadas
+    const missing = checkMissingDependencies(updated, fileDependencies, depDataMap);
+    setMissingDependencies(missing);
   };
 
   const handleRemoveFileDependency = (fileName: string) => {
     setFilesToDelete([...filesToDelete, fileName]);
-    setFileDependencies(fileDependencies.filter(f => f.name !== fileName));
+    const updatedFiles = fileDependencies.filter(f => f.name !== fileName);
+    setFileDependencies(updatedFiles);
+    // Recalcular warnings con los archivos actualizados
+    const missing = checkMissingDependencies(editedDependencies, updatedFiles, depDataMap);
+    setMissingDependencies(missing);
   };
 
   const handleAddFileDependencies = (files: File[]) => {
@@ -241,16 +391,70 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     setFileDependencies([...fileDependencies, ...newFiles]);
   };
 
-  const handleAddDependencies = (selectedRepos: GitHubRepository[], version: string, releaseStatus: string) => {
-    const newDeps: AppDependencyProbingPath[] = selectedRepos.map(repo => ({
-      repo: repo.html_url,
-      version: version,
-      release_status: releaseStatus,
-      authTokenSecret: "GHTOKENWORKFLOW",
-      projects: "*",
-    }));
-    setEditedDependencies([...editedDependencies, ...newDeps]);
+  const handleAddDependencies = async (selectedRepos: GitHubRepository[], version: string, releaseStatus: string) => {
     setShowAddRepoModal(false);
+    setIsResolvingDeps(true);
+
+    try {
+      // Crear las dependencias iniciales de los repos seleccionados
+      const newDeps: AppDependencyProbingPath[] = selectedRepos.map(repo => ({
+        repo: repo.html_url,
+        version: version,
+        release_status: releaseStatus,
+        authTokenSecret: "GHTOKENWORKFLOW",
+        projects: "*",
+      }));
+
+      // Obtener las URLs de los repos seleccionados
+      const repoUrls = selectedRepos.map(r => r.html_url);
+
+      // Obtener dependencias recursivas
+      const { allDeps, allFiles, depDataMap: newDepDataMap } = await fetchRecursiveDependencies(repoUrls);
+
+      // Combinar el mapa de dependencias existente con el nuevo
+      const combinedDepDataMap = new Map([...depDataMap, ...newDepDataMap]);
+      setDepDataMap(combinedDepDataMap);
+
+      // Combinar todas las dependencias
+      const combinedDeps = [...editedDependencies, ...newDeps];
+      
+      // Añadir las dependencias transitivas (de repositorio)
+      for (const dep of allDeps) {
+        if (!combinedDeps.some(d => d.repo === dep.repo)) {
+          combinedDeps.push({
+            ...dep,
+            version: dep.version || version,
+            release_status: dep.release_status || releaseStatus,
+            authTokenSecret: dep.authTokenSecret || "GHTOKENWORKFLOW",
+            projects: dep.projects || "*",
+          });
+        }
+      }
+
+      setEditedDependencies(combinedDeps);
+
+      // Añadir los archivos .app de las dependencias (nota: estos son para referencia, no se suben automáticamente)
+      // El usuario tendrá que subir los archivos manualmente si los necesita
+      // Por ahora solo mostramos el warning de archivos faltantes
+
+      // Verificar dependencias faltantes
+      const missing = checkMissingDependencies(combinedDeps, fileDependencies, combinedDepDataMap);
+      setMissingDependencies(missing);
+
+    } catch (error) {
+      console.error("Error resolving dependencies:", error);
+      // Si hay error, al menos añadir las dependencias directas
+      const newDeps: AppDependencyProbingPath[] = selectedRepos.map(repo => ({
+        repo: repo.html_url,
+        version: version,
+        release_status: releaseStatus,
+        authTokenSecret: "GHTOKENWORKFLOW",
+        projects: "*",
+      }));
+      setEditedDependencies([...editedDependencies, ...newDeps]);
+    } finally {
+      setIsResolvingDeps(false);
+    }
   };
 
   const handleSaveChanges = async () => {
@@ -408,8 +612,8 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
-              {isLoadingSettings ? (
-                <LoadingSpinner />
+              {isLoadingSettings || isResolvingDeps ? (
+                <LoadingSpinner text={isResolvingDeps ? "Resolviendo dependencias..." : "Cargando..."} />
               ) : settingsError ? (
                 <EmptyState 
                   message={settingsError}
@@ -422,59 +626,117 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
               ) : editedDependencies.length > 0 || fileDependencies.length > 0 ? (
                 <div className="space-y-3">
                   {/* Dependencias de repositorio */}
-                  {editedDependencies.map((dep, index) => (
-                    <div 
-                      key={`repo-${index}`}
-                      className="bg-gray-900 border border-gray-700 rounded-lg p-3 hover:border-gray-600 transition-colors"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2 flex-1 min-w-0">
-                          <svg className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                          </svg>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-medium text-blue-400 truncate">
-                              {getRepoName(dep.repo)}
-                            </h4>
-                            <p className="text-xs text-gray-500 truncate mt-0.5" title={dep.repo}>
-                              {dep.repo}
-                            </p>
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-700 text-gray-300">
-                                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                                </svg>
-                                {dep.release_status}
-                              </span>
-                              {dep.projects && (
+                  {editedDependencies.map((dep, index) => {
+                    const missingInfo = missingDependencies.get(dep.repo);
+                    const hasMissing = missingInfo && (missingInfo.missingRepos.length > 0 || missingInfo.missingFiles.length > 0);
+                    
+                    return (
+                      <div 
+                        key={`repo-${index}`}
+                        className={`bg-gray-900 border rounded-lg p-3 hover:border-gray-600 transition-colors ${
+                          hasMissing ? 'border-yellow-500/50' : 'border-gray-700'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-start gap-2 flex-1 min-w-0">
+                            <svg className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-sm font-medium text-blue-400 truncate">
+                                  {getRepoName(dep.repo)}
+                                </h4>
+                                {hasMissing && (
+                                  <div className="relative group/tooltip">
+                                    <svg 
+                                      className="w-4 h-4 text-yellow-500 cursor-help shrink-0" 
+                                      fill="currentColor" 
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    {/* Tooltip */}
+                                    <div className="fixed hidden group-hover/tooltip:block" style={{ zIndex: 9999 }}>
+                                      <div className="absolute left-6 top-0 w-64 p-3 bg-gray-900 border border-yellow-500/30 rounded-lg shadow-2xl">
+                                        <p className="text-xs font-medium text-yellow-500 mb-2">
+                                          Dependencias faltantes:
+                                        </p>
+                                        {missingInfo!.missingRepos.length > 0 && (
+                                          <div className="mb-2">
+                                            <p className="text-xs text-gray-400 mb-1">Repositorios:</p>
+                                            <ul className="text-xs text-gray-300 space-y-1">
+                                              {missingInfo!.missingRepos.map((repo, i) => (
+                                                <li key={i} className="truncate flex items-center gap-1">
+                                                  <svg className="w-3 h-3 text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633z" clipRule="evenodd" />
+                                                  </svg>
+                                                  {getRepoName(repo)}
+                                                </li>
+                                              ))}
+                                            </ul>
+                                          </div>
+                                        )}
+                                        {missingInfo!.missingFiles.length > 0 && (
+                                          <div>
+                                            <p className="text-xs text-gray-400 mb-1">Archivos .app:</p>
+                                            <ul className="text-xs text-gray-300 space-y-1">
+                                              {missingInfo!.missingFiles.map((file, i) => (
+                                                <li key={i} className="truncate flex items-center gap-1">
+                                                  <svg className="w-3 h-3 text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                                                  </svg>
+                                                  {file}
+                                                </li>
+                                              ))}
+                                            </ul>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-500 truncate mt-0.5" title={dep.repo}>
+                                {dep.repo}
+                              </p>
+                              <div className="mt-2 flex flex-wrap gap-2">
                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-700 text-gray-300">
                                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                                    <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                                   </svg>
-                                  {dep.projects}
+                                  {dep.release_status}
                                 </span>
-                              )}
+                                {dep.projects && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-700 text-gray-300">
+                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                                    </svg>
+                                    {dep.projects}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="shrink-0 px-2 py-0.5 text-xs font-medium rounded bg-green-500/20 text-green-400">
-                            {dep.version}
-                          </span>
-                          <button
-                            onClick={() => handleRemoveDependency(index)}
-                            disabled={isSaving}
-                            className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            title="Eliminar dependencia"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <span className="shrink-0 px-2 py-0.5 text-xs font-medium rounded bg-green-500/20 text-green-400">
+                              {dep.version}
+                            </span>
+                            <button
+                              onClick={() => handleRemoveDependency(index)}
+                              disabled={isSaving}
+                              className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Eliminar dependencia"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   
                   {/* Dependencias de archivo */}
                   {fileDependencies.map((file, index) => (
@@ -530,7 +792,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowAddRepoModal(true)}
-                  disabled={isSaving}
+                  disabled={isSaving || isResolvingDeps}
                   className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Añadir repositorio"
                 >
@@ -541,7 +803,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                 </button>
                 <button
                   onClick={() => setShowAddFileModal(true)}
-                  disabled={isSaving}
+                  disabled={isSaving || isResolvingDeps}
                   className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-white bg-gray-600 hover:bg-gray-500 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Añadir archivo .app"
                 >
