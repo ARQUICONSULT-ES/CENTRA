@@ -46,6 +46,13 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
 
   useEffect(() => {
     if (isOpen) {
+      // Reset estados al abrir el modal para forzar recarga
+      setSettingsData(null);
+      setAppJsonData(null);
+      setSettingsError(null);
+      setAppJsonError(null);
+      setEditedDependencies([]);
+      
       fetchSettings();
       fetchAppJson();
       fetchBranches();
@@ -57,7 +64,13 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     setSettingsError(null);
     try {
       const res = await fetch(
-        `/api/github/file-content?owner=${owner}&repo=${repo}&path=.AL-Go/settings.json&ref=main`
+        `/api/github/file-content?owner=${owner}&repo=${repo}&path=.AL-Go/settings.json&ref=main`,
+        {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        }
       );
       
       if (res.status === 404) {
@@ -81,7 +94,13 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     setAppJsonError(null);
     try {
       const res = await fetch(
-        `/api/github/file-content?owner=${owner}&repo=${repo}&path=app.json&ref=main`
+        `/api/github/file-content?owner=${owner}&repo=${repo}&path=app.json&ref=main`,
+        {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        }
       );
       
       if (res.status === 404) {
@@ -103,7 +122,15 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
   const fetchBranches = async () => {
     setIsLoadingBranches(true);
     try {
-      const res = await fetch(`/api/github/branches?owner=${owner}&repo=${repo}`);
+      const res = await fetch(
+        `/api/github/branches?owner=${owner}&repo=${repo}`,
+        {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        }
+      );
       
       if (res.ok) {
         const data = await res.json();
@@ -137,27 +164,20 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     }
   }, [settingsData]);
 
-  // Reset del estado cuando se abre el modal
-  useEffect(() => {
-    if (isOpen && settingsData?.appDependencyProbingPaths) {
-      setEditedDependencies([...settingsData.appDependencyProbingPaths]);
-    }
-  }, [isOpen]);
-
   const handleRemoveDependency = (index: number) => {
     const updated = editedDependencies.filter((_, i) => i !== index);
     setEditedDependencies(updated);
   };
 
-  const handleAddDependency = (selectedRepo: GitHubRepository, version: string, releaseStatus: string) => {
-    const newDep: AppDependencyProbingPath = {
-      repo: selectedRepo.html_url,
+  const handleAddDependencies = (selectedRepos: GitHubRepository[], version: string, releaseStatus: string) => {
+    const newDeps: AppDependencyProbingPath[] = selectedRepos.map(repo => ({
+      repo: repo.html_url,
       version: version,
       release_status: releaseStatus,
       authTokenSecret: "GHTOKENWORKFLOW",
       projects: "*",
-    };
-    setEditedDependencies([...editedDependencies, newDep]);
+    }));
+    setEditedDependencies([...editedDependencies, ...newDeps]);
     setShowAddRepoModal(false);
   };
 
@@ -477,12 +497,11 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
       {/* Modal de selección de repositorio */}
       {showAddRepoModal && (
         <AddRepoModal
-          isOpen={showAddRepoModal}
           onClose={() => setShowAddRepoModal(false)}
           repos={allRepos}
           currentRepoFullName={`${owner}/${repo}`}
           existingDeps={editedDependencies}
-          onAdd={handleAddDependency}
+          onAdd={handleAddDependencies}
         />
       )}
     </div>
@@ -490,21 +509,18 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
 }
 
 interface AddRepoModalProps {
-  isOpen: boolean;
   onClose: () => void;
   repos: GitHubRepository[];
   currentRepoFullName: string;
   existingDeps: AppDependencyProbingPath[];
-  onAdd: (repo: GitHubRepository, version: string, releaseStatus: string) => void;
+  onAdd: (repos: GitHubRepository[], version: string, releaseStatus: string) => void;
 }
 
-function AddRepoModal({ isOpen, onClose, repos, currentRepoFullName, existingDeps, onAdd }: AddRepoModalProps) {
-  const [selectedRepo, setSelectedRepo] = useState<GitHubRepository | null>(null);
+function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd }: AddRepoModalProps) {
+  const [selectedRepos, setSelectedRepos] = useState<Set<number>>(new Set());
   const [version, setVersion] = useState("latest");
   const [releaseStatus, setReleaseStatus] = useState("release");
   const [searchQuery, setSearchQuery] = useState("");
-
-  if (!isOpen) return null;
 
   // Filtrar: repos ya añadidos y el repositorio actual
   const existingRepoUrls = new Set(existingDeps.map(dep => dep.repo));
@@ -516,10 +532,27 @@ function AddRepoModal({ isOpen, onClose, repos, currentRepoFullName, existingDep
     repo.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const toggleRepoSelection = (repoId: number) => {
+    const newSelection = new Set(selectedRepos);
+    if (newSelection.has(repoId)) {
+      newSelection.delete(repoId);
+    } else {
+      newSelection.add(repoId);
+    }
+    setSelectedRepos(newSelection);
+  };
+
+  const getSelectedRepoNames = () => {
+    return availableRepos
+      .filter(repo => selectedRepos.has(repo.id))
+      .map(repo => repo.name);
+  };
+
   const handleAdd = () => {
-    if (selectedRepo) {
-      onAdd(selectedRepo, version, releaseStatus);
-      setSelectedRepo(null);
+    if (selectedRepos.size > 0) {
+      const reposToAdd = availableRepos.filter(repo => selectedRepos.has(repo.id));
+      onAdd(reposToAdd, version, releaseStatus);
+      setSelectedRepos(new Set());
       setVersion("latest");
       setReleaseStatus("release");
       setSearchQuery("");
@@ -575,40 +608,62 @@ function AddRepoModal({ isOpen, onClose, repos, currentRepoFullName, existingDep
             </div>
           ) : (
             <div className="space-y-2">
-              {filteredRepos.map((repo) => (
-                <button
-                  key={repo.id}
-                  onClick={() => setSelectedRepo(repo)}
-                  className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                    selectedRepo?.id === repo.id
-                      ? "border-blue-500 bg-blue-500/10"
-                      : "border-gray-700 bg-gray-900 hover:border-gray-600"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-white truncate">
-                        {repo.name}
-                      </h4>
-                      <p className="text-xs text-gray-400 truncate">
-                        {repo.full_name}
-                      </p>
+              {filteredRepos.map((repo) => {
+                const isSelected = selectedRepos.has(repo.id);
+                return (
+                  <button
+                    key={repo.id}
+                    onClick={() => toggleRepoSelection(repo.id)}
+                    className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                      isSelected
+                        ? "border-blue-500 bg-blue-500/10"
+                        : "border-gray-700 bg-gray-900 hover:border-gray-600"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium text-white truncate">
+                          {repo.name}
+                        </h4>
+                        <p className="text-xs text-gray-400 truncate">
+                          {repo.full_name}
+                        </p>
+                      </div>
+                      <div className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                        isSelected
+                          ? "border-blue-500 bg-blue-500"
+                          : "border-gray-500"
+                      }`}>
+                        {isSelected && (
+                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
                     </div>
-                    {selectedRepo?.id === repo.id && (
-                      <svg className="w-5 h-5 text-blue-400 shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
 
+        {/* Selected repos indicator */}
+        {selectedRepos.size > 0 && (
+          <div className="px-4 py-2 border-t border-gray-700 bg-gray-900/30">
+            <p className="text-xs text-gray-400">
+              <span className="font-medium text-blue-400">Seleccionados:</span>{" "}
+              {getSelectedRepoNames().join(", ")}
+            </p>
+          </div>
+        )}
+
         {/* Config */}
-        {selectedRepo && (
+        {selectedRepos.size > 0 && (
           <div className="p-4 border-t border-gray-700 bg-gray-900/50">
+            <p className="text-xs text-gray-400 mb-3">
+              Configuración aplicada a todos los repositorios seleccionados
+            </p>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1">
@@ -649,10 +704,10 @@ function AddRepoModal({ isOpen, onClose, repos, currentRepoFullName, existingDep
           </button>
           <button
             onClick={handleAdd}
-            disabled={!selectedRepo}
+            disabled={selectedRepos.size === 0}
             className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Añadir
+            Añadir {selectedRepos.size > 0 && `(${selectedRepos.size})`}
           </button>
         </div>
       </div>
