@@ -31,6 +31,8 @@ interface RepoCardProps {
   skipIndividualFetch?: boolean;
   // Indica si se están cargando las releases desde el batch
   isLoadingRelease?: boolean;
+  // Lista completa de repositorios para el modal de dependencias
+  allRepos?: GitHubRepository[];
 }
 
 // Colores de lenguajes de GitHub
@@ -95,7 +97,8 @@ export function RepoCard({
   repo, 
   preloadedInfo, 
   skipIndividualFetch = false,
-  isLoadingRelease: externalIsLoadingRelease = false 
+  isLoadingRelease: externalIsLoadingRelease = false,
+  allRepos = [] 
 }: RepoCardProps) {
   const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus | null>(
     preloadedInfo?.workflow ?? null
@@ -474,6 +477,7 @@ export function RepoCard({
         onClose={() => setShowDependenciesModal(false)}
         owner={repo.full_name.split("/")[0]}
         repo={repo.full_name.split("/")[1]}
+        allRepos={allRepos}
       />
 
       <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col gap-2">

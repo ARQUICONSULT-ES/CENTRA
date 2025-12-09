@@ -244,7 +244,7 @@ export default function ReposPage() {
 
       {/* Lista de repositorios */}
       {filteredAndSortedRepos.length > 0 ? (
-        <RepoList ref={repoListRef} repos={filteredAndSortedRepos} />
+        <RepoList ref={repoListRef} repos={filteredAndSortedRepos} allRepos={repos} />
       ) : (
         <div className="text-center py-12">
           <svg

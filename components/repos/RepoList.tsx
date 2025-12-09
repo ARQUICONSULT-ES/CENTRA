@@ -6,6 +6,7 @@ import { RepoCard, RepoExtraInfo } from "./RepoCard";
 
 interface RepoListProps {
   repos: GitHubRepository[];
+  allRepos: GitHubRepository[];
 }
 
 export interface RepoListHandle {
@@ -13,7 +14,7 @@ export interface RepoListHandle {
   isLoadingWorkflows: boolean;
 }
 
-export const RepoList = forwardRef<RepoListHandle, RepoListProps>(({ repos }, ref) => {
+export const RepoList = forwardRef<RepoListHandle, RepoListProps>(({ repos, allRepos }, ref) => {
   const [extraInfo, setExtraInfo] = useState<Record<string, RepoExtraInfo>>({});
   const [isLoadingWorkflows, setIsLoadingWorkflows] = useState(false);
   const [isLoadingReleases, setIsLoadingReleases] = useState(false);
@@ -142,6 +143,7 @@ export const RepoList = forwardRef<RepoListHandle, RepoListProps>(({ repos }, re
             preloadedInfo={extraInfo[repo.full_name]}
             skipIndividualFetch={true}
             isLoadingRelease={isLoadingReleases}
+            allRepos={allRepos}
           />
         ))}
       </div>
