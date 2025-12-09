@@ -116,15 +116,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // GraphQL permite hasta ~100 repos por query, dividir en chunks
-    const CHUNK_SIZE = 100;
-    const allResults: Record<string, { release: ReleaseInfo | null }> = {};
-
+    // Dividir en chunks de 50 repos y ejecutar en paralelo
+    const CHUNK_SIZE = 50;
+    const chunks: RepoRequest[][] = [];
+    
     for (let i = 0; i < repos.length; i += CHUNK_SIZE) {
-      const chunk = repos.slice(i, i + CHUNK_SIZE);
-      const chunkResults = await fetchReleasesGraphQL(token, chunk);
-      Object.assign(allResults, chunkResults);
+      chunks.push(repos.slice(i, i + CHUNK_SIZE));
     }
+
+    // Ejecutar todas las queries GraphQL en paralelo
+    const chunkResults = await Promise.all(
+      chunks.map(chunk => fetchReleasesGraphQL(token, chunk))
+    );
+
+    // Combinar todos los resultados
+    const allResults: Record<string, { release: ReleaseInfo | null }> = {};
+    chunkResults.forEach(result => {
+      Object.assign(allResults, result);
+    });
 
     return NextResponse.json({ data: allResults });
   } catch (error) {
