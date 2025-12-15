@@ -475,10 +475,6 @@ export type ConnectionUncheckedUpdateManyWithoutTenantNestedInput = {
   deleteMany?: Prisma.ConnectionScalarWhereInput | Prisma.ConnectionScalarWhereInput[]
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type ConnectionCreateWithoutTenantInput = {
   id?: string
   grantType: string

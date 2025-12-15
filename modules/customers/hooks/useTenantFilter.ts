@@ -1,24 +1,24 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { Customer } from "../types";
+import type { Tenant } from "../types";
 
 type SortOption = "updated" | "name" | "tenant";
 
-export function useCustomerFilter(customers: Customer[]) {
+export function useTenantFilter(tenants: Tenant[]) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("updated");
 
-  const filteredCustomers = useMemo(() => {
-    let result = [...customers];
+  const filteredTenants = useMemo(() => {
+    let result = [...tenants];
 
     // Filtrado por búsqueda
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
-        (customer) =>
-          customer.customerName.toLowerCase().includes(query) ||
-          customer.tenantId.toLowerCase().includes(query)
+        (tenant) =>
+          tenant.customerName.toLowerCase().includes(query) ||
+          tenant.id.toString().includes(query)
       );
     }
 
@@ -26,21 +26,21 @@ export function useCustomerFilter(customers: Customer[]) {
     result.sort((a, b) => {
       switch (sortBy) {
         case "updated":
-          return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+          return new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime();
         case "name":
           return a.customerName.localeCompare(b.customerName);
         case "tenant":
-          return a.tenantId.localeCompare(b.tenantId);
+          return a.id - b.id;
         default:
           return 0;
       }
     });
 
     return result;
-  }, [customers, searchQuery, sortBy]);
+  }, [tenants, searchQuery, sortBy]);
 
   return {
-    filteredCustomers,
+    filteredTenants,
     searchQuery,
     setSearchQuery,
     sortBy,

@@ -1,43 +1,25 @@
-// ==================== CUSTOMER TYPES ====================
+// ==================== TENANT TYPES ====================
 
-export interface Customer {
-  id: string;
-  tenantId: string;
+export interface Tenant {
+  id: number;
   customerName: string;
-  createdAt: string;
-  updatedAt: string;
-  status: "active" | "inactive" | "pending";
-  environmentsCount: number;
-  connectionsCount: number;
+  createdAt: string | Date;
+  modifiedAt: string | Date;
 }
 
-// ==================== CUSTOMER CARD TYPES ====================
+// ==================== TENANT CARD TYPES ====================
 
-export interface CustomerCardProps {
-  customer: Customer;
+export interface TenantCardProps {
+  tenant: Tenant;
 }
 
-// ==================== CUSTOMER LIST TYPES ====================
+// ==================== TENANT LIST TYPES ====================
 
-export interface CustomerListProps {
-  customers: Customer[];
+export interface TenantListProps {
+  tenants: Tenant[];
 }
 
-export interface CustomerListHandle {
-  refreshCustomers: () => Promise<void>;
+export interface TenantListHandle {
+  refreshTenants: () => Promise<void>;
   isRefreshing: boolean;
 }
-
-// ==================== STATUS COLORS ====================
-
-export const statusColors: Record<string, string> = {
-  active: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  inactive: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
-  pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-};
-
-export const statusLabels: Record<string, string> = {
-  active: "Activo",
-  inactive: "Inactivo",
-  pending: "Pendiente",
-};

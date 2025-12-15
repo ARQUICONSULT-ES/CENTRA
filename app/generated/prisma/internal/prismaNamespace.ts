@@ -744,7 +744,9 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const TenantScalarFieldEnum = {
   id: 'id',
-  customer: 'customer'
+  customerName: 'customerName',
+  createdAt: 'createdAt',
+  modifiedAt: 'modifiedAt'
 } as const
 
 export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]

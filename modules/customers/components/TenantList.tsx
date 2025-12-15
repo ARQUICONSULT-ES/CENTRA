@@ -1,35 +1,35 @@
 "use client";
 
 import { forwardRef, useImperativeHandle, useState } from "react";
-import { CustomerCard } from "./CustomerCard";
-import type { CustomerListProps, CustomerListHandle } from "../types";
+import { TenantCard } from "./TenantCard";
+import type { TenantListProps, TenantListHandle } from "../types";
 
-export const CustomerList = forwardRef<CustomerListHandle, CustomerListProps>(
-  function CustomerList({ customers }, ref) {
+export const TenantList = forwardRef<TenantListHandle, TenantListProps>(
+  function TenantList({ tenants }, ref) {
     const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const refreshCustomers = async () => {
+    const refreshTenants = async () => {
       setIsRefreshing(true);
       try {
         // Simular actualización
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log("Clientes actualizados");
+        console.log("Tenants actualizados");
       } catch (error) {
-        console.error("Error al actualizar clientes:", error);
+        console.error("Error al actualizar tenants:", error);
       } finally {
         setIsRefreshing(false);
       }
     };
 
     useImperativeHandle(ref, () => ({
-      refreshCustomers,
+      refreshTenants,
       isRefreshing,
     }));
 
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {customers.map((customer) => (
-          <CustomerCard key={customer.id} customer={customer} />
+        {tenants.map((tenant) => (
+          <TenantCard key={tenant.id} tenant={tenant} />
         ))}
       </div>
     );

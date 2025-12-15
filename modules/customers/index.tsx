@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef } from "react";
-import { CustomerList } from "./components/CustomerList";
-import type { CustomerListHandle } from "./types";
-import { useCustomers } from "./hooks/useCustomers";
-import { useCustomerFilter } from "./hooks/useCustomerFilter";
+import { TenantList } from "./components/TenantList";
+import type { TenantListHandle } from "./types";
+import { useTenants } from "./hooks/useTenants";
+import { useTenantFilter } from "./hooks/useTenantFilter";
 
 function SkeletonCard() {
   return (
@@ -28,25 +28,25 @@ function SkeletonCard() {
   );
 }
 
-export function CustomersPage() {
-  const { customers, isLoading, error, fetchCustomers } = useCustomers();
+export function TenantsPage() {
+  const { tenants, isLoading, error, fetchTenants } = useTenants();
   const {
-    filteredCustomers,
+    filteredTenants,
     searchQuery,
     setSearchQuery,
     sortBy,
     setSortBy,
-  } = useCustomerFilter(customers);
-  const customerListRef = useRef<CustomerListHandle>(null);
+  } = useTenantFilter(tenants);
+  const tenantListRef = useRef<TenantListHandle>(null);
 
   const handleRefresh = async () => {
-    if (customerListRef.current) {
-      await customerListRef.current.refreshCustomers();
+    if (tenantListRef.current) {
+      await tenantListRef.current.refreshTenants();
     }
-    await fetchCustomers();
+    await fetchTenants();
   };
 
-  const isRefreshing = customerListRef.current?.isRefreshing ?? false;
+  const isRefreshing = tenantListRef.current?.isRefreshing ?? false;
 
   if (isLoading) {
     return (
@@ -90,13 +90,13 @@ export function CustomersPage() {
           />
         </svg>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-          Error al cargar clientes
+          Error al cargar tenants
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
           {error}
         </p>
         <button
-          onClick={fetchCustomers}
+          onClick={fetchTenants}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
           Reintentar
@@ -110,12 +110,12 @@ export function CustomersPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Clientes
+          Tenants
         </h1>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           {searchQuery
-            ? `${filteredCustomers.length} de ${customers.length} clientes`
-            : `${customers.length} clientes`}
+            ? `${filteredTenants.length} de ${tenants.length} tenants`
+            : `${tenants.length} tenants`}
         </p>
       </div>
 
@@ -139,7 +139,7 @@ export function CustomersPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar clientes o tenants..."
+            placeholder="Buscar tenants..."
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
           />
         </div>
@@ -187,7 +187,7 @@ export function CustomersPage() {
             onClick={handleRefresh}
             disabled={isRefreshing}
             className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-wait rounded-lg transition-colors whitespace-nowrap"
-            title="Actualizar lista de clientes"
+            title="Actualizar lista de tenants"
           >
             {isRefreshing ? (
               <svg
@@ -229,9 +229,9 @@ export function CustomersPage() {
         </div>
       </div>
 
-      {/* Lista de clientes */}
-      {filteredCustomers.length > 0 ? (
-        <CustomerList ref={customerListRef} customers={filteredCustomers} />
+      {/* Lista de tenants */}
+      {filteredTenants.length > 0 ? (
+        <TenantList ref={tenantListRef} tenants={filteredTenants} />
       ) : (
         <div className="text-center py-12">
           <svg
@@ -248,7 +248,7 @@ export function CustomersPage() {
             />
           </svg>
           <p className="text-gray-600 dark:text-gray-400">
-            No se encontraron clientes con "{searchQuery}"
+            No se encontraron tenants con "{searchQuery}"
           </p>
         </div>
       )}
