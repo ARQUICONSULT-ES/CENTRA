@@ -2,20 +2,7 @@
 
 import { useState, useRef } from "react";
 import type { TenantCardProps } from "../types";
-
-function getRelativeTime(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
-
-  if (diffInSeconds < 60) return "hace unos segundos";
-  if (diffInSeconds < 3600) return `hace ${Math.floor(diffInSeconds / 60)} min`;
-  if (diffInSeconds < 86400) return `hace ${Math.floor(diffInSeconds / 3600)} h`;
-  if (diffInSeconds < 604800) return `hace ${Math.floor(diffInSeconds / 86400)} d`;
-  if (diffInSeconds < 2592000) return `hace ${Math.floor(diffInSeconds / 604800)} sem`;
-  if (diffInSeconds < 31536000) return `hace ${Math.floor(diffInSeconds / 2592000)} mes`;
-  return `hace ${Math.floor(diffInSeconds / 31536000)} año`;
-}
+import { formatRelativeTime } from "../services/utils";
 
 export function TenantCard({ tenant }: TenantCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -109,7 +96,7 @@ export function TenantCard({ tenant }: TenantCardProps) {
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>Actualizado {getRelativeTime(tenant.modifiedAt)}</span>
+          <span>Actualizado {formatRelativeTime(tenant.modifiedAt)}</span>
         </div>
       </div>
     </div>
