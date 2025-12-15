@@ -68,27 +68,3 @@ export async function getAuthenticatedUser(token: string): Promise<GitHubUser> {
     throw error;
   }
 }
-
-/**
- * Obtiene un repositorio específico
- */
-export async function getRepository(token: string, owner: string, repo: string): Promise<GitHubRepository> {
-  try {
-    const res = await fetch(`${GITHUB_API_URL}/repos/${owner}/${repo}`, {
-      headers: {
-        Authorization: `token ${token}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      throw new Error(`GitHub API error: ${res.status} ${res.statusText}`);
-    }
-
-    return res.json();
-  } catch (error) {
-    console.error("Error fetching repository:", error);
-    throw error;
-  }
-}
