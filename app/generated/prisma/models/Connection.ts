@@ -20,22 +20,12 @@ export type ConnectionModel = runtime.Types.Result.DefaultSelection<Prisma.$Conn
 
 export type AggregateConnection = {
   _count: ConnectionCountAggregateOutputType | null
-  _avg: ConnectionAvgAggregateOutputType | null
-  _sum: ConnectionSumAggregateOutputType | null
   _min: ConnectionMinAggregateOutputType | null
   _max: ConnectionMaxAggregateOutputType | null
 }
 
-export type ConnectionAvgAggregateOutputType = {
-  tenantId: number | null
-}
-
-export type ConnectionSumAggregateOutputType = {
-  tenantId: number | null
-}
-
 export type ConnectionMinAggregateOutputType = {
-  tenantId: number | null
+  tenantId: string | null
   id: string | null
   grantType: string | null
   clientId: string | null
@@ -46,7 +36,7 @@ export type ConnectionMinAggregateOutputType = {
 }
 
 export type ConnectionMaxAggregateOutputType = {
-  tenantId: number | null
+  tenantId: string | null
   id: string | null
   grantType: string | null
   clientId: string | null
@@ -68,14 +58,6 @@ export type ConnectionCountAggregateOutputType = {
   _all: number
 }
 
-
-export type ConnectionAvgAggregateInputType = {
-  tenantId?: true
-}
-
-export type ConnectionSumAggregateInputType = {
-  tenantId?: true
-}
 
 export type ConnectionMinAggregateInputType = {
   tenantId?: true
@@ -149,18 +131,6 @@ export type ConnectionAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ConnectionAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ConnectionSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ConnectionMinAggregateInputType
@@ -191,14 +161,12 @@ export type ConnectionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: ConnectionCountAggregateInputType | true
-  _avg?: ConnectionAvgAggregateInputType
-  _sum?: ConnectionSumAggregateInputType
   _min?: ConnectionMinAggregateInputType
   _max?: ConnectionMaxAggregateInputType
 }
 
 export type ConnectionGroupByOutputType = {
-  tenantId: number
+  tenantId: string
   id: string
   grantType: string
   clientId: string
@@ -207,8 +175,6 @@ export type ConnectionGroupByOutputType = {
   token: string
   tokenExpiresAt: Date
   _count: ConnectionCountAggregateOutputType | null
-  _avg: ConnectionAvgAggregateOutputType | null
-  _sum: ConnectionSumAggregateOutputType | null
   _min: ConnectionMinAggregateOutputType | null
   _max: ConnectionMaxAggregateOutputType | null
 }
@@ -232,8 +198,8 @@ export type ConnectionWhereInput = {
   AND?: Prisma.ConnectionWhereInput | Prisma.ConnectionWhereInput[]
   OR?: Prisma.ConnectionWhereInput[]
   NOT?: Prisma.ConnectionWhereInput | Prisma.ConnectionWhereInput[]
-  tenantId?: Prisma.IntFilter<"Connection"> | number
-  id?: Prisma.StringFilter<"Connection"> | string
+  tenantId?: Prisma.UuidFilter<"Connection"> | string
+  id?: Prisma.UuidFilter<"Connection"> | string
   grantType?: Prisma.StringFilter<"Connection"> | string
   clientId?: Prisma.UuidFilter<"Connection"> | string
   clientSecret?: Prisma.StringFilter<"Connection"> | string
@@ -260,8 +226,8 @@ export type ConnectionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ConnectionWhereInput | Prisma.ConnectionWhereInput[]
   OR?: Prisma.ConnectionWhereInput[]
   NOT?: Prisma.ConnectionWhereInput | Prisma.ConnectionWhereInput[]
-  tenantId?: Prisma.IntFilter<"Connection"> | number
-  id?: Prisma.StringFilter<"Connection"> | string
+  tenantId?: Prisma.UuidFilter<"Connection"> | string
+  id?: Prisma.UuidFilter<"Connection"> | string
   grantType?: Prisma.StringFilter<"Connection"> | string
   clientId?: Prisma.UuidFilter<"Connection"> | string
   clientSecret?: Prisma.StringFilter<"Connection"> | string
@@ -281,18 +247,16 @@ export type ConnectionOrderByWithAggregationInput = {
   token?: Prisma.SortOrder
   tokenExpiresAt?: Prisma.SortOrder
   _count?: Prisma.ConnectionCountOrderByAggregateInput
-  _avg?: Prisma.ConnectionAvgOrderByAggregateInput
   _max?: Prisma.ConnectionMaxOrderByAggregateInput
   _min?: Prisma.ConnectionMinOrderByAggregateInput
-  _sum?: Prisma.ConnectionSumOrderByAggregateInput
 }
 
 export type ConnectionScalarWhereWithAggregatesInput = {
   AND?: Prisma.ConnectionScalarWhereWithAggregatesInput | Prisma.ConnectionScalarWhereWithAggregatesInput[]
   OR?: Prisma.ConnectionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ConnectionScalarWhereWithAggregatesInput | Prisma.ConnectionScalarWhereWithAggregatesInput[]
-  tenantId?: Prisma.IntWithAggregatesFilter<"Connection"> | number
-  id?: Prisma.StringWithAggregatesFilter<"Connection"> | string
+  tenantId?: Prisma.UuidWithAggregatesFilter<"Connection"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"Connection"> | string
   grantType?: Prisma.StringWithAggregatesFilter<"Connection"> | string
   clientId?: Prisma.UuidWithAggregatesFilter<"Connection"> | string
   clientSecret?: Prisma.StringWithAggregatesFilter<"Connection"> | string
@@ -302,7 +266,7 @@ export type ConnectionScalarWhereWithAggregatesInput = {
 }
 
 export type ConnectionCreateInput = {
-  id?: string
+  id: string
   grantType: string
   clientId: string
   clientSecret: string
@@ -313,8 +277,8 @@ export type ConnectionCreateInput = {
 }
 
 export type ConnectionUncheckedCreateInput = {
-  tenantId: number
-  id?: string
+  tenantId: string
+  id: string
   grantType: string
   clientId: string
   clientSecret: string
@@ -335,7 +299,7 @@ export type ConnectionUpdateInput = {
 }
 
 export type ConnectionUncheckedUpdateInput = {
-  tenantId?: Prisma.IntFieldUpdateOperationsInput | number
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grantType?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -346,8 +310,8 @@ export type ConnectionUncheckedUpdateInput = {
 }
 
 export type ConnectionCreateManyInput = {
-  tenantId: number
-  id?: string
+  tenantId: string
+  id: string
   grantType: string
   clientId: string
   clientSecret: string
@@ -367,7 +331,7 @@ export type ConnectionUpdateManyMutationInput = {
 }
 
 export type ConnectionUncheckedUpdateManyInput = {
-  tenantId?: Prisma.IntFieldUpdateOperationsInput | number
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grantType?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -388,7 +352,7 @@ export type ConnectionOrderByRelationAggregateInput = {
 }
 
 export type ConnectionTenantIdIdCompoundUniqueInput = {
-  tenantId: number
+  tenantId: string
   id: string
 }
 
@@ -401,10 +365,6 @@ export type ConnectionCountOrderByAggregateInput = {
   scope?: Prisma.SortOrder
   token?: Prisma.SortOrder
   tokenExpiresAt?: Prisma.SortOrder
-}
-
-export type ConnectionAvgOrderByAggregateInput = {
-  tenantId?: Prisma.SortOrder
 }
 
 export type ConnectionMaxOrderByAggregateInput = {
@@ -427,10 +387,6 @@ export type ConnectionMinOrderByAggregateInput = {
   scope?: Prisma.SortOrder
   token?: Prisma.SortOrder
   tokenExpiresAt?: Prisma.SortOrder
-}
-
-export type ConnectionSumOrderByAggregateInput = {
-  tenantId?: Prisma.SortOrder
 }
 
 export type ConnectionCreateNestedManyWithoutTenantInput = {
@@ -476,7 +432,7 @@ export type ConnectionUncheckedUpdateManyWithoutTenantNestedInput = {
 }
 
 export type ConnectionCreateWithoutTenantInput = {
-  id?: string
+  id: string
   grantType: string
   clientId: string
   clientSecret: string
@@ -486,7 +442,7 @@ export type ConnectionCreateWithoutTenantInput = {
 }
 
 export type ConnectionUncheckedCreateWithoutTenantInput = {
-  id?: string
+  id: string
   grantType: string
   clientId: string
   clientSecret: string
@@ -525,8 +481,8 @@ export type ConnectionScalarWhereInput = {
   AND?: Prisma.ConnectionScalarWhereInput | Prisma.ConnectionScalarWhereInput[]
   OR?: Prisma.ConnectionScalarWhereInput[]
   NOT?: Prisma.ConnectionScalarWhereInput | Prisma.ConnectionScalarWhereInput[]
-  tenantId?: Prisma.IntFilter<"Connection"> | number
-  id?: Prisma.StringFilter<"Connection"> | string
+  tenantId?: Prisma.UuidFilter<"Connection"> | string
+  id?: Prisma.UuidFilter<"Connection"> | string
   grantType?: Prisma.StringFilter<"Connection"> | string
   clientId?: Prisma.UuidFilter<"Connection"> | string
   clientSecret?: Prisma.StringFilter<"Connection"> | string
@@ -536,7 +492,7 @@ export type ConnectionScalarWhereInput = {
 }
 
 export type ConnectionCreateManyTenantInput = {
-  id?: string
+  id: string
   grantType: string
   clientId: string
   clientSecret: string
@@ -641,7 +597,7 @@ export type $ConnectionPayload<ExtArgs extends runtime.Types.Extensions.Internal
     tenant: Prisma.$TenantPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    tenantId: number
+    tenantId: string
     id: string
     grantType: string
     clientId: string
@@ -1073,7 +1029,7 @@ export interface Prisma__ConnectionClient<T, Null = never, ExtArgs extends runti
  * Fields of the Connection model
  */
 export interface ConnectionFieldRefs {
-  readonly tenantId: Prisma.FieldRef<"Connection", 'Int'>
+  readonly tenantId: Prisma.FieldRef<"Connection", 'String'>
   readonly id: Prisma.FieldRef<"Connection", 'String'>
   readonly grantType: Prisma.FieldRef<"Connection", 'String'>
   readonly clientId: Prisma.FieldRef<"Connection", 'String'>

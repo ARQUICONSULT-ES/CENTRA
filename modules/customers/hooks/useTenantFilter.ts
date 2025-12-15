@@ -18,7 +18,7 @@ export function useTenantFilter(tenants: Tenant[]) {
       result = result.filter(
         (tenant) =>
           tenant.customerName.toLowerCase().includes(query) ||
-          tenant.id.toString().includes(query)
+          tenant.id.toLowerCase().includes(query)
       );
     }
 
@@ -30,7 +30,7 @@ export function useTenantFilter(tenants: Tenant[]) {
         case "name":
           return a.customerName.localeCompare(b.customerName);
         case "tenant":
-          return a.id - b.id;
+          return a.id.localeCompare(b.id);
         default:
           return 0;
       }

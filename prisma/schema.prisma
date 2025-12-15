@@ -15,10 +15,10 @@ datasource db {
 
 // Tabla principal: Tenants
 model Tenant {
-  id           Int           @id @default(autoincrement())
+  id           String        @id @db.Uuid
   customerName String        @db.VarChar(50)
-  createdAt    DateTime      @default(now())
-  modifiedAt   DateTime      @updatedAt
+  createdAt    DateTime
+  modifiedAt   DateTime
   environments Environment[]
   connections  Connection[]
 
@@ -27,7 +27,7 @@ model Tenant {
 
 // Tabla relacionada: Environments
 model Environment {
-  tenantId   Int
+  tenantId   String      @db.Uuid
   name       String      @db.VarChar(50)
   tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   extensions Extension[]
@@ -38,9 +38,9 @@ model Environment {
 
 // Tabla relacionada: Extensions
 model Extension {
-  tenantId        Int
+  tenantId        String      @db.Uuid
   environmentName String      @db.VarChar(50)
-  id              String      @default(uuid())
+  id              String      @db.Uuid
   name            String      @db.VarChar(50)
   version         String      @db.VarChar(50)
   publisher       String      @db.VarChar(50)
@@ -53,8 +53,8 @@ model Extension {
 
 // Tabla relacionada: Connections
 model Connection {
-  tenantId        Int
-  id              String   @default(uuid())
+  tenantId        String   @db.Uuid
+  id              String   @db.Uuid
   grantType       String   @db.VarChar(100)
   clientId        String   @db.Uuid
   clientSecret    String   @db.VarChar(1000)

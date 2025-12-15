@@ -20,29 +20,19 @@ export type TenantModel = runtime.Types.Result.DefaultSelection<Prisma.$TenantPa
 
 export type AggregateTenant = {
   _count: TenantCountAggregateOutputType | null
-  _avg: TenantAvgAggregateOutputType | null
-  _sum: TenantSumAggregateOutputType | null
   _min: TenantMinAggregateOutputType | null
   _max: TenantMaxAggregateOutputType | null
 }
 
-export type TenantAvgAggregateOutputType = {
-  id: number | null
-}
-
-export type TenantSumAggregateOutputType = {
-  id: number | null
-}
-
 export type TenantMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   customerName: string | null
   createdAt: Date | null
   modifiedAt: Date | null
 }
 
 export type TenantMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   customerName: string | null
   createdAt: Date | null
   modifiedAt: Date | null
@@ -56,14 +46,6 @@ export type TenantCountAggregateOutputType = {
   _all: number
 }
 
-
-export type TenantAvgAggregateInputType = {
-  id?: true
-}
-
-export type TenantSumAggregateInputType = {
-  id?: true
-}
 
 export type TenantMinAggregateInputType = {
   id?: true
@@ -125,18 +107,6 @@ export type TenantAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: TenantAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: TenantSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: TenantMinAggregateInputType
@@ -167,20 +137,16 @@ export type TenantGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   _count?: TenantCountAggregateInputType | true
-  _avg?: TenantAvgAggregateInputType
-  _sum?: TenantSumAggregateInputType
   _min?: TenantMinAggregateInputType
   _max?: TenantMaxAggregateInputType
 }
 
 export type TenantGroupByOutputType = {
-  id: number
+  id: string
   customerName: string
   createdAt: Date
   modifiedAt: Date
   _count: TenantCountAggregateOutputType | null
-  _avg: TenantAvgAggregateOutputType | null
-  _sum: TenantSumAggregateOutputType | null
   _min: TenantMinAggregateOutputType | null
   _max: TenantMaxAggregateOutputType | null
 }
@@ -204,7 +170,7 @@ export type TenantWhereInput = {
   AND?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
-  id?: Prisma.IntFilter<"Tenant"> | number
+  id?: Prisma.UuidFilter<"Tenant"> | string
   customerName?: Prisma.StringFilter<"Tenant"> | string
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   modifiedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
@@ -222,7 +188,7 @@ export type TenantOrderByWithRelationInput = {
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
@@ -239,40 +205,40 @@ export type TenantOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   modifiedAt?: Prisma.SortOrder
   _count?: Prisma.TenantCountOrderByAggregateInput
-  _avg?: Prisma.TenantAvgOrderByAggregateInput
   _max?: Prisma.TenantMaxOrderByAggregateInput
   _min?: Prisma.TenantMinOrderByAggregateInput
-  _sum?: Prisma.TenantSumOrderByAggregateInput
 }
 
 export type TenantScalarWhereWithAggregatesInput = {
   AND?: Prisma.TenantScalarWhereWithAggregatesInput | Prisma.TenantScalarWhereWithAggregatesInput[]
   OR?: Prisma.TenantScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TenantScalarWhereWithAggregatesInput | Prisma.TenantScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Tenant"> | number
+  id?: Prisma.UuidWithAggregatesFilter<"Tenant"> | string
   customerName?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
   modifiedAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
 }
 
 export type TenantCreateInput = {
+  id: string
   customerName: string
-  createdAt?: Date | string
-  modifiedAt?: Date | string
+  createdAt: Date | string
+  modifiedAt: Date | string
   environments?: Prisma.EnvironmentCreateNestedManyWithoutTenantInput
   connections?: Prisma.ConnectionCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
-  id?: number
+  id: string
   customerName: string
-  createdAt?: Date | string
-  modifiedAt?: Date | string
+  createdAt: Date | string
+  modifiedAt: Date | string
   environments?: Prisma.EnvironmentUncheckedCreateNestedManyWithoutTenantInput
   connections?: Prisma.ConnectionUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -281,7 +247,7 @@ export type TenantUpdateInput = {
 }
 
 export type TenantUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -290,20 +256,21 @@ export type TenantUncheckedUpdateInput = {
 }
 
 export type TenantCreateManyInput = {
-  id?: number
+  id: string
   customerName: string
-  createdAt?: Date | string
-  modifiedAt?: Date | string
+  createdAt: Date | string
+  modifiedAt: Date | string
 }
 
 export type TenantUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TenantUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -314,10 +281,6 @@ export type TenantCountOrderByAggregateInput = {
   customerName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   modifiedAt?: Prisma.SortOrder
-}
-
-export type TenantAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 export type TenantMaxOrderByAggregateInput = {
@@ -334,10 +297,6 @@ export type TenantMinOrderByAggregateInput = {
   modifiedAt?: Prisma.SortOrder
 }
 
-export type TenantSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-}
-
 export type TenantScalarRelationFilter = {
   is?: Prisma.TenantWhereInput
   isNot?: Prisma.TenantWhereInput
@@ -349,14 +308,6 @@ export type StringFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type TenantCreateNestedOneWithoutEnvironmentsInput = {
@@ -388,17 +339,18 @@ export type TenantUpdateOneRequiredWithoutConnectionsNestedInput = {
 }
 
 export type TenantCreateWithoutEnvironmentsInput = {
+  id: string
   customerName: string
-  createdAt?: Date | string
-  modifiedAt?: Date | string
+  createdAt: Date | string
+  modifiedAt: Date | string
   connections?: Prisma.ConnectionCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutEnvironmentsInput = {
-  id?: number
+  id: string
   customerName: string
-  createdAt?: Date | string
-  modifiedAt?: Date | string
+  createdAt: Date | string
+  modifiedAt: Date | string
   connections?: Prisma.ConnectionUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -419,6 +371,7 @@ export type TenantUpdateToOneWithWhereWithoutEnvironmentsInput = {
 }
 
 export type TenantUpdateWithoutEnvironmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -426,7 +379,7 @@ export type TenantUpdateWithoutEnvironmentsInput = {
 }
 
 export type TenantUncheckedUpdateWithoutEnvironmentsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -434,17 +387,18 @@ export type TenantUncheckedUpdateWithoutEnvironmentsInput = {
 }
 
 export type TenantCreateWithoutConnectionsInput = {
+  id: string
   customerName: string
-  createdAt?: Date | string
-  modifiedAt?: Date | string
+  createdAt: Date | string
+  modifiedAt: Date | string
   environments?: Prisma.EnvironmentCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutConnectionsInput = {
-  id?: number
+  id: string
   customerName: string
-  createdAt?: Date | string
-  modifiedAt?: Date | string
+  createdAt: Date | string
+  modifiedAt: Date | string
   environments?: Prisma.EnvironmentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -465,6 +419,7 @@ export type TenantUpdateToOneWithWhereWithoutConnectionsInput = {
 }
 
 export type TenantUpdateWithoutConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -472,7 +427,7 @@ export type TenantUpdateWithoutConnectionsInput = {
 }
 
 export type TenantUncheckedUpdateWithoutConnectionsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modifiedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -566,7 +521,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     connections: Prisma.$ConnectionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     customerName: string
     createdAt: Date
     modifiedAt: Date
@@ -995,7 +950,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
  * Fields of the Tenant model
  */
 export interface TenantFieldRefs {
-  readonly id: Prisma.FieldRef<"Tenant", 'Int'>
+  readonly id: Prisma.FieldRef<"Tenant", 'String'>
   readonly customerName: Prisma.FieldRef<"Tenant", 'String'>
   readonly createdAt: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly modifiedAt: Prisma.FieldRef<"Tenant", 'DateTime'>

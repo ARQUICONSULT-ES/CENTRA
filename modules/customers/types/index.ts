@@ -1,7 +1,7 @@
 // ==================== TENANT TYPES ====================
 
 export interface Tenant {
-  id: number;
+  id: string;
   customerName: string;
   createdAt: string | Date;
   modifiedAt: string | Date;

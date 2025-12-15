@@ -20,22 +20,12 @@ export type ExtensionModel = runtime.Types.Result.DefaultSelection<Prisma.$Exten
 
 export type AggregateExtension = {
   _count: ExtensionCountAggregateOutputType | null
-  _avg: ExtensionAvgAggregateOutputType | null
-  _sum: ExtensionSumAggregateOutputType | null
   _min: ExtensionMinAggregateOutputType | null
   _max: ExtensionMaxAggregateOutputType | null
 }
 
-export type ExtensionAvgAggregateOutputType = {
-  tenantId: number | null
-}
-
-export type ExtensionSumAggregateOutputType = {
-  tenantId: number | null
-}
-
 export type ExtensionMinAggregateOutputType = {
-  tenantId: number | null
+  tenantId: string | null
   environmentName: string | null
   id: string | null
   name: string | null
@@ -45,7 +35,7 @@ export type ExtensionMinAggregateOutputType = {
 }
 
 export type ExtensionMaxAggregateOutputType = {
-  tenantId: number | null
+  tenantId: string | null
   environmentName: string | null
   id: string | null
   name: string | null
@@ -65,14 +55,6 @@ export type ExtensionCountAggregateOutputType = {
   _all: number
 }
 
-
-export type ExtensionAvgAggregateInputType = {
-  tenantId?: true
-}
-
-export type ExtensionSumAggregateInputType = {
-  tenantId?: true
-}
 
 export type ExtensionMinAggregateInputType = {
   tenantId?: true
@@ -143,18 +125,6 @@ export type ExtensionAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ExtensionAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ExtensionSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ExtensionMinAggregateInputType
@@ -185,14 +155,12 @@ export type ExtensionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: ExtensionCountAggregateInputType | true
-  _avg?: ExtensionAvgAggregateInputType
-  _sum?: ExtensionSumAggregateInputType
   _min?: ExtensionMinAggregateInputType
   _max?: ExtensionMaxAggregateInputType
 }
 
 export type ExtensionGroupByOutputType = {
-  tenantId: number
+  tenantId: string
   environmentName: string
   id: string
   name: string
@@ -200,8 +168,6 @@ export type ExtensionGroupByOutputType = {
   publisher: string
   publishedAs: string
   _count: ExtensionCountAggregateOutputType | null
-  _avg: ExtensionAvgAggregateOutputType | null
-  _sum: ExtensionSumAggregateOutputType | null
   _min: ExtensionMinAggregateOutputType | null
   _max: ExtensionMaxAggregateOutputType | null
 }
@@ -225,9 +191,9 @@ export type ExtensionWhereInput = {
   AND?: Prisma.ExtensionWhereInput | Prisma.ExtensionWhereInput[]
   OR?: Prisma.ExtensionWhereInput[]
   NOT?: Prisma.ExtensionWhereInput | Prisma.ExtensionWhereInput[]
-  tenantId?: Prisma.IntFilter<"Extension"> | number
+  tenantId?: Prisma.UuidFilter<"Extension"> | string
   environmentName?: Prisma.StringFilter<"Extension"> | string
-  id?: Prisma.StringFilter<"Extension"> | string
+  id?: Prisma.UuidFilter<"Extension"> | string
   name?: Prisma.StringFilter<"Extension"> | string
   version?: Prisma.StringFilter<"Extension"> | string
   publisher?: Prisma.StringFilter<"Extension"> | string
@@ -251,9 +217,9 @@ export type ExtensionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ExtensionWhereInput | Prisma.ExtensionWhereInput[]
   OR?: Prisma.ExtensionWhereInput[]
   NOT?: Prisma.ExtensionWhereInput | Prisma.ExtensionWhereInput[]
-  tenantId?: Prisma.IntFilter<"Extension"> | number
+  tenantId?: Prisma.UuidFilter<"Extension"> | string
   environmentName?: Prisma.StringFilter<"Extension"> | string
-  id?: Prisma.StringFilter<"Extension"> | string
+  id?: Prisma.UuidFilter<"Extension"> | string
   name?: Prisma.StringFilter<"Extension"> | string
   version?: Prisma.StringFilter<"Extension"> | string
   publisher?: Prisma.StringFilter<"Extension"> | string
@@ -270,19 +236,17 @@ export type ExtensionOrderByWithAggregationInput = {
   publisher?: Prisma.SortOrder
   publishedAs?: Prisma.SortOrder
   _count?: Prisma.ExtensionCountOrderByAggregateInput
-  _avg?: Prisma.ExtensionAvgOrderByAggregateInput
   _max?: Prisma.ExtensionMaxOrderByAggregateInput
   _min?: Prisma.ExtensionMinOrderByAggregateInput
-  _sum?: Prisma.ExtensionSumOrderByAggregateInput
 }
 
 export type ExtensionScalarWhereWithAggregatesInput = {
   AND?: Prisma.ExtensionScalarWhereWithAggregatesInput | Prisma.ExtensionScalarWhereWithAggregatesInput[]
   OR?: Prisma.ExtensionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ExtensionScalarWhereWithAggregatesInput | Prisma.ExtensionScalarWhereWithAggregatesInput[]
-  tenantId?: Prisma.IntWithAggregatesFilter<"Extension"> | number
+  tenantId?: Prisma.UuidWithAggregatesFilter<"Extension"> | string
   environmentName?: Prisma.StringWithAggregatesFilter<"Extension"> | string
-  id?: Prisma.StringWithAggregatesFilter<"Extension"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"Extension"> | string
   name?: Prisma.StringWithAggregatesFilter<"Extension"> | string
   version?: Prisma.StringWithAggregatesFilter<"Extension"> | string
   publisher?: Prisma.StringWithAggregatesFilter<"Extension"> | string
@@ -290,7 +254,7 @@ export type ExtensionScalarWhereWithAggregatesInput = {
 }
 
 export type ExtensionCreateInput = {
-  id?: string
+  id: string
   name: string
   version: string
   publisher: string
@@ -299,9 +263,9 @@ export type ExtensionCreateInput = {
 }
 
 export type ExtensionUncheckedCreateInput = {
-  tenantId: number
+  tenantId: string
   environmentName: string
-  id?: string
+  id: string
   name: string
   version: string
   publisher: string
@@ -318,7 +282,7 @@ export type ExtensionUpdateInput = {
 }
 
 export type ExtensionUncheckedUpdateInput = {
-  tenantId?: Prisma.IntFieldUpdateOperationsInput | number
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   environmentName?: Prisma.StringFieldUpdateOperationsInput | string
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -328,9 +292,9 @@ export type ExtensionUncheckedUpdateInput = {
 }
 
 export type ExtensionCreateManyInput = {
-  tenantId: number
+  tenantId: string
   environmentName: string
-  id?: string
+  id: string
   name: string
   version: string
   publisher: string
@@ -346,7 +310,7 @@ export type ExtensionUpdateManyMutationInput = {
 }
 
 export type ExtensionUncheckedUpdateManyInput = {
-  tenantId?: Prisma.IntFieldUpdateOperationsInput | number
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   environmentName?: Prisma.StringFieldUpdateOperationsInput | string
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -366,7 +330,7 @@ export type ExtensionOrderByRelationAggregateInput = {
 }
 
 export type ExtensionTenantIdEnvironmentNameIdCompoundUniqueInput = {
-  tenantId: number
+  tenantId: string
   environmentName: string
   id: string
 }
@@ -379,10 +343,6 @@ export type ExtensionCountOrderByAggregateInput = {
   version?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
   publishedAs?: Prisma.SortOrder
-}
-
-export type ExtensionAvgOrderByAggregateInput = {
-  tenantId?: Prisma.SortOrder
 }
 
 export type ExtensionMaxOrderByAggregateInput = {
@@ -403,10 +363,6 @@ export type ExtensionMinOrderByAggregateInput = {
   version?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
   publishedAs?: Prisma.SortOrder
-}
-
-export type ExtensionSumOrderByAggregateInput = {
-  tenantId?: Prisma.SortOrder
 }
 
 export type ExtensionCreateNestedManyWithoutEnvironmentInput = {
@@ -452,7 +408,7 @@ export type ExtensionUncheckedUpdateManyWithoutEnvironmentNestedInput = {
 }
 
 export type ExtensionCreateWithoutEnvironmentInput = {
-  id?: string
+  id: string
   name: string
   version: string
   publisher: string
@@ -460,7 +416,7 @@ export type ExtensionCreateWithoutEnvironmentInput = {
 }
 
 export type ExtensionUncheckedCreateWithoutEnvironmentInput = {
-  id?: string
+  id: string
   name: string
   version: string
   publisher: string
@@ -497,9 +453,9 @@ export type ExtensionScalarWhereInput = {
   AND?: Prisma.ExtensionScalarWhereInput | Prisma.ExtensionScalarWhereInput[]
   OR?: Prisma.ExtensionScalarWhereInput[]
   NOT?: Prisma.ExtensionScalarWhereInput | Prisma.ExtensionScalarWhereInput[]
-  tenantId?: Prisma.IntFilter<"Extension"> | number
+  tenantId?: Prisma.UuidFilter<"Extension"> | string
   environmentName?: Prisma.StringFilter<"Extension"> | string
-  id?: Prisma.StringFilter<"Extension"> | string
+  id?: Prisma.UuidFilter<"Extension"> | string
   name?: Prisma.StringFilter<"Extension"> | string
   version?: Prisma.StringFilter<"Extension"> | string
   publisher?: Prisma.StringFilter<"Extension"> | string
@@ -507,7 +463,7 @@ export type ExtensionScalarWhereInput = {
 }
 
 export type ExtensionCreateManyEnvironmentInput = {
-  id?: string
+  id: string
   name: string
   version: string
   publisher: string
@@ -600,7 +556,7 @@ export type $ExtensionPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     environment: Prisma.$EnvironmentPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    tenantId: number
+    tenantId: string
     environmentName: string
     id: string
     name: string
@@ -1031,7 +987,7 @@ export interface Prisma__ExtensionClient<T, Null = never, ExtArgs extends runtim
  * Fields of the Extension model
  */
 export interface ExtensionFieldRefs {
-  readonly tenantId: Prisma.FieldRef<"Extension", 'Int'>
+  readonly tenantId: Prisma.FieldRef<"Extension", 'String'>
   readonly environmentName: Prisma.FieldRef<"Extension", 'String'>
   readonly id: Prisma.FieldRef<"Extension", 'String'>
   readonly name: Prisma.FieldRef<"Extension", 'String'>

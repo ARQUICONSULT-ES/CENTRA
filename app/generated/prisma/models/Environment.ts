@@ -20,27 +20,17 @@ export type EnvironmentModel = runtime.Types.Result.DefaultSelection<Prisma.$Env
 
 export type AggregateEnvironment = {
   _count: EnvironmentCountAggregateOutputType | null
-  _avg: EnvironmentAvgAggregateOutputType | null
-  _sum: EnvironmentSumAggregateOutputType | null
   _min: EnvironmentMinAggregateOutputType | null
   _max: EnvironmentMaxAggregateOutputType | null
 }
 
-export type EnvironmentAvgAggregateOutputType = {
-  tenantId: number | null
-}
-
-export type EnvironmentSumAggregateOutputType = {
-  tenantId: number | null
-}
-
 export type EnvironmentMinAggregateOutputType = {
-  tenantId: number | null
+  tenantId: string | null
   name: string | null
 }
 
 export type EnvironmentMaxAggregateOutputType = {
-  tenantId: number | null
+  tenantId: string | null
   name: string | null
 }
 
@@ -50,14 +40,6 @@ export type EnvironmentCountAggregateOutputType = {
   _all: number
 }
 
-
-export type EnvironmentAvgAggregateInputType = {
-  tenantId?: true
-}
-
-export type EnvironmentSumAggregateInputType = {
-  tenantId?: true
-}
 
 export type EnvironmentMinAggregateInputType = {
   tenantId?: true
@@ -113,18 +95,6 @@ export type EnvironmentAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: EnvironmentAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: EnvironmentSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: EnvironmentMinAggregateInputType
@@ -155,18 +125,14 @@ export type EnvironmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: EnvironmentCountAggregateInputType | true
-  _avg?: EnvironmentAvgAggregateInputType
-  _sum?: EnvironmentSumAggregateInputType
   _min?: EnvironmentMinAggregateInputType
   _max?: EnvironmentMaxAggregateInputType
 }
 
 export type EnvironmentGroupByOutputType = {
-  tenantId: number
+  tenantId: string
   name: string
   _count: EnvironmentCountAggregateOutputType | null
-  _avg: EnvironmentAvgAggregateOutputType | null
-  _sum: EnvironmentSumAggregateOutputType | null
   _min: EnvironmentMinAggregateOutputType | null
   _max: EnvironmentMaxAggregateOutputType | null
 }
@@ -190,7 +156,7 @@ export type EnvironmentWhereInput = {
   AND?: Prisma.EnvironmentWhereInput | Prisma.EnvironmentWhereInput[]
   OR?: Prisma.EnvironmentWhereInput[]
   NOT?: Prisma.EnvironmentWhereInput | Prisma.EnvironmentWhereInput[]
-  tenantId?: Prisma.IntFilter<"Environment"> | number
+  tenantId?: Prisma.UuidFilter<"Environment"> | string
   name?: Prisma.StringFilter<"Environment"> | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   extensions?: Prisma.ExtensionListRelationFilter
@@ -208,7 +174,7 @@ export type EnvironmentWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EnvironmentWhereInput | Prisma.EnvironmentWhereInput[]
   OR?: Prisma.EnvironmentWhereInput[]
   NOT?: Prisma.EnvironmentWhereInput | Prisma.EnvironmentWhereInput[]
-  tenantId?: Prisma.IntFilter<"Environment"> | number
+  tenantId?: Prisma.UuidFilter<"Environment"> | string
   name?: Prisma.StringFilter<"Environment"> | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   extensions?: Prisma.ExtensionListRelationFilter
@@ -218,17 +184,15 @@ export type EnvironmentOrderByWithAggregationInput = {
   tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   _count?: Prisma.EnvironmentCountOrderByAggregateInput
-  _avg?: Prisma.EnvironmentAvgOrderByAggregateInput
   _max?: Prisma.EnvironmentMaxOrderByAggregateInput
   _min?: Prisma.EnvironmentMinOrderByAggregateInput
-  _sum?: Prisma.EnvironmentSumOrderByAggregateInput
 }
 
 export type EnvironmentScalarWhereWithAggregatesInput = {
   AND?: Prisma.EnvironmentScalarWhereWithAggregatesInput | Prisma.EnvironmentScalarWhereWithAggregatesInput[]
   OR?: Prisma.EnvironmentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EnvironmentScalarWhereWithAggregatesInput | Prisma.EnvironmentScalarWhereWithAggregatesInput[]
-  tenantId?: Prisma.IntWithAggregatesFilter<"Environment"> | number
+  tenantId?: Prisma.UuidWithAggregatesFilter<"Environment"> | string
   name?: Prisma.StringWithAggregatesFilter<"Environment"> | string
 }
 
@@ -239,7 +203,7 @@ export type EnvironmentCreateInput = {
 }
 
 export type EnvironmentUncheckedCreateInput = {
-  tenantId: number
+  tenantId: string
   name: string
   extensions?: Prisma.ExtensionUncheckedCreateNestedManyWithoutEnvironmentInput
 }
@@ -251,13 +215,13 @@ export type EnvironmentUpdateInput = {
 }
 
 export type EnvironmentUncheckedUpdateInput = {
-  tenantId?: Prisma.IntFieldUpdateOperationsInput | number
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   extensions?: Prisma.ExtensionUncheckedUpdateManyWithoutEnvironmentNestedInput
 }
 
 export type EnvironmentCreateManyInput = {
-  tenantId: number
+  tenantId: string
   name: string
 }
 
@@ -266,7 +230,7 @@ export type EnvironmentUpdateManyMutationInput = {
 }
 
 export type EnvironmentUncheckedUpdateManyInput = {
-  tenantId?: Prisma.IntFieldUpdateOperationsInput | number
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -281,17 +245,13 @@ export type EnvironmentOrderByRelationAggregateInput = {
 }
 
 export type EnvironmentTenantIdNameCompoundUniqueInput = {
-  tenantId: number
+  tenantId: string
   name: string
 }
 
 export type EnvironmentCountOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-}
-
-export type EnvironmentAvgOrderByAggregateInput = {
-  tenantId?: Prisma.SortOrder
 }
 
 export type EnvironmentMaxOrderByAggregateInput = {
@@ -302,10 +262,6 @@ export type EnvironmentMaxOrderByAggregateInput = {
 export type EnvironmentMinOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-}
-
-export type EnvironmentSumOrderByAggregateInput = {
-  tenantId?: Prisma.SortOrder
 }
 
 export type EnvironmentScalarRelationFilter = {
@@ -409,7 +365,7 @@ export type EnvironmentScalarWhereInput = {
   AND?: Prisma.EnvironmentScalarWhereInput | Prisma.EnvironmentScalarWhereInput[]
   OR?: Prisma.EnvironmentScalarWhereInput[]
   NOT?: Prisma.EnvironmentScalarWhereInput | Prisma.EnvironmentScalarWhereInput[]
-  tenantId?: Prisma.IntFilter<"Environment"> | number
+  tenantId?: Prisma.UuidFilter<"Environment"> | string
   name?: Prisma.StringFilter<"Environment"> | string
 }
 
@@ -419,7 +375,7 @@ export type EnvironmentCreateWithoutExtensionsInput = {
 }
 
 export type EnvironmentUncheckedCreateWithoutExtensionsInput = {
-  tenantId: number
+  tenantId: string
   name: string
 }
 
@@ -445,7 +401,7 @@ export type EnvironmentUpdateWithoutExtensionsInput = {
 }
 
 export type EnvironmentUncheckedUpdateWithoutExtensionsInput = {
-  tenantId?: Prisma.IntFieldUpdateOperationsInput | number
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -543,7 +499,7 @@ export type $EnvironmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     extensions: Prisma.$ExtensionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    tenantId: number
+    tenantId: string
     name: string
   }, ExtArgs["result"]["environment"]>
   composites: {}
@@ -970,7 +926,7 @@ export interface Prisma__EnvironmentClient<T, Null = never, ExtArgs extends runt
  * Fields of the Environment model
  */
 export interface EnvironmentFieldRefs {
-  readonly tenantId: Prisma.FieldRef<"Environment", 'Int'>
+  readonly tenantId: Prisma.FieldRef<"Environment", 'String'>
   readonly name: Prisma.FieldRef<"Environment", 'String'>
 }
     

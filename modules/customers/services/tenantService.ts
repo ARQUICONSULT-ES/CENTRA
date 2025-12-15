@@ -24,7 +24,7 @@ export async function fetchTenants(): Promise<Tenant[]> {
 /**
  * Obtiene un tenant por ID
  */
-export async function fetchTenantById(id: number): Promise<Tenant | null> {
+export async function fetchTenantById(id: string): Promise<Tenant | null> {
   try {
     const response = await fetch(`${API_BASE}/tenants/${id}`);
     
