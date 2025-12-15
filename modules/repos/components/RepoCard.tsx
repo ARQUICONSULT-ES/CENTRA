@@ -7,13 +7,12 @@ import { DependenciesModal } from "./DependenciesModal";
 import type { 
   WorkflowStatus, 
   ReleaseInfo, 
-  RepoExtraInfo, 
   RepoCardProps, 
   Commit 
 } from "../types";
 import { languageColors } from "../types";
-import { fetchWorkflowStatus as fetchWorkflowStatusService, triggerWorkflow } from "../services/workflowService";
-import { fetchLatestRelease as fetchLatestReleaseService, fetchCompareCommits } from "../services/releaseService";
+import { useWorkflow } from "../hooks/useWorkflow";
+import { useRelease } from "../hooks/useRelease";
 import { getNextMinorVersion, getRelativeTime } from "../services/utils";
 
 export function RepoCard({ 
@@ -23,20 +22,10 @@ export function RepoCard({
   isLoadingRelease: externalIsLoadingRelease = false,
   allRepos = [] 
 }: RepoCardProps) {
-  const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus | null>(
-    preloadedInfo?.workflow ?? null
-  );
-  const [latestRelease, setLatestRelease] = useState<ReleaseInfo | null>(
-    preloadedInfo?.release ?? null
-  );
-  // Si hay datos pre-cargados o se debe esperar el batch, no mostrar loading
-  const [isLoading, setIsLoading] = useState(!preloadedInfo && !skipIndividualFetch);
+  // Estados de UI local
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isUpdatingAlGo, setIsUpdatingAlGo] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
-  const [releaseCommits, setReleaseCommits] = useState<Commit[]>([]);
-  const [isLoadingCommits, setIsLoadingCommits] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [successMessage, setSuccessMessage] = useState("Workflow iniciado correctamente");
   const [countdown, setCountdown] = useState(3);
@@ -44,21 +33,24 @@ export function RepoCard({
   const [isCreatingRelease, setIsCreatingRelease] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Actualizar estados cuando llegan los datos pre-cargados
-  useEffect(() => {
-    if (preloadedInfo) {
-      setWorkflowStatus(preloadedInfo.workflow);
-      setLatestRelease(preloadedInfo.release);
-      setIsLoading(false);
-    }
-  }, [preloadedInfo]);
+  // Hooks personalizados para workflow y release
+  const workflowHook = useWorkflow();
+  const releaseHook = useRelease();
 
+  // Estados derivados de los hooks o preloadedInfo
+  const workflowStatus: WorkflowStatus | null = preloadedInfo?.workflow ?? workflowHook.workflowStatus;
+  const latestRelease: ReleaseInfo | null = preloadedInfo?.release ?? releaseHook.latestRelease;
+  const isLoading = !preloadedInfo && !skipIndividualFetch && (workflowHook.isLoading || releaseHook.isLoading);
+  const isLoadingCommits = releaseHook.isLoadingCommits;
+  const releaseCommits: Commit[] = releaseHook.commits;
+  const isUpdatingAlGo = workflowHook.isTriggering;
+
+  // Cargar datos individuales si no hay preloadedInfo y no se debe esperar el batch
   useEffect(() => {
-    // Solo hacer fetch si no hay datos pre-cargados Y no se debe esperar el batch
     if (!preloadedInfo && !skipIndividualFetch) {
       const [owner, repoName] = repo.full_name.split("/");
-      fetchWorkflowStatusService(owner, repoName).then(setWorkflowStatus).finally(() => setIsLoading(false));
-      fetchLatestReleaseService(owner, repoName).then(setLatestRelease);
+      workflowHook.fetchStatus(owner, repoName);
+      releaseHook.fetchLatest(owner, repoName);
     }
   }, [repo.full_name, preloadedInfo, skipIndividualFetch]);
 
@@ -75,27 +67,22 @@ export function RepoCard({
 
   const handleUpdateAlGo = async () => {
     setShowConfirmModal(false);
-    setIsUpdatingAlGo(true);
     setIsMenuOpen(false);
     
-    try {
-      const [owner, repoName] = repo.full_name.split("/");
-      const result = await triggerWorkflow({
-        owner,
-        repo: repoName,
-        workflow: "UpdateGitHubGoSystemFiles.yaml",
-        ref: "main",
-        inputs: {
-          templateUrl: "https://github.com/ARQUICONSULT-ES/AL-Go@main",
-          downloadLatest: "true",
-          directCommit: "false",
-        },
-      });
+    const [owner, repoName] = repo.full_name.split("/");
+    const result = await workflowHook.trigger({
+      owner,
+      repo: repoName,
+      workflow: "UpdateGitHubGoSystemFiles.yaml",
+      ref: "main",
+      inputs: {
+        templateUrl: "https://github.com/ARQUICONSULT-ES/AL-Go@main",
+        downloadLatest: "true",
+        directCommit: "false",
+      },
+    });
 
-      if (!result.success) {
-        throw new Error(result.error || "Error al ejecutar workflow");
-      }
-
+    if (result.success) {
       // Mostrar banner y abrir ventana después de 3 segundos
       setSuccessMessage("Workflow de AL-Go iniciado correctamente");
       setShowSuccessBanner(true);
@@ -109,16 +96,11 @@ export function RepoCard({
       }, 3000);
 
       // Refrescar el estado del workflow después de un momento
-      setTimeout(async () => {
-        const status = await fetchWorkflowStatusService(owner, repoName);
-        setWorkflowStatus(status);
+      setTimeout(() => {
+        workflowHook.fetchStatus(owner, repoName);
       }, 2000);
-
-    } catch (error) {
-      console.error("Error triggering workflow:", error);
-      alert(error instanceof Error ? error.message : "Error al ejecutar workflow");
-    } finally {
-      setIsUpdatingAlGo(false);
+    } else {
+      alert(result.error || "Error al ejecutar workflow");
     }
   };
 
@@ -129,46 +111,32 @@ export function RepoCard({
 
   const openReleaseModal = async () => {
     setShowReleaseModal(true);
-    setIsLoadingCommits(true);
-    setReleaseCommits([]);
-
-    try {
-      const [owner, repoName] = repo.full_name.split("/");
-      const base = latestRelease?.tag_name || "";
-      
-      const commits = await fetchCompareCommits(owner, repoName, base, "main");
-      setReleaseCommits(commits);
-    } catch (error) {
-      console.error("Error fetching commits:", error);
-    } finally {
-      setIsLoadingCommits(false);
-    }
+    
+    const [owner, repoName] = repo.full_name.split("/");
+    const base = latestRelease?.tag_name || "";
+    await releaseHook.fetchCommits(owner, repoName, base, "main");
   };
 
   const handleCreateRelease = async () => {
     setIsCreatingRelease(true);
 
-    try {
-      const [owner, repoName] = repo.full_name.split("/");
-      const newVersion = getNextMinorVersion(latestRelease?.tag_name ?? null);
-      
-      const result = await triggerWorkflow({
-        owner,
-        repo: repoName,
-        workflow: "CreateRelease.yaml",
-        ref: "main",
-        inputs: {
-          useGhTokenWorkflow: "true",
-          updateVersionNumber: "+0.1",
-          name: newVersion,
-          tag: `${newVersion}.0`,
-        },
-      });
+    const [owner, repoName] = repo.full_name.split("/");
+    const newVersion = getNextMinorVersion(latestRelease?.tag_name ?? null);
+    
+    const result = await workflowHook.trigger({
+      owner,
+      repo: repoName,
+      workflow: "CreateRelease.yaml",
+      ref: "main",
+      inputs: {
+        useGhTokenWorkflow: "true",
+        updateVersionNumber: "+0.1",
+        name: newVersion,
+        tag: `${newVersion}.0`,
+      },
+    });
 
-      if (!result.success) {
-        throw new Error(result.error || "Error al crear release");
-      }
-
+    if (result.success) {
       // Cerrar modal de release
       setShowReleaseModal(false);
 
@@ -184,21 +152,16 @@ export function RepoCard({
         window.open(`https://github.com/${repo.full_name}/actions`, "_blank");
       }, 3000);
 
-      // Refrescar el estado del workflow después de un momento
-      setTimeout(async () => {
-        const [owner, repoName] = repo.full_name.split("/");
-        const status = await fetchWorkflowStatusService(owner, repoName);
-        const release = await fetchLatestReleaseService(owner, repoName);
-        setWorkflowStatus(status);
-        setLatestRelease(release);
+      // Refrescar el estado del workflow y release después de un momento
+      setTimeout(() => {
+        workflowHook.fetchStatus(owner, repoName);
+        releaseHook.fetchLatest(owner, repoName);
       }, 2000);
-
-    } catch (error) {
-      console.error("Error creating release:", error);
-      alert(error instanceof Error ? error.message : "Error al crear release");
-    } finally {
-      setIsCreatingRelease(false);
+    } else {
+      alert(result.error || "Error al crear release");
     }
+    
+    setIsCreatingRelease(false);
   };
 
   // Función para validar si se puede crear una release

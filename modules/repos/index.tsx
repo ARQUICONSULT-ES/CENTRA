@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import { RepoList } from "./components/RepoList";
-import { GitHubRepository } from "@/types/github";
 import type { RepoListHandle } from "./types";
-
-type SortOption = "updated" | "name";
+import { useRepos } from "./hooks/useRepos";
+import { useRepoFilter } from "./hooks/useRepoFilter";
 
 function SkeletonCard() {
   return (
@@ -25,74 +23,23 @@ function SkeletonCard() {
 }
 
 export function ReposPage() {
-  const [repos, setRepos] = useState<GitHubRepository[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("updated");
-  const [isLoadingCICD, setIsLoadingCICD] = useState(false);
+  const { repos, isLoading, error, fetchRepos } = useRepos();
+  const { 
+    filteredRepos: filteredAndSortedRepos, 
+    searchQuery, 
+    setSearchQuery, 
+    sortBy, 
+    setSortBy 
+  } = useRepoFilter(repos);
   const repoListRef = useRef<RepoListHandle>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    fetchRepos();
-  }, []);
-
-  const fetchRepos = async () => {
-    try {
-      const res = await fetch("/api/github/repos");
-      
-      if (res.status === 401) {
-        router.push("/");
-        return;
-      }
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Error al cargar repositorios");
-      }
-
-      const data = await res.json();
-      setRepos(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleLoadCICD = async () => {
     if (repoListRef.current) {
-      setIsLoadingCICD(true);
       await repoListRef.current.fetchWorkflows();
-      setIsLoadingCICD(false);
     }
   };
 
-  const filteredAndSortedRepos = useMemo(() => {
-    let result = [...repos];
-
-    // Filtrar por nombre (espacios se convierten en guiones)
-    if (searchQuery.trim()) {
-      const normalizedQuery = searchQuery.trim().toLowerCase().replace(/\s+/g, "-");
-      result = result.filter((repo) =>
-        repo.name.toLowerCase().includes(normalizedQuery)
-      );
-    }
-
-    // Ordenar
-    result.sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "updated":
-        default:
-          return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-      }
-    });
-
-    return result;
-  }, [repos, searchQuery, sortBy]);
+  const isLoadingCICD = repoListRef.current?.isLoadingWorkflows ?? false;
 
   if (isLoading) {
     return (
@@ -142,11 +89,7 @@ export function ReposPage() {
           {error}
         </p>
         <button
-          onClick={() => {
-            setError(null);
-            setIsLoading(true);
-            fetchRepos();
-          }}
+          onClick={fetchRepos}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
           Reintentar
@@ -269,69 +212,3 @@ export function ReposPage() {
     </div>
   );
 }
-
-// ==================== RE-EXPORTS ====================
-
-// Components
-export { RepoList } from "./components/RepoList";
-export { RepoCard } from "./components/RepoCard";
-export { DependenciesModal } from "./components/DependenciesModal";
-
-// Types
-export type {
-  WorkflowStatus,
-  ReleaseInfo,
-  RepoExtraInfo,
-  RepoCardProps,
-  Commit,
-  RepoListProps,
-  RepoListHandle,
-  AppDependencyProbingPath,
-  FileDependency,
-  AppDependency,
-  AppFileManifestDependency,
-  AppFileManifest,
-  AppFileDependencyInfo,
-  MissingDependencyInfo,
-  MissingFileDependencyInfo,
-  DependencyTreeNode,
-  RepoDependencies,
-  DependenciesModalProps,
-  SaveStep,
-  AddRepoModalProps,
-  AddFileModalProps,
-} from "./types";
-
-export { languageColors } from "./types";
-
-// Services
-export {
-  fetchWorkflowStatus,
-  fetchBatchWorkflows,
-  triggerWorkflow,
-} from "./services/workflowService";
-
-export {
-  fetchLatestRelease,
-  fetchBatchReleases,
-  fetchCompareCommits,
-} from "./services/releaseService";
-
-export {
-  fetchFileContent,
-  fetchBranches,
-  fetchFileDependencies,
-  fetchRepoDependencies,
-  analyzeAppFile,
-  updateSettings,
-  uploadDependency,
-  deleteDependency,
-} from "./services/dependenciesService";
-
-export {
-  getNextMinorVersion,
-  getRelativeTime,
-  formatFileSize,
-  parseRepoUrl,
-  getRepoName,
-} from "./services/utils";
