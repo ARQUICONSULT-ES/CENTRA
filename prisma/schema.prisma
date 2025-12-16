@@ -17,6 +17,7 @@ datasource db {
 model Customer {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   customerName String   @db.VarChar(50)
+  imageBase64  String?  @db.Text
   tenants      Tenant[]
 
   @@map("customers")

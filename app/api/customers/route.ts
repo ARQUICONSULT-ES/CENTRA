@@ -24,7 +24,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { customerName } = body;
+    const { customerName, imageBase64 } = body;
 
     if (!customerName || customerName.trim() === "") {
       return NextResponse.json(
@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
     const customer = await prisma.customer.create({
       data: {
         customerName: customerName.trim(),
+        imageBase64: imageBase64 || null,
       },
     });
 

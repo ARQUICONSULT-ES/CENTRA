@@ -17,13 +17,33 @@ export function CustomerCard({ customer, onEdit }: CustomerCardProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-3 hover:shadow-lg transition-shadow">
-      {/* Header con nombre y menú */}
-      <div className="flex items-start justify-between gap-2">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+      {/* Header con nombre, imagen y menú */}
+      <div className="p-4 flex items-start gap-3">
+        {/* Imagen del cliente */}
+        <div className="flex-shrink-0">
+          {customer.imageBase64 ? (
+            <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800">
+              <img
+                src={customer.imageBase64}
+                alt={customer.customerName}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="w-16 h-16 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+              <svg className="w-8 h-8 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+          )}
+        </div>
+
+        {/* Información del cliente */}
         <div className="flex-1 min-w-0">
           <button
             onClick={handleEdit}
-            className="font-semibold text-gray-900 dark:text-white text-sm truncate text-left hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="font-semibold text-gray-900 dark:text-white text-sm truncate text-left hover:text-blue-600 dark:hover:text-blue-400 transition-colors block w-full"
           >
             {customer.customerName}
           </button>

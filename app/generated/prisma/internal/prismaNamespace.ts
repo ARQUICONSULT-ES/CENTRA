@@ -744,7 +744,8 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const CustomerScalarFieldEnum = {
   id: 'id',
-  customerName: 'customerName'
+  customerName: 'customerName',
+  imageBase64: 'imageBase64'
 } as const
 
 export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]

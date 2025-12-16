@@ -41,7 +41,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { customerName } = body;
+    const { customerName, imageBase64 } = body;
 
     if (!customerName || customerName.trim() === "") {
       return NextResponse.json(
@@ -54,6 +54,7 @@ export async function PUT(
       where: { id },
       data: {
         customerName: customerName.trim(),
+        imageBase64: imageBase64 !== undefined ? imageBase64 : undefined,
       },
     });
 

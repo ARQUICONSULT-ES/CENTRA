@@ -27,16 +27,19 @@ export type AggregateCustomer = {
 export type CustomerMinAggregateOutputType = {
   id: string | null
   customerName: string | null
+  imageBase64: string | null
 }
 
 export type CustomerMaxAggregateOutputType = {
   id: string | null
   customerName: string | null
+  imageBase64: string | null
 }
 
 export type CustomerCountAggregateOutputType = {
   id: number
   customerName: number
+  imageBase64: number
   _all: number
 }
 
@@ -44,16 +47,19 @@ export type CustomerCountAggregateOutputType = {
 export type CustomerMinAggregateInputType = {
   id?: true
   customerName?: true
+  imageBase64?: true
 }
 
 export type CustomerMaxAggregateInputType = {
   id?: true
   customerName?: true
+  imageBase64?: true
 }
 
 export type CustomerCountAggregateInputType = {
   id?: true
   customerName?: true
+  imageBase64?: true
   _all?: true
 }
 
@@ -132,6 +138,7 @@ export type CustomerGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type CustomerGroupByOutputType = {
   id: string
   customerName: string
+  imageBase64: string | null
   _count: CustomerCountAggregateOutputType | null
   _min: CustomerMinAggregateOutputType | null
   _max: CustomerMaxAggregateOutputType | null
@@ -158,12 +165,14 @@ export type CustomerWhereInput = {
   NOT?: Prisma.CustomerWhereInput | Prisma.CustomerWhereInput[]
   id?: Prisma.UuidFilter<"Customer"> | string
   customerName?: Prisma.StringFilter<"Customer"> | string
+  imageBase64?: Prisma.StringNullableFilter<"Customer"> | string | null
   tenants?: Prisma.TenantListRelationFilter
 }
 
 export type CustomerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
+  imageBase64?: Prisma.SortOrderInput | Prisma.SortOrder
   tenants?: Prisma.TenantOrderByRelationAggregateInput
 }
 
@@ -173,12 +182,14 @@ export type CustomerWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CustomerWhereInput[]
   NOT?: Prisma.CustomerWhereInput | Prisma.CustomerWhereInput[]
   customerName?: Prisma.StringFilter<"Customer"> | string
+  imageBase64?: Prisma.StringNullableFilter<"Customer"> | string | null
   tenants?: Prisma.TenantListRelationFilter
 }, "id">
 
 export type CustomerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
+  imageBase64?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CustomerCountOrderByAggregateInput
   _max?: Prisma.CustomerMaxOrderByAggregateInput
   _min?: Prisma.CustomerMinOrderByAggregateInput
@@ -190,60 +201,71 @@ export type CustomerScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CustomerScalarWhereWithAggregatesInput | Prisma.CustomerScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Customer"> | string
   customerName?: Prisma.StringWithAggregatesFilter<"Customer"> | string
+  imageBase64?: Prisma.StringNullableWithAggregatesFilter<"Customer"> | string | null
 }
 
 export type CustomerCreateInput = {
   id?: string
   customerName: string
+  imageBase64?: string | null
   tenants?: Prisma.TenantCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUncheckedCreateInput = {
   id?: string
   customerName: string
+  imageBase64?: string | null
   tenants?: Prisma.TenantUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  imageBase64?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenants?: Prisma.TenantUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  imageBase64?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenants?: Prisma.TenantUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerCreateManyInput = {
   id?: string
   customerName: string
+  imageBase64?: string | null
 }
 
 export type CustomerUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  imageBase64?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CustomerUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  imageBase64?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CustomerCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
+  imageBase64?: Prisma.SortOrder
 }
 
 export type CustomerMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
+  imageBase64?: Prisma.SortOrder
 }
 
 export type CustomerMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
+  imageBase64?: Prisma.SortOrder
 }
 
 export type CustomerScalarRelationFilter = {
@@ -253,6 +275,10 @@ export type CustomerScalarRelationFilter = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type CustomerCreateNestedOneWithoutTenantsInput = {
@@ -272,11 +298,13 @@ export type CustomerUpdateOneRequiredWithoutTenantsNestedInput = {
 export type CustomerCreateWithoutTenantsInput = {
   id?: string
   customerName: string
+  imageBase64?: string | null
 }
 
 export type CustomerUncheckedCreateWithoutTenantsInput = {
   id?: string
   customerName: string
+  imageBase64?: string | null
 }
 
 export type CustomerCreateOrConnectWithoutTenantsInput = {
@@ -298,11 +326,13 @@ export type CustomerUpdateToOneWithWhereWithoutTenantsInput = {
 export type CustomerUpdateWithoutTenantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  imageBase64?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CustomerUncheckedUpdateWithoutTenantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  imageBase64?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -339,6 +369,7 @@ export type CustomerCountOutputTypeCountTenantsArgs<ExtArgs extends runtime.Type
 export type CustomerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   customerName?: boolean
+  imageBase64?: boolean
   tenants?: boolean | Prisma.Customer$tenantsArgs<ExtArgs>
   _count?: boolean | Prisma.CustomerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["customer"]>
@@ -346,19 +377,22 @@ export type CustomerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type CustomerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   customerName?: boolean
+  imageBase64?: boolean
 }, ExtArgs["result"]["customer"]>
 
 export type CustomerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   customerName?: boolean
+  imageBase64?: boolean
 }, ExtArgs["result"]["customer"]>
 
 export type CustomerSelectScalar = {
   id?: boolean
   customerName?: boolean
+  imageBase64?: boolean
 }
 
-export type CustomerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerName", ExtArgs["result"]["customer"]>
+export type CustomerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerName" | "imageBase64", ExtArgs["result"]["customer"]>
 export type CustomerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenants?: boolean | Prisma.Customer$tenantsArgs<ExtArgs>
   _count?: boolean | Prisma.CustomerCountOutputTypeDefaultArgs<ExtArgs>
@@ -374,6 +408,7 @@ export type $CustomerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     customerName: string
+    imageBase64: string | null
   }, ExtArgs["result"]["customer"]>
   composites: {}
 }
@@ -800,6 +835,7 @@ export interface Prisma__CustomerClient<T, Null = never, ExtArgs extends runtime
 export interface CustomerFieldRefs {
   readonly id: Prisma.FieldRef<"Customer", 'String'>
   readonly customerName: Prisma.FieldRef<"Customer", 'String'>
+  readonly imageBase64: Prisma.FieldRef<"Customer", 'String'>
 }
     
 
