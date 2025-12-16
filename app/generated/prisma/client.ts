@@ -54,8 +54,3 @@ export type Environment = Prisma.EnvironmentModel
  * 
  */
 export type Extension = Prisma.ExtensionModel
-/**
- * Model Connection
- * 
- */
-export type Connection = Prisma.ConnectionModel

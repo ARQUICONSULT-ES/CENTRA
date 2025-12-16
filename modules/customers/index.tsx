@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { TenantList } from "./components/TenantList";
-import type { TenantListHandle } from "./types";
+import TenantFormModal from "./components/TenantFormModal";
+import type { TenantListHandle, Tenant } from "./types";
 import { useTenants } from "./hooks/useTenants";
 import { useTenantFilter } from "./hooks/useTenantFilter";
 
@@ -38,11 +39,44 @@ export function TenantsPage() {
     setSortBy,
   } = useTenantFilter(tenants);
   const tenantListRef = useRef<TenantListHandle>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTenant, setSelectedTenant] = useState<Tenant | undefined>(undefined);
 
   const handleRefresh = async () => {
     if (tenantListRef.current) {
       await tenantListRef.current.refreshTenants();
     }
+    await fetchTenants();
+  };
+
+  const handleCreateTenant = () => {
+    setSelectedTenant(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditTenant = async (tenant: Tenant) => {
+    try {
+      // Cargar el tenant completo con su conexión
+      const response = await fetch(`/api/customers/tenants/${tenant.id}`);
+      if (response.ok) {
+        const fullTenant = await response.json();
+        setSelectedTenant(fullTenant);
+      } else {
+        setSelectedTenant(tenant);
+      }
+    } catch (error) {
+      console.error("Error loading tenant:", error);
+      setSelectedTenant(tenant);
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedTenant(undefined);
+  };
+
+  const handleSaveTenant = async () => {
     await fetchTenants();
   };
 
@@ -226,12 +260,41 @@ export function TenantsPage() {
             )}
             Actualizar
           </button>
+
+          <button
+            onClick={handleCreateTenant}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-green-600 hover:bg-green-500 rounded-lg transition-colors whitespace-nowrap"
+            title="Crear nuevo tenant"
+          >
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Crear Tenant
+          </button>
         </div>
       </div>
 
+      {/* Modal de creación/edición */}
+      <TenantFormModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        tenant={selectedTenant}
+        onSave={handleSaveTenant}
+      />
+
       {/* Lista de tenants */}
       {filteredTenants.length > 0 ? (
-        <TenantList ref={tenantListRef} tenants={filteredTenants} />
+        <TenantList ref={tenantListRef} tenants={filteredTenants} onEdit={handleEditTenant} />
       ) : (
         <div className="text-center py-12">
           <svg

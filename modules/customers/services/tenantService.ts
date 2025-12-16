@@ -72,7 +72,7 @@ export async function createTenant(customerName: string): Promise<Tenant> {
  * Actualiza un tenant existente
  */
 export async function updateTenant(
-  id: number,
+  id: string,
   customerName: string
 ): Promise<Tenant> {
   try {
@@ -99,7 +99,7 @@ export async function updateTenant(
 /**
  * Elimina un tenant
  */
-export async function deleteTenant(id: number): Promise<void> {
+export async function deleteTenant(id: string): Promise<void> {
   try {
     const response = await fetch(`${API_BASE}/tenants/${id}`, {
       method: 'DELETE',

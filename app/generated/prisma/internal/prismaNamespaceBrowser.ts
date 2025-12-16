@@ -53,8 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Tenant: 'Tenant',
   Environment: 'Environment',
-  Extension: 'Extension',
-  Connection: 'Connection'
+  Extension: 'Extension'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -77,7 +76,14 @@ export const TenantScalarFieldEnum = {
   id: 'id',
   customerName: 'customerName',
   createdAt: 'createdAt',
-  modifiedAt: 'modifiedAt'
+  modifiedAt: 'modifiedAt',
+  connectionId: 'connectionId',
+  grantType: 'grantType',
+  clientId: 'clientId',
+  clientSecret: 'clientSecret',
+  scope: 'scope',
+  token: 'token',
+  tokenExpiresAt: 'tokenExpiresAt'
 } as const
 
 export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
@@ -104,20 +110,6 @@ export const ExtensionScalarFieldEnum = {
 export type ExtensionScalarFieldEnum = (typeof ExtensionScalarFieldEnum)[keyof typeof ExtensionScalarFieldEnum]
 
 
-export const ConnectionScalarFieldEnum = {
-  tenantId: 'tenantId',
-  id: 'id',
-  grantType: 'grantType',
-  clientId: 'clientId',
-  clientSecret: 'clientSecret',
-  scope: 'scope',
-  token: 'token',
-  tokenExpiresAt: 'tokenExpiresAt'
-} as const
-
-export type ConnectionScalarFieldEnum = (typeof ConnectionScalarFieldEnum)[keyof typeof ConnectionScalarFieldEnum]
-
-
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -132,4 +124,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

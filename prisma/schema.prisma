@@ -15,12 +15,19 @@ datasource db {
 
 // Tabla principal: Tenants
 model Tenant {
-  id           String        @id @db.Uuid
-  customerName String        @db.VarChar(50)
-  createdAt    DateTime
-  modifiedAt   DateTime
-  environments Environment[]
-  connections  Connection[]
+  id              String        @id @db.Uuid
+  customerName    String        @db.VarChar(50)
+  createdAt       DateTime
+  modifiedAt      DateTime
+  // Campos de conexión
+  connectionId    String?       @db.Uuid
+  grantType       String?       @db.VarChar(100)
+  clientId        String?       @db.Uuid
+  clientSecret    String?       @db.VarChar(1000)
+  scope           String?       @db.VarChar(100)
+  token           String?       @db.VarChar(1000)
+  tokenExpiresAt  DateTime?
+  environments    Environment[]
 
   @@map("tenants")
 }
@@ -49,20 +56,4 @@ model Extension {
 
   @@id([tenantId, environmentName, id])
   @@map("extensions")
-}
-
-// Tabla relacionada: Connections
-model Connection {
-  tenantId        String   @db.Uuid
-  id              String   @db.Uuid
-  grantType       String   @db.VarChar(100)
-  clientId        String   @db.Uuid
-  clientSecret    String   @db.VarChar(1000)
-  scope           String   @db.VarChar(100)
-  token           String   @db.VarChar(1000)
-  tokenExpiresAt  DateTime
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-
-  @@id([tenantId, id])
-  @@map("connections")
 }
