@@ -31,7 +31,10 @@ export async function syncEnvironments(tenantId: string): Promise<Environment[]>
     });
     
     if (!response.ok) {
-      throw new Error('Error al sincronizar environments');
+      // Intentar obtener el mensaje de error del servidor
+      const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+      const errorMessage = errorData.error || `Error ${response.status}: ${response.statusText}`;
+      throw new Error(errorMessage);
     }
     
     const data = await response.json();
