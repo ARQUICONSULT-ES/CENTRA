@@ -73,7 +73,6 @@ export function TenantsPage() {
         id: "",
         customerId,
         description: "",
-        connectionId: "",
         grantType: "",
         clientId: "",
         clientSecret: "",

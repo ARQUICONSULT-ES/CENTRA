@@ -16,7 +16,6 @@ export interface Tenant {
   createdAt: string | Date;
   modifiedAt: string | Date;
   // Campos de conexión
-  connectionId?: string | null;
   grantType?: string | null;
   clientId?: string | null;
   clientSecret?: string | null;

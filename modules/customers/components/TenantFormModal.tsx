@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { Tenant, Customer } from "../types";
 import ConfirmationModal from "./ConfirmationModal";
 import { fetchCustomers } from "../services/customerService";
+import { refreshTenantToken } from "../services/tenantService";
 
 interface TenantFormModalProps {
   isOpen: boolean;
@@ -22,7 +23,6 @@ export default function TenantFormModal({
     id: "",
     customerId: "",
     description: "",
-    connectionId: "",
     grantType: "",
     clientId: "",
     clientSecret: "",
@@ -35,6 +35,8 @@ export default function TenantFormModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [refreshingToken, setRefreshingToken] = useState(false);
+  const [tokenRefreshSuccess, setTokenRefreshSuccess] = useState("");
 
   // Determinar si es un tenant existente (tiene ID válido)
   const isExistingTenant = !!(tenant?.id && tenant.id.trim() !== "");
@@ -63,7 +65,6 @@ export default function TenantFormModal({
           id: tenant.id || "",
           customerId: tenant.customerId || "",
           description: tenant.description || "",
-          connectionId: tenant.connectionId || "",
           grantType: tenant.grantType || "",
           clientId: tenant.clientId || "",
           clientSecret: tenant.clientSecret || "",
@@ -80,7 +81,6 @@ export default function TenantFormModal({
           id: "",
           customerId: "",
           description: "",
-          connectionId: "",
           grantType: "",
           clientId: "",
           clientSecret: "",
@@ -90,6 +90,7 @@ export default function TenantFormModal({
         });
       }
       setError("");
+      setTokenRefreshSuccess("");
     }
   }, [tenant, isOpen]);
 
@@ -151,6 +152,48 @@ export default function TenantFormModal({
     }
   };
 
+  const handleRefreshToken = async () => {
+    if (!tenant?.id) return;
+    
+    // Validar que se haya configurado la conexión
+    if (!formData.grantType || !formData.clientId || !formData.clientSecret || !formData.scope) {
+      setError("Por favor completa toda la configuración de conexión antes de refrescar el token");
+      return;
+    }
+    
+    setRefreshingToken(true);
+    setError("");
+    setTokenRefreshSuccess("");
+
+    try {
+      const result = await refreshTenantToken(tenant.id);
+      
+      // Actualizar el formData con el nuevo token y expiración
+      setFormData({
+        ...formData,
+        token: "Token actualizado ✓",
+        tokenExpiresAt: result.tokenExpiresAt instanceof Date 
+          ? result.tokenExpiresAt.toISOString() 
+          : result.tokenExpiresAt,
+      });
+
+      setTokenRefreshSuccess("Token refrescado exitosamente");
+      
+      // Llamar a onSave para recargar los datos del tenant
+      onSave();
+      
+      // Limpiar mensaje de éxito después de 5 segundos
+      setTimeout(() => {
+        setTokenRefreshSuccess("");
+      }, 5000);
+      
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al refrescar el token");
+    } finally {
+      setRefreshingToken(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -164,6 +207,12 @@ export default function TenantFormModal({
           {error && (
             <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 rounded">
               {error}
+            </div>
+          )}
+
+          {tokenRefreshSuccess && (
+            <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-400 rounded">
+              {tokenRefreshSuccess}
             </div>
           )}
 
@@ -256,15 +305,61 @@ export default function TenantFormModal({
 
             {/* Configuración de Conexión */}
             <div className="mb-6 border-t border-gray-200 dark:border-gray-700 pt-6">
-              <h3 className="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">
-                Configuración de Conexión
-              </h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                  Configuración de Conexión
+                </h3>
+                {isExistingTenant && (
+                  <button
+                    type="button"
+                    onClick={handleRefreshToken}
+                    disabled={
+                      refreshingToken || 
+                      loading || 
+                      !formData.grantType || 
+                      !formData.clientId || 
+                      !formData.clientSecret || 
+                      !formData.scope
+                    }
+                    className="px-3 py-1.5 text-sm text-white bg-green-600 rounded-md hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                    title={
+                      !formData.grantType || !formData.clientId || !formData.clientSecret || !formData.scope
+                        ? "Completa la configuración de conexión para refrescar el token"
+                        : "Refrescar token de autenticación con Business Central"
+                    }
+                  >
+                    {refreshingToken ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Refrescando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        <span>Refrescar Token</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
 
               <div className="space-y-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  {isExistingTenant && (!formData.grantType || !formData.clientId || !formData.clientSecret || !formData.scope) && (
+                    <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 rounded text-sm">
+                      <p className="font-medium">💡 Completa la configuración de conexión</p>
+                      <p className="mt-1">Necesitas configurar todos los campos para poder refrescar el token de autenticación con Business Central.</p>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Grant Type
+                        Grant Type *
                       </label>
                       <input
                         type="text"
@@ -275,13 +370,14 @@ export default function TenantFormModal({
                             grantType: e.target.value,
                           })
                         }
+                        placeholder="client_credentials"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Scope
+                        Scope *
                       </label>
                       <input
                         type="text"
@@ -292,6 +388,7 @@ export default function TenantFormModal({
                             scope: e.target.value,
                           })
                         }
+                        placeholder="https://api.businesscentral.dynamics.com/.default"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                       />
                     </div>
@@ -299,7 +396,7 @@ export default function TenantFormModal({
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Client ID (UUID)
+                      Client ID (Application ID) *
                     </label>
                     <input
                       type="text"
@@ -310,17 +407,17 @@ export default function TenantFormModal({
                           clientId: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                       placeholder="00000000-0000-0000-0000-000000000000"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Client Secret
+                      Client Secret *
                     </label>
                     <input
-                      type="text"
+                      type="password"
                       value={formData.clientSecret}
                       onChange={(e) =>
                         setFormData({
@@ -328,8 +425,8 @@ export default function TenantFormModal({
                           clientSecret: e.target.value,
                         })
                       }
+                      placeholder="Secreto del cliente"
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                      placeholder="Client secret"
                     />
                   </div>
 
@@ -355,11 +452,24 @@ export default function TenantFormModal({
                         disabled
                         value={
                           formData.tokenExpiresAt
-                            ? new Date(formData.tokenExpiresAt).toLocaleString()
+                            ? new Date(formData.tokenExpiresAt).toLocaleString('es-ES', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })
                             : "N/A"
                         }
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-md cursor-not-allowed"
                       />
+                      {isExistingTenant && formData.tokenExpiresAt && (
+                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                          {new Date(formData.tokenExpiresAt) < new Date() 
+                            ? "⚠️ Token expirado" 
+                            : "✓ Token válido"}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
