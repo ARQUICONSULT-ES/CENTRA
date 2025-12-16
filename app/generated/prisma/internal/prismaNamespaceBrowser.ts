@@ -51,6 +51,7 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Customer: 'Customer',
   Tenant: 'Tenant',
   Environment: 'Environment',
   Extension: 'Extension'
@@ -72,9 +73,17 @@ export const TransactionIsolationLevel = {
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const CustomerScalarFieldEnum = {
+  id: 'id',
+  customerName: 'customerName'
+} as const
+
+export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
 export const TenantScalarFieldEnum = {
   id: 'id',
-  customerName: 'customerName',
+  customerId: 'customerId',
   createdAt: 'createdAt',
   modifiedAt: 'modifiedAt',
   connectionId: 'connectionId',

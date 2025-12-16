@@ -13,10 +13,20 @@ datasource db {
   provider = "postgresql"
 }
 
-// Tabla principal: Tenants
+// Tabla principal: Customers
+model Customer {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerName String   @db.VarChar(50)
+  tenants      Tenant[]
+
+  @@map("customers")
+}
+
+// Tabla de Tenants
 model Tenant {
   id              String        @id @db.Uuid
-  customerName    String        @db.VarChar(50)
+  customerId      String        @db.Uuid
+  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   createdAt       DateTime
   modifiedAt      DateTime
   // Campos de conexión
