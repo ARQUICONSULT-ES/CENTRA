@@ -1,8 +1,17 @@
+// ==================== CUSTOMER TYPES ====================
+
+export interface Customer {
+  id: string;
+  customerName: string;
+}
+
 // ==================== TENANT TYPES ====================
 
 export interface Tenant {
   id: string;
-  customerName: string;
+  customerId: string;
+  customerName?: string; // Computed from Customer relation
+  customer?: Customer; // Relation to Customer
   createdAt: string | Date;
   modifiedAt: string | Date;
   // Campos de conexión
@@ -31,5 +40,24 @@ export interface TenantListProps {
 
 export interface TenantListHandle {
   refreshTenants: () => Promise<void>;
+  isRefreshing: boolean;
+}
+
+// ==================== CUSTOMER CARD TYPES ====================
+
+export interface CustomerCardProps {
+  customer: Customer;
+  onEdit?: (customer: Customer) => void;
+}
+
+// ==================== CUSTOMER LIST TYPES ====================
+
+export interface CustomerListProps {
+  customers: Customer[];
+  onEdit?: (customer: Customer) => void;
+}
+
+export interface CustomerListHandle {
+  refreshCustomers: () => Promise<void>;
   isRefreshing: boolean;
 }

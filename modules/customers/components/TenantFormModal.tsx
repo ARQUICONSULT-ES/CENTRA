@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Tenant } from "../types";
+import type { Tenant, Customer } from "../types";
 import ConfirmationModal from "./ConfirmationModal";
+import { fetchCustomers } from "../services/customerService";
 
 interface TenantFormModalProps {
   isOpen: boolean;
@@ -19,7 +20,7 @@ export default function TenantFormModal({
 }: TenantFormModalProps) {
   const [formData, setFormData] = useState({
     id: "",
-    customerName: "",
+    customerId: "",
     connectionId: "",
     grantType: "",
     clientId: "",
@@ -29,39 +30,60 @@ export default function TenantFormModal({
     tokenExpiresAt: "",
   });
 
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  // Cargar customers al abrir el modal
   useEffect(() => {
-    if (tenant) {
-      setFormData({
-        id: tenant.id,
-        customerName: tenant.customerName,
-        connectionId: tenant.connectionId || "",
-        grantType: tenant.grantType || "",
-        clientId: tenant.clientId || "",
-        clientSecret: tenant.clientSecret || "",
-        scope: tenant.scope || "",
-        token: tenant.token || "",
-        tokenExpiresAt: tenant.tokenExpiresAt
-          ? typeof tenant.tokenExpiresAt === "string"
-            ? tenant.tokenExpiresAt
-            : tenant.tokenExpiresAt.toISOString()
-          : "",
-      });
-    } else {
-      setFormData({
-        id: "",
-        customerName: "",
-        connectionId: "",
-        grantType: "",
-        clientId: "",
-        clientSecret: "",
-        scope: "",
-        token: "",
-        tokenExpiresAt: "",
-      });
+    if (isOpen) {
+      loadCustomers();
+    }
+  }, [isOpen]);
+
+  const loadCustomers = async () => {
+    try {
+      const data = await fetchCustomers();
+      setCustomers(data);
+    } catch (err) {
+      console.error("Error loading customers:", err);
+      setError("Error al cargar la lista de clientes");
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      if (tenant) {
+        setFormData({
+          id: tenant.id || "",
+          customerId: tenant.customerId || "",
+          connectionId: tenant.connectionId || "",
+          grantType: tenant.grantType || "",
+          clientId: tenant.clientId || "",
+          clientSecret: tenant.clientSecret || "",
+          scope: tenant.scope || "",
+          token: tenant.token || "",
+          tokenExpiresAt: tenant.tokenExpiresAt
+            ? typeof tenant.tokenExpiresAt === "string"
+              ? tenant.tokenExpiresAt
+              : tenant.tokenExpiresAt.toISOString()
+            : "",
+        });
+      } else {
+        setFormData({
+          id: "",
+          customerId: "",
+          connectionId: "",
+          grantType: "",
+          clientId: "",
+          clientSecret: "",
+          scope: "",
+          token: "",
+          tokenExpiresAt: "",
+        });
+      }
+      setError("");
     }
   }, [tenant, isOpen]);
 
@@ -151,42 +173,71 @@ export default function TenantFormModal({
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     ID del Tenant (UUID) *
                   </label>
-                  <input
-                    type="text"
-                    required
-                    disabled={!!tenant}
-                    value={formData.id}
-                    onChange={(e) =>
-                      setFormData({ ...formData, id: e.target.value })
-                    }
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                      tenant
-                        ? "border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-not-allowed"
-                        : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-blue-500 dark:focus:ring-blue-400"
-                    }`}
-                    placeholder="00000000-0000-0000-0000-000000000000"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      required
+                      disabled={!!tenant}
+                      value={formData.id}
+                      onChange={(e) =>
+                        setFormData({ ...formData, id: e.target.value })
+                      }
+                      className={`flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                        tenant
+                          ? "border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                          : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-blue-500 dark:focus:ring-blue-400"
+                      }`}
+                      placeholder="00000000-0000-0000-0000-000000000000"
+                    />
+                    {!tenant && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const uuid = crypto.randomUUID();
+                          setFormData({ ...formData, id: uuid });
+                        }}
+                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors"
+                      >
+                        Generar UUID
+                      </button>
+                    )}
+                  </div>
                   {!tenant && (
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      Se genera automáticamente o puedes especificar uno
+                      Puedes escribir un UUID manualmente o generar uno automáticamente
                     </p>
                   )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Nombre del Cliente *
+                    Cliente *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     required
-                    value={formData.customerName}
+                    value={formData.customerId}
                     onChange={(e) =>
-                      setFormData({ ...formData, customerName: e.target.value })
+                      setFormData({ ...formData, customerId: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                    placeholder="Nombre del cliente"
-                  />
+                    disabled={!!tenant}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                      tenant
+                        ? "border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                        : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-blue-500 dark:focus:ring-blue-400"
+                    }`}
+                  >
+                    <option value="">Selecciona un cliente</option>
+                    {customers.map((customer) => (
+                      <option key={customer.id} value={customer.id}>
+                        {customer.customerName}
+                      </option>
+                    ))}
+                  </select>
+                  {!tenant && (
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      El cliente no puede cambiarse después de crear el tenant
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

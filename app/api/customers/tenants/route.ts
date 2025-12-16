@@ -6,16 +6,30 @@ export async function GET() {
     const tenants = await prisma.tenant.findMany({
       select: {
         id: true,
-        customerName: true,
+        customerId: true,
         createdAt: true,
         modifiedAt: true,
+        customer: {
+          select: {
+            customerName: true,
+          },
+        },
       },
       orderBy: {
         modifiedAt: 'desc',
       },
     });
 
-    return NextResponse.json(tenants);
+    // Transformar para incluir customerName en el nivel superior
+    const tenantsWithCustomerName = tenants.map(tenant => ({
+      id: tenant.id,
+      customerId: tenant.customerId,
+      customerName: tenant.customer.customerName,
+      createdAt: tenant.createdAt,
+      modifiedAt: tenant.modifiedAt,
+    }));
+
+    return NextResponse.json(tenantsWithCustomerName);
   } catch (error) {
     console.error("Error fetching tenants:", error);
     return NextResponse.json(
@@ -28,11 +42,23 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { id, customerName, connectionId, grantType, clientId, clientSecret, scope, token, tokenExpiresAt } = body;
+    const { id, customerId, connectionId, grantType, clientId, clientSecret, scope, token, tokenExpiresAt } = body;
 
-    if (!customerName) {
+    if (!customerId) {
       return NextResponse.json(
-        { error: "El nombre del cliente es requerido" },
+        { error: "El customerId es requerido" },
+        { status: 400 }
+      );
+    }
+
+    // Verificar que el customer existe
+    const customer = await prisma.customer.findUnique({
+      where: { id: customerId },
+    });
+
+    if (!customer) {
+      return NextResponse.json(
+        { error: "El customer especificado no existe" },
         { status: 400 }
       );
     }
@@ -43,7 +69,7 @@ export async function POST(request: Request) {
     const tenant = await prisma.tenant.create({
       data: {
         id: tenantId,
-        customerName,
+        customerId,
         createdAt: now,
         modifiedAt: now,
         connectionId: connectionId || null,
@@ -54,9 +80,23 @@ export async function POST(request: Request) {
         token: token || null,
         tokenExpiresAt: tokenExpiresAt ? new Date(tokenExpiresAt) : null,
       },
+      include: {
+        customer: {
+          select: {
+            customerName: true,
+          },
+        },
+      },
     });
 
-    return NextResponse.json(tenant, { status: 201 });
+    // Transformar para incluir customerName en el nivel superior
+    const tenantWithCustomerName = {
+      ...tenant,
+      customerName: tenant.customer.customerName,
+      customer: undefined,
+    };
+
+    return NextResponse.json(tenantWithCustomerName, { status: 201 });
   } catch (error) {
     console.error("Error creating tenant:", error);
     return NextResponse.json(

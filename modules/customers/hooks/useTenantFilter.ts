@@ -17,7 +17,7 @@ export function useTenantFilter(tenants: Tenant[]) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (tenant) =>
-          tenant.customerName.toLowerCase().includes(query) ||
+          (tenant.customerName?.toLowerCase().includes(query) || false) ||
           tenant.id.toLowerCase().includes(query)
       );
     }
@@ -28,7 +28,7 @@ export function useTenantFilter(tenants: Tenant[]) {
         case "updated":
           return new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime();
         case "name":
-          return a.customerName.localeCompare(b.customerName);
+          return (a.customerName || "").localeCompare(b.customerName || "");
         case "tenant":
           return a.id.localeCompare(b.id);
         default:
