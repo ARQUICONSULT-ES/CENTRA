@@ -27,16 +27,34 @@ export type AggregateEnvironment = {
 export type EnvironmentMinAggregateOutputType = {
   tenantId: string | null
   name: string | null
+  type: string | null
+  status: string | null
+  webClientUrl: string | null
+  locationName: string | null
+  applicationVersion: string | null
+  platformVersion: string | null
 }
 
 export type EnvironmentMaxAggregateOutputType = {
   tenantId: string | null
   name: string | null
+  type: string | null
+  status: string | null
+  webClientUrl: string | null
+  locationName: string | null
+  applicationVersion: string | null
+  platformVersion: string | null
 }
 
 export type EnvironmentCountAggregateOutputType = {
   tenantId: number
   name: number
+  type: number
+  status: number
+  webClientUrl: number
+  locationName: number
+  applicationVersion: number
+  platformVersion: number
   _all: number
 }
 
@@ -44,16 +62,34 @@ export type EnvironmentCountAggregateOutputType = {
 export type EnvironmentMinAggregateInputType = {
   tenantId?: true
   name?: true
+  type?: true
+  status?: true
+  webClientUrl?: true
+  locationName?: true
+  applicationVersion?: true
+  platformVersion?: true
 }
 
 export type EnvironmentMaxAggregateInputType = {
   tenantId?: true
   name?: true
+  type?: true
+  status?: true
+  webClientUrl?: true
+  locationName?: true
+  applicationVersion?: true
+  platformVersion?: true
 }
 
 export type EnvironmentCountAggregateInputType = {
   tenantId?: true
   name?: true
+  type?: true
+  status?: true
+  webClientUrl?: true
+  locationName?: true
+  applicationVersion?: true
+  platformVersion?: true
   _all?: true
 }
 
@@ -132,6 +168,12 @@ export type EnvironmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type EnvironmentGroupByOutputType = {
   tenantId: string
   name: string
+  type: string | null
+  status: string | null
+  webClientUrl: string | null
+  locationName: string | null
+  applicationVersion: string | null
+  platformVersion: string | null
   _count: EnvironmentCountAggregateOutputType | null
   _min: EnvironmentMinAggregateOutputType | null
   _max: EnvironmentMaxAggregateOutputType | null
@@ -158,6 +200,12 @@ export type EnvironmentWhereInput = {
   NOT?: Prisma.EnvironmentWhereInput | Prisma.EnvironmentWhereInput[]
   tenantId?: Prisma.UuidFilter<"Environment"> | string
   name?: Prisma.StringFilter<"Environment"> | string
+  type?: Prisma.StringNullableFilter<"Environment"> | string | null
+  status?: Prisma.StringNullableFilter<"Environment"> | string | null
+  webClientUrl?: Prisma.StringNullableFilter<"Environment"> | string | null
+  locationName?: Prisma.StringNullableFilter<"Environment"> | string | null
+  applicationVersion?: Prisma.StringNullableFilter<"Environment"> | string | null
+  platformVersion?: Prisma.StringNullableFilter<"Environment"> | string | null
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   extensions?: Prisma.ExtensionListRelationFilter
 }
@@ -165,6 +213,12 @@ export type EnvironmentWhereInput = {
 export type EnvironmentOrderByWithRelationInput = {
   tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
+  webClientUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationName?: Prisma.SortOrderInput | Prisma.SortOrder
+  applicationVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  platformVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
   extensions?: Prisma.ExtensionOrderByRelationAggregateInput
 }
@@ -176,6 +230,12 @@ export type EnvironmentWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.EnvironmentWhereInput | Prisma.EnvironmentWhereInput[]
   tenantId?: Prisma.UuidFilter<"Environment"> | string
   name?: Prisma.StringFilter<"Environment"> | string
+  type?: Prisma.StringNullableFilter<"Environment"> | string | null
+  status?: Prisma.StringNullableFilter<"Environment"> | string | null
+  webClientUrl?: Prisma.StringNullableFilter<"Environment"> | string | null
+  locationName?: Prisma.StringNullableFilter<"Environment"> | string | null
+  applicationVersion?: Prisma.StringNullableFilter<"Environment"> | string | null
+  platformVersion?: Prisma.StringNullableFilter<"Environment"> | string | null
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   extensions?: Prisma.ExtensionListRelationFilter
 }, "tenantId_name">
@@ -183,6 +243,12 @@ export type EnvironmentWhereUniqueInput = Prisma.AtLeast<{
 export type EnvironmentOrderByWithAggregationInput = {
   tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
+  webClientUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationName?: Prisma.SortOrderInput | Prisma.SortOrder
+  applicationVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  platformVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EnvironmentCountOrderByAggregateInput
   _max?: Prisma.EnvironmentMaxOrderByAggregateInput
   _min?: Prisma.EnvironmentMinOrderByAggregateInput
@@ -194,10 +260,22 @@ export type EnvironmentScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EnvironmentScalarWhereWithAggregatesInput | Prisma.EnvironmentScalarWhereWithAggregatesInput[]
   tenantId?: Prisma.UuidWithAggregatesFilter<"Environment"> | string
   name?: Prisma.StringWithAggregatesFilter<"Environment"> | string
+  type?: Prisma.StringNullableWithAggregatesFilter<"Environment"> | string | null
+  status?: Prisma.StringNullableWithAggregatesFilter<"Environment"> | string | null
+  webClientUrl?: Prisma.StringNullableWithAggregatesFilter<"Environment"> | string | null
+  locationName?: Prisma.StringNullableWithAggregatesFilter<"Environment"> | string | null
+  applicationVersion?: Prisma.StringNullableWithAggregatesFilter<"Environment"> | string | null
+  platformVersion?: Prisma.StringNullableWithAggregatesFilter<"Environment"> | string | null
 }
 
 export type EnvironmentCreateInput = {
   name: string
+  type?: string | null
+  status?: string | null
+  webClientUrl?: string | null
+  locationName?: string | null
+  applicationVersion?: string | null
+  platformVersion?: string | null
   tenant: Prisma.TenantCreateNestedOneWithoutEnvironmentsInput
   extensions?: Prisma.ExtensionCreateNestedManyWithoutEnvironmentInput
 }
@@ -205,11 +283,23 @@ export type EnvironmentCreateInput = {
 export type EnvironmentUncheckedCreateInput = {
   tenantId: string
   name: string
+  type?: string | null
+  status?: string | null
+  webClientUrl?: string | null
+  locationName?: string | null
+  applicationVersion?: string | null
+  platformVersion?: string | null
   extensions?: Prisma.ExtensionUncheckedCreateNestedManyWithoutEnvironmentInput
 }
 
 export type EnvironmentUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenant?: Prisma.TenantUpdateOneRequiredWithoutEnvironmentsNestedInput
   extensions?: Prisma.ExtensionUpdateManyWithoutEnvironmentNestedInput
 }
@@ -217,21 +307,45 @@ export type EnvironmentUpdateInput = {
 export type EnvironmentUncheckedUpdateInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extensions?: Prisma.ExtensionUncheckedUpdateManyWithoutEnvironmentNestedInput
 }
 
 export type EnvironmentCreateManyInput = {
   tenantId: string
   name: string
+  type?: string | null
+  status?: string | null
+  webClientUrl?: string | null
+  locationName?: string | null
+  applicationVersion?: string | null
+  platformVersion?: string | null
 }
 
 export type EnvironmentUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EnvironmentUncheckedUpdateManyInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EnvironmentListRelationFilter = {
@@ -252,16 +366,34 @@ export type EnvironmentTenantIdNameCompoundUniqueInput = {
 export type EnvironmentCountOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  webClientUrl?: Prisma.SortOrder
+  locationName?: Prisma.SortOrder
+  applicationVersion?: Prisma.SortOrder
+  platformVersion?: Prisma.SortOrder
 }
 
 export type EnvironmentMaxOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  webClientUrl?: Prisma.SortOrder
+  locationName?: Prisma.SortOrder
+  applicationVersion?: Prisma.SortOrder
+  platformVersion?: Prisma.SortOrder
 }
 
 export type EnvironmentMinOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  webClientUrl?: Prisma.SortOrder
+  locationName?: Prisma.SortOrder
+  applicationVersion?: Prisma.SortOrder
+  platformVersion?: Prisma.SortOrder
 }
 
 export type EnvironmentScalarRelationFilter = {
@@ -327,11 +459,23 @@ export type EnvironmentUpdateOneRequiredWithoutExtensionsNestedInput = {
 
 export type EnvironmentCreateWithoutTenantInput = {
   name: string
+  type?: string | null
+  status?: string | null
+  webClientUrl?: string | null
+  locationName?: string | null
+  applicationVersion?: string | null
+  platformVersion?: string | null
   extensions?: Prisma.ExtensionCreateNestedManyWithoutEnvironmentInput
 }
 
 export type EnvironmentUncheckedCreateWithoutTenantInput = {
   name: string
+  type?: string | null
+  status?: string | null
+  webClientUrl?: string | null
+  locationName?: string | null
+  applicationVersion?: string | null
+  platformVersion?: string | null
   extensions?: Prisma.ExtensionUncheckedCreateNestedManyWithoutEnvironmentInput
 }
 
@@ -367,16 +511,34 @@ export type EnvironmentScalarWhereInput = {
   NOT?: Prisma.EnvironmentScalarWhereInput | Prisma.EnvironmentScalarWhereInput[]
   tenantId?: Prisma.UuidFilter<"Environment"> | string
   name?: Prisma.StringFilter<"Environment"> | string
+  type?: Prisma.StringNullableFilter<"Environment"> | string | null
+  status?: Prisma.StringNullableFilter<"Environment"> | string | null
+  webClientUrl?: Prisma.StringNullableFilter<"Environment"> | string | null
+  locationName?: Prisma.StringNullableFilter<"Environment"> | string | null
+  applicationVersion?: Prisma.StringNullableFilter<"Environment"> | string | null
+  platformVersion?: Prisma.StringNullableFilter<"Environment"> | string | null
 }
 
 export type EnvironmentCreateWithoutExtensionsInput = {
   name: string
+  type?: string | null
+  status?: string | null
+  webClientUrl?: string | null
+  locationName?: string | null
+  applicationVersion?: string | null
+  platformVersion?: string | null
   tenant: Prisma.TenantCreateNestedOneWithoutEnvironmentsInput
 }
 
 export type EnvironmentUncheckedCreateWithoutExtensionsInput = {
   tenantId: string
   name: string
+  type?: string | null
+  status?: string | null
+  webClientUrl?: string | null
+  locationName?: string | null
+  applicationVersion?: string | null
+  platformVersion?: string | null
 }
 
 export type EnvironmentCreateOrConnectWithoutExtensionsInput = {
@@ -397,30 +559,66 @@ export type EnvironmentUpdateToOneWithWhereWithoutExtensionsInput = {
 
 export type EnvironmentUpdateWithoutExtensionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenant?: Prisma.TenantUpdateOneRequiredWithoutEnvironmentsNestedInput
 }
 
 export type EnvironmentUncheckedUpdateWithoutExtensionsInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EnvironmentCreateManyTenantInput = {
   name: string
+  type?: string | null
+  status?: string | null
+  webClientUrl?: string | null
+  locationName?: string | null
+  applicationVersion?: string | null
+  platformVersion?: string | null
 }
 
 export type EnvironmentUpdateWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extensions?: Prisma.ExtensionUpdateManyWithoutEnvironmentNestedInput
 }
 
 export type EnvironmentUncheckedUpdateWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extensions?: Prisma.ExtensionUncheckedUpdateManyWithoutEnvironmentNestedInput
 }
 
 export type EnvironmentUncheckedUpdateManyWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webClientUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  applicationVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platformVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -457,6 +655,12 @@ export type EnvironmentCountOutputTypeCountExtensionsArgs<ExtArgs extends runtim
 export type EnvironmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   tenantId?: boolean
   name?: boolean
+  type?: boolean
+  status?: boolean
+  webClientUrl?: boolean
+  locationName?: boolean
+  applicationVersion?: boolean
+  platformVersion?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   extensions?: boolean | Prisma.Environment$extensionsArgs<ExtArgs>
   _count?: boolean | Prisma.EnvironmentCountOutputTypeDefaultArgs<ExtArgs>
@@ -465,21 +669,39 @@ export type EnvironmentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
 export type EnvironmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   tenantId?: boolean
   name?: boolean
+  type?: boolean
+  status?: boolean
+  webClientUrl?: boolean
+  locationName?: boolean
+  applicationVersion?: boolean
+  platformVersion?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["environment"]>
 
 export type EnvironmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   tenantId?: boolean
   name?: boolean
+  type?: boolean
+  status?: boolean
+  webClientUrl?: boolean
+  locationName?: boolean
+  applicationVersion?: boolean
+  platformVersion?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["environment"]>
 
 export type EnvironmentSelectScalar = {
   tenantId?: boolean
   name?: boolean
+  type?: boolean
+  status?: boolean
+  webClientUrl?: boolean
+  locationName?: boolean
+  applicationVersion?: boolean
+  platformVersion?: boolean
 }
 
-export type EnvironmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tenantId" | "name", ExtArgs["result"]["environment"]>
+export type EnvironmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tenantId" | "name" | "type" | "status" | "webClientUrl" | "locationName" | "applicationVersion" | "platformVersion", ExtArgs["result"]["environment"]>
 export type EnvironmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   extensions?: boolean | Prisma.Environment$extensionsArgs<ExtArgs>
@@ -501,6 +723,12 @@ export type $EnvironmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     tenantId: string
     name: string
+    type: string | null
+    status: string | null
+    webClientUrl: string | null
+    locationName: string | null
+    applicationVersion: string | null
+    platformVersion: string | null
   }, ExtArgs["result"]["environment"]>
   composites: {}
 }
@@ -928,6 +1156,12 @@ export interface Prisma__EnvironmentClient<T, Null = never, ExtArgs extends runt
 export interface EnvironmentFieldRefs {
   readonly tenantId: Prisma.FieldRef<"Environment", 'String'>
   readonly name: Prisma.FieldRef<"Environment", 'String'>
+  readonly type: Prisma.FieldRef<"Environment", 'String'>
+  readonly status: Prisma.FieldRef<"Environment", 'String'>
+  readonly webClientUrl: Prisma.FieldRef<"Environment", 'String'>
+  readonly locationName: Prisma.FieldRef<"Environment", 'String'>
+  readonly applicationVersion: Prisma.FieldRef<"Environment", 'String'>
+  readonly platformVersion: Prisma.FieldRef<"Environment", 'String'>
 }
     
 

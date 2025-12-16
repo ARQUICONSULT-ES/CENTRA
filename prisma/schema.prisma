@@ -45,10 +45,16 @@ model Tenant {
 
 // Tabla relacionada: Environments
 model Environment {
-  tenantId   String      @db.Uuid
-  name       String      @db.VarChar(50)
-  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  extensions Extension[]
+  tenantId          String      @db.Uuid
+  name              String      @db.VarChar(50)
+  type              String?     @db.VarChar(50)
+  status            String?     @db.VarChar(50)
+  webClientUrl      String?     @db.VarChar(1000)
+  locationName      String?     @db.VarChar(50)
+  applicationVersion String?    @db.VarChar(50)
+  platformVersion   String?     @db.VarChar(50)
+  tenant            Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  extensions        Extension[]
 
   @@id([tenantId, name])
   @@map("environments")

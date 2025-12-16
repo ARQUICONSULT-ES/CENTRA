@@ -770,7 +770,13 @@ export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof 
 
 export const EnvironmentScalarFieldEnum = {
   tenantId: 'tenantId',
-  name: 'name'
+  name: 'name',
+  type: 'type',
+  status: 'status',
+  webClientUrl: 'webClientUrl',
+  locationName: 'locationName',
+  applicationVersion: 'applicationVersion',
+  platformVersion: 'platformVersion'
 } as const
 
 export type EnvironmentScalarFieldEnum = (typeof EnvironmentScalarFieldEnum)[keyof typeof EnvironmentScalarFieldEnum]
