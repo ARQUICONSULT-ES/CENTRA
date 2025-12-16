@@ -24,6 +24,40 @@ export interface Tenant {
   tokenExpiresAt?: string | Date | null;
 }
 
+// ==================== ENVIRONMENT TYPES ====================
+
+export interface Environment {
+  tenantId: string;
+  name: string;
+  type?: string | null;
+  applicationVersion?: string | null;
+  status?: string | null;
+  webClientUrl?: string | null;
+  locationName?: string | null;
+  platformVersion?: string | null;
+}
+
+// Respuesta de la API de Business Central
+export interface BCEnvironment {
+  aadTenantId: string;
+  applicationFamily: string;
+  type: string;
+  name: string;
+  countryCode: string;
+  applicationVersion: string;
+  status: string;
+  webClientLoginUrl: string;
+  webServiceUrl: string;
+  appInsightsKey?: string;
+  ringName?: string;
+  locationName?: string;
+  platformVersion?: string;
+}
+
+export interface BCEnvironmentsResponse {
+  value: BCEnvironment[];
+}
+
 // ==================== TENANT CARD TYPES ====================
 
 export interface TenantCardProps {
