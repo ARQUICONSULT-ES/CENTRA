@@ -8,9 +8,24 @@ export async function GET() {
       orderBy: {
         customerName: 'asc',
       },
+      include: {
+        _count: {
+          select: {
+            tenants: true,
+          },
+        },
+      },
     });
 
-    return NextResponse.json(customers);
+    // Mapear para incluir el conteo de tenants
+    const customersWithCount = customers.map(customer => ({
+      id: customer.id,
+      customerName: customer.customerName,
+      imageBase64: customer.imageBase64,
+      tenantsCount: customer._count.tenants,
+    }));
+
+    return NextResponse.json(customersWithCount);
   } catch (error) {
     console.error("Error fetching customers:", error);
     return NextResponse.json(

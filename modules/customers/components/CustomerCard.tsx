@@ -43,13 +43,15 @@ export function CustomerCard({ customer, onEdit }: CustomerCardProps) {
         <div className="flex-1 min-w-0">
           <button
             onClick={handleEdit}
-            className="font-semibold text-gray-900 dark:text-white text-sm truncate text-left hover:text-blue-600 dark:hover:text-blue-400 transition-colors block w-full"
+            className="font-semibold text-gray-900 dark:text-white text-base truncate text-left hover:text-blue-600 dark:hover:text-blue-400 transition-colors block w-full"
           >
             {customer.customerName}
           </button>
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-mono mt-0.5 truncate">
-            ID: {customer.id}
-          </p>
+          {customer.tenantsCount !== undefined && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              {customer.tenantsCount} tenant{customer.tenantsCount !== 1 ? 's' : ''}
+            </p>
+          )}
         </div>
 
         {/* Menú de 3 puntos */}

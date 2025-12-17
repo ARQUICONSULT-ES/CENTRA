@@ -4,6 +4,7 @@ export interface Customer {
   id: string;
   customerName: string;
   imageBase64?: string | null;
+  tenantsCount?: number;
 }
 
 // ==================== TENANT TYPES ====================
