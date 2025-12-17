@@ -20,6 +20,13 @@ export async function GET(request: NextRequest) {
             },
           },
         },
+        extensions: {
+          where: {
+            publisher: {
+              not: 'Microsoft',
+            },
+          },
+        },
       },
       orderBy: [
         { tenant: { customer: { customerName: "asc" } } },
@@ -40,6 +47,7 @@ export async function GET(request: NextRequest) {
       customerId: env.tenant.customer.id,
       customerName: env.tenant.customer.customerName,
       customerImage: env.tenant.customer.imageBase64,
+      appsCount: env.extensions.length,
     }));
 
     return NextResponse.json(transformedEnvironments);

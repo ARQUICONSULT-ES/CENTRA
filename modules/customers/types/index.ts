@@ -45,6 +45,7 @@ export interface EnvironmentWithCustomer extends Environment {
   customerId: string;
   customerName: string;
   customerImage?: string | null;
+  appsCount?: number;
 }
 
 // Respuesta de la API de Business Central

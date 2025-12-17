@@ -20,6 +20,22 @@ export default function EnvironmentCard({ environment }: EnvironmentCardProps) {
   
   return (
     <div className={`group relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 ${isDeleted ? 'opacity-60 bg-red-50 dark:bg-red-900/10' : ''}`}>
+      {/* Tipo de entorno en esquina superior derecha */}
+      {environment.type && (
+        <div className="absolute top-3 right-3">
+          <span className={`px-2 py-0.5 text-xs font-medium rounded flex-shrink-0 ${getTypeColor(environment.type)}`}>
+            {environment.type}
+          </span>
+        </div>
+      )}
+      {isDeleted && (
+        <div className="absolute top-3 right-3">
+          <span className="px-1.5 py-0.5 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded flex-shrink-0">
+            Eliminado
+          </span>
+        </div>
+      )}
+
       <div className="space-y-3">
         {/* Header con imagen y nombre del entorno */}
         <div className="flex items-center gap-2">
@@ -36,44 +52,52 @@ export default function EnvironmentCard({ environment }: EnvironmentCardProps) {
             )}
           </div>
 
-          {/* Nombre del entorno con etiqueta de tipo */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-              <h3 className={`text-base font-semibold text-gray-900 dark:text-white truncate ${isDeleted ? 'line-through' : ''}`}>
-                {environment.name}
-              </h3>
-              {environment.type && (
-                <span className={`px-2 py-0.5 text-xs font-medium rounded flex-shrink-0 ${getTypeColor(environment.type)}`}>
-                  {environment.type}
-                </span>
-              )}
-              {isDeleted && (
-                <span className="px-1.5 py-0.5 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded flex-shrink-0">
-                  Eliminado
-                </span>
-              )}
-            </div>
+          {/* Nombre del entorno */}
+          <div className="flex-1 min-w-0 pr-20">
+            <h3 className={`text-base font-semibold text-gray-900 dark:text-white truncate ${isDeleted ? 'line-through' : ''}`}>
+              {environment.name}
+            </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
               {environment.customerName}
             </p>
           </div>
         </div>
 
-        {/* Status */}
-        <div className="flex items-center gap-2 text-xs">
-          <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="text-gray-500 dark:text-gray-400 font-medium">Status:</span>
-          <span className={`px-2 py-0.5 text-xs font-medium rounded ${
-            isDeleted
-              ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-              : environment.status?.toLowerCase() === 'active'
-              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-              : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
-          }`}>
-            {environment.status || 'N/A'}
-          </span>
+        {/* Status y Apps Count */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Status */}
+          <div className="flex items-center gap-2 text-xs">
+            <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="min-w-0">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Status</p>
+              <span className={`text-xs font-medium ${
+                isDeleted
+                  ? 'text-red-800 dark:text-red-400'
+                  : environment.status?.toLowerCase() === 'active'
+                  ? 'text-green-800 dark:text-green-400'
+                  : 'text-gray-800 dark:text-gray-400'
+              }`}>
+                {environment.status || 'N/A'}
+              </span>
+            </div>
+          </div>
+
+          {/* Apps Count */}
+          {environment.appsCount !== undefined && (
+            <div className="flex items-center gap-2 text-xs">
+              <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+              <div className="min-w-0">
+                <p className="text-xs text-gray-500 dark:text-gray-400">Apps</p>
+                <span className="text-xs font-medium text-gray-900 dark:text-white">
+                  {environment.appsCount}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Versiones */}
