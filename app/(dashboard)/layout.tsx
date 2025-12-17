@@ -40,6 +40,18 @@ export default function DashboardLayout({
                 >
                   Clientes
                 </Link>
+                <Link
+                  href="/environments"
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                >
+                  Entornos
+                </Link>
+                <Link
+                  href="/applications"
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                >
+                  Aplicaciones
+                </Link>
               </nav>
             </div>
 

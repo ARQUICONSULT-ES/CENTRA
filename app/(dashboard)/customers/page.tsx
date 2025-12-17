@@ -1,5 +1,5 @@
-import { TenantsPage } from "@/modules/customers";
+import { CustomersPage } from "@/modules/customers/pages/customer";
 
 export default function Page() {
-  return <TenantsPage />;
+  return <CustomersPage />;
 }
