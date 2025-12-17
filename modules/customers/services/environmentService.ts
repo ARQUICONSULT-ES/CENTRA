@@ -63,3 +63,31 @@ export async function syncEnvironments(tenantId: string): Promise<Environment[]>
     throw error;
   }
 }
+
+/**
+ * Sincroniza los environments de todos los tenants con Business Central
+ */
+export async function syncAllEnvironments(): Promise<{
+  success: number;
+  failed: number;
+  total: number;
+  errors: Array<{ tenantId: string; customerName: string; error: string }>;
+}> {
+  try {
+    const response = await fetch("/api/environments/sync-all", {
+      method: 'POST',
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+      const errorMessage = errorData.error || `Error ${response.status}: ${response.statusText}`;
+      throw new Error(errorMessage);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error syncing all environments:", error);
+    throw error;
+  }
+}
