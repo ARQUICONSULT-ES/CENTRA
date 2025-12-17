@@ -64,12 +64,13 @@ model Environment {
 // Tabla relacionada: Extensions
 model Extension {
   tenantId        String      @db.Uuid
-  environmentName String      @db.VarChar(50)
+  environmentName String      @db.VarChar(100)
   id              String      @db.Uuid
-  name            String      @db.VarChar(50)
-  version         String      @db.VarChar(50)
-  publisher       String      @db.VarChar(50)
+  name            String      @db.VarChar(255)
+  version         String      @db.VarChar(100)
+  publisher       String      @db.VarChar(255)
   publishedAs     String      @db.VarChar(20)
+  state           String?     @db.VarChar(50)
   environment     Environment @relation(fields: [tenantId, environmentName], references: [tenantId, name], onDelete: Cascade)
 
   @@id([tenantId, environmentName, id])

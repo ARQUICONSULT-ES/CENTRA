@@ -91,3 +91,41 @@ export interface CustomerListHandle {
   refreshCustomers: () => Promise<void>;
   isRefreshing: boolean;
 }
+
+// ==================== EXTENSION/APPLICATION TYPES ====================
+
+export interface Extension {
+  tenantId: string;
+  environmentName: string;
+  id: string;
+  name: string;
+  version: string;
+  publisher: string;
+  publishedAs: string; // "tenant" | "global"
+  state?: string | null; // "installed" | "updating" | etc.
+}
+
+export interface ApplicationWithEnvironment extends Extension {
+  customerId: string;
+  customerName: string;
+  customerImage?: string | null;
+  environmentType?: string | null;
+  environmentStatus?: string | null;
+}
+
+// Respuesta de la API de Business Central para aplicaciones
+export interface BCApplication {
+  id: string;
+  name: string;
+  publisher: string;
+  version: string;
+  state: string;
+  lastUpdateOperationId?: string;
+  lastUpdateAttemptResult?: string;
+  appType: string; // "tenant" | "global"
+  canBeUninstalled?: boolean;
+}
+
+export interface BCApplicationsResponse {
+  value: BCApplication[];
+}

@@ -790,7 +790,8 @@ export const ExtensionScalarFieldEnum = {
   name: 'name',
   version: 'version',
   publisher: 'publisher',
-  publishedAs: 'publishedAs'
+  publishedAs: 'publishedAs',
+  state: 'state'
 } as const
 
 export type ExtensionScalarFieldEnum = (typeof ExtensionScalarFieldEnum)[keyof typeof ExtensionScalarFieldEnum]

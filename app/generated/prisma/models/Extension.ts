@@ -32,6 +32,7 @@ export type ExtensionMinAggregateOutputType = {
   version: string | null
   publisher: string | null
   publishedAs: string | null
+  state: string | null
 }
 
 export type ExtensionMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type ExtensionMaxAggregateOutputType = {
   version: string | null
   publisher: string | null
   publishedAs: string | null
+  state: string | null
 }
 
 export type ExtensionCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type ExtensionCountAggregateOutputType = {
   version: number
   publisher: number
   publishedAs: number
+  state: number
   _all: number
 }
 
@@ -64,6 +67,7 @@ export type ExtensionMinAggregateInputType = {
   version?: true
   publisher?: true
   publishedAs?: true
+  state?: true
 }
 
 export type ExtensionMaxAggregateInputType = {
@@ -74,6 +78,7 @@ export type ExtensionMaxAggregateInputType = {
   version?: true
   publisher?: true
   publishedAs?: true
+  state?: true
 }
 
 export type ExtensionCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type ExtensionCountAggregateInputType = {
   version?: true
   publisher?: true
   publishedAs?: true
+  state?: true
   _all?: true
 }
 
@@ -167,6 +173,7 @@ export type ExtensionGroupByOutputType = {
   version: string
   publisher: string
   publishedAs: string
+  state: string | null
   _count: ExtensionCountAggregateOutputType | null
   _min: ExtensionMinAggregateOutputType | null
   _max: ExtensionMaxAggregateOutputType | null
@@ -198,6 +205,7 @@ export type ExtensionWhereInput = {
   version?: Prisma.StringFilter<"Extension"> | string
   publisher?: Prisma.StringFilter<"Extension"> | string
   publishedAs?: Prisma.StringFilter<"Extension"> | string
+  state?: Prisma.StringNullableFilter<"Extension"> | string | null
   environment?: Prisma.XOR<Prisma.EnvironmentScalarRelationFilter, Prisma.EnvironmentWhereInput>
 }
 
@@ -209,6 +217,7 @@ export type ExtensionOrderByWithRelationInput = {
   version?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
   publishedAs?: Prisma.SortOrder
+  state?: Prisma.SortOrderInput | Prisma.SortOrder
   environment?: Prisma.EnvironmentOrderByWithRelationInput
 }
 
@@ -224,6 +233,7 @@ export type ExtensionWhereUniqueInput = Prisma.AtLeast<{
   version?: Prisma.StringFilter<"Extension"> | string
   publisher?: Prisma.StringFilter<"Extension"> | string
   publishedAs?: Prisma.StringFilter<"Extension"> | string
+  state?: Prisma.StringNullableFilter<"Extension"> | string | null
   environment?: Prisma.XOR<Prisma.EnvironmentScalarRelationFilter, Prisma.EnvironmentWhereInput>
 }, "tenantId_environmentName_id">
 
@@ -235,6 +245,7 @@ export type ExtensionOrderByWithAggregationInput = {
   version?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
   publishedAs?: Prisma.SortOrder
+  state?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ExtensionCountOrderByAggregateInput
   _max?: Prisma.ExtensionMaxOrderByAggregateInput
   _min?: Prisma.ExtensionMinOrderByAggregateInput
@@ -251,6 +262,7 @@ export type ExtensionScalarWhereWithAggregatesInput = {
   version?: Prisma.StringWithAggregatesFilter<"Extension"> | string
   publisher?: Prisma.StringWithAggregatesFilter<"Extension"> | string
   publishedAs?: Prisma.StringWithAggregatesFilter<"Extension"> | string
+  state?: Prisma.StringNullableWithAggregatesFilter<"Extension"> | string | null
 }
 
 export type ExtensionCreateInput = {
@@ -259,6 +271,7 @@ export type ExtensionCreateInput = {
   version: string
   publisher: string
   publishedAs: string
+  state?: string | null
   environment: Prisma.EnvironmentCreateNestedOneWithoutExtensionsInput
 }
 
@@ -270,6 +283,7 @@ export type ExtensionUncheckedCreateInput = {
   version: string
   publisher: string
   publishedAs: string
+  state?: string | null
 }
 
 export type ExtensionUpdateInput = {
@@ -278,6 +292,7 @@ export type ExtensionUpdateInput = {
   version?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAs?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   environment?: Prisma.EnvironmentUpdateOneRequiredWithoutExtensionsNestedInput
 }
 
@@ -289,6 +304,7 @@ export type ExtensionUncheckedUpdateInput = {
   version?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAs?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExtensionCreateManyInput = {
@@ -299,6 +315,7 @@ export type ExtensionCreateManyInput = {
   version: string
   publisher: string
   publishedAs: string
+  state?: string | null
 }
 
 export type ExtensionUpdateManyMutationInput = {
@@ -307,6 +324,7 @@ export type ExtensionUpdateManyMutationInput = {
   version?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAs?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExtensionUncheckedUpdateManyInput = {
@@ -317,6 +335,7 @@ export type ExtensionUncheckedUpdateManyInput = {
   version?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAs?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExtensionListRelationFilter = {
@@ -343,6 +362,7 @@ export type ExtensionCountOrderByAggregateInput = {
   version?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
   publishedAs?: Prisma.SortOrder
+  state?: Prisma.SortOrder
 }
 
 export type ExtensionMaxOrderByAggregateInput = {
@@ -353,6 +373,7 @@ export type ExtensionMaxOrderByAggregateInput = {
   version?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
   publishedAs?: Prisma.SortOrder
+  state?: Prisma.SortOrder
 }
 
 export type ExtensionMinOrderByAggregateInput = {
@@ -363,6 +384,7 @@ export type ExtensionMinOrderByAggregateInput = {
   version?: Prisma.SortOrder
   publisher?: Prisma.SortOrder
   publishedAs?: Prisma.SortOrder
+  state?: Prisma.SortOrder
 }
 
 export type ExtensionCreateNestedManyWithoutEnvironmentInput = {
@@ -413,6 +435,7 @@ export type ExtensionCreateWithoutEnvironmentInput = {
   version: string
   publisher: string
   publishedAs: string
+  state?: string | null
 }
 
 export type ExtensionUncheckedCreateWithoutEnvironmentInput = {
@@ -421,6 +444,7 @@ export type ExtensionUncheckedCreateWithoutEnvironmentInput = {
   version: string
   publisher: string
   publishedAs: string
+  state?: string | null
 }
 
 export type ExtensionCreateOrConnectWithoutEnvironmentInput = {
@@ -460,6 +484,7 @@ export type ExtensionScalarWhereInput = {
   version?: Prisma.StringFilter<"Extension"> | string
   publisher?: Prisma.StringFilter<"Extension"> | string
   publishedAs?: Prisma.StringFilter<"Extension"> | string
+  state?: Prisma.StringNullableFilter<"Extension"> | string | null
 }
 
 export type ExtensionCreateManyEnvironmentInput = {
@@ -468,6 +493,7 @@ export type ExtensionCreateManyEnvironmentInput = {
   version: string
   publisher: string
   publishedAs: string
+  state?: string | null
 }
 
 export type ExtensionUpdateWithoutEnvironmentInput = {
@@ -476,6 +502,7 @@ export type ExtensionUpdateWithoutEnvironmentInput = {
   version?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAs?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExtensionUncheckedUpdateWithoutEnvironmentInput = {
@@ -484,6 +511,7 @@ export type ExtensionUncheckedUpdateWithoutEnvironmentInput = {
   version?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAs?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExtensionUncheckedUpdateManyWithoutEnvironmentInput = {
@@ -492,6 +520,7 @@ export type ExtensionUncheckedUpdateManyWithoutEnvironmentInput = {
   version?: Prisma.StringFieldUpdateOperationsInput | string
   publisher?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAs?: Prisma.StringFieldUpdateOperationsInput | string
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -504,6 +533,7 @@ export type ExtensionSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   version?: boolean
   publisher?: boolean
   publishedAs?: boolean
+  state?: boolean
   environment?: boolean | Prisma.EnvironmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["extension"]>
 
@@ -515,6 +545,7 @@ export type ExtensionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   version?: boolean
   publisher?: boolean
   publishedAs?: boolean
+  state?: boolean
   environment?: boolean | Prisma.EnvironmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["extension"]>
 
@@ -526,6 +557,7 @@ export type ExtensionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   version?: boolean
   publisher?: boolean
   publishedAs?: boolean
+  state?: boolean
   environment?: boolean | Prisma.EnvironmentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["extension"]>
 
@@ -537,9 +569,10 @@ export type ExtensionSelectScalar = {
   version?: boolean
   publisher?: boolean
   publishedAs?: boolean
+  state?: boolean
 }
 
-export type ExtensionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tenantId" | "environmentName" | "id" | "name" | "version" | "publisher" | "publishedAs", ExtArgs["result"]["extension"]>
+export type ExtensionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tenantId" | "environmentName" | "id" | "name" | "version" | "publisher" | "publishedAs" | "state", ExtArgs["result"]["extension"]>
 export type ExtensionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   environment?: boolean | Prisma.EnvironmentDefaultArgs<ExtArgs>
 }
@@ -563,6 +596,7 @@ export type $ExtensionPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     version: string
     publisher: string
     publishedAs: string
+    state: string | null
   }, ExtArgs["result"]["extension"]>
   composites: {}
 }
@@ -994,6 +1028,7 @@ export interface ExtensionFieldRefs {
   readonly version: Prisma.FieldRef<"Extension", 'String'>
   readonly publisher: Prisma.FieldRef<"Extension", 'String'>
   readonly publishedAs: Prisma.FieldRef<"Extension", 'String'>
+  readonly state: Prisma.FieldRef<"Extension", 'String'>
 }
     
 

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { TenantCard } from "./components/TenantCard";
 import { CustomerList } from "./components/CustomerList";
 import EnvironmentList from "./components/EnvironmentList";
+import { ApplicationsList } from "./components/ApplicationsList";
 import TenantFormModal from "./components/TenantFormModal";
 import CustomerFormModal from "./components/CustomerFormModal";
 import type { Tenant, Customer, CustomerListHandle } from "./types";
@@ -11,10 +12,12 @@ import type { EnvironmentListRef } from "./components/EnvironmentList";
 import { useTenants } from "./hooks/useTenants";
 import { useCustomers } from "./hooks/useCustomers";
 import { useAllEnvironments } from "./hooks/useAllEnvironments";
+import { useAllApplications } from "./hooks/useAllApplications";
 import { useCustomerFilter } from "./hooks/useCustomerFilter";
 import { useEnvironmentFilter } from "./hooks/useEnvironmentFilter";
+import { syncAllApplications } from "./services/applicationService";
 
-type ViewMode = "grouped" | "customers" | "environments";
+type ViewMode = "grouped" | "customers" | "environments" | "applications";
 
 function SkeletonCard() {
   return (
@@ -59,6 +62,11 @@ export function TenantsPage() {
     showDeleted,
     setShowDeleted,
   } = useEnvironmentFilter(environments);
+
+  const { applications, loading: applicationsLoading, isRefreshing: applicationsRefreshing, error: applicationsError, reload: reloadApplications } = useAllApplications();
+  const [applicationsSearchQuery, setApplicationsSearchQuery] = useState("");
+  const [filterEnvironmentType, setFilterEnvironmentType] = useState<"all" | "Production" | "Sandbox">("all");
+  const [isSyncingApps, setIsSyncingApps] = useState(false);
   
   const customerListRef = useRef<CustomerListHandle>(null);
   const environmentListRef = useRef<EnvironmentListRef>(null);
@@ -76,8 +84,8 @@ export function TenantsPage() {
     errors: Array<{ tenantId: string; customerName: string; error: string }>;
   } | null>(null);
 
-  const isLoading = tenantsLoading || customersLoading || environmentsLoading;
-  const error = tenantsError || customersError || environmentsError;
+  const isLoading = tenantsLoading || customersLoading || environmentsLoading || applicationsLoading;
+  const error = tenantsError || customersError || environmentsError || applicationsError;
 
   const handleRefresh = async () => {
     // Refrescar según la vista activa
@@ -87,6 +95,9 @@ export function TenantsPage() {
     } else if (viewMode === "environments") {
       // Solo refrescar environments
       await reloadEnvironments();
+    } else if (viewMode === "applications") {
+      // Solo refrescar applications
+      await reloadApplications();
     } else {
       // Vista agrupada: refrescar todo
       await Promise.all([
@@ -94,6 +105,30 @@ export function TenantsPage() {
         refreshCustomers(),
         reloadEnvironments(),
       ]);
+    }
+  };
+
+  const handleSyncApplications = async () => {
+    setIsSyncingApps(true);
+    
+    try {
+      const result = await syncAllApplications();
+      
+      // Recargar los datos después de la sincronización
+      await reloadApplications();
+      
+      // Mostrar notificación de éxito
+      if (result.failed === 0) {
+        alert(`✅ Sincronización completada con éxito: ${result.success}/${result.total} entornos sincronizados`);
+      } else {
+        const errorMessages = result.errors.map(e => `- ${e.customerName} (${e.environmentName}): ${e.error}`).join('\n');
+        alert(`⚠️ Sincronización completada con errores:\n✅ Exitosos: ${result.success}\n❌ Fallidos: ${result.failed}\n\nDetalles:\n${errorMessages}`);
+      }
+    } catch (error) {
+      console.error("Error syncing all applications:", error);
+      alert(`❌ Error al sincronizar las aplicaciones: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    } finally {
+      setIsSyncingApps(false);
     }
   };
 
@@ -212,7 +247,7 @@ export function TenantsPage() {
     setExpandedCustomers(new Set());
   };
 
-  const isRefreshing = customersRefreshing || environmentsRefreshing;
+  const isRefreshing = customersRefreshing || environmentsRefreshing || applicationsRefreshing;
 
   if (isLoading) {
     return (
@@ -280,7 +315,7 @@ export function TenantsPage() {
             Clientes y Tenants
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {customers.length} clientes • {tenants.length} tenants • {environments.length} entornos
+            {customers.length} clientes • {tenants.length} tenants • {environments.length} entornos • {applications.length} aplicaciones
           </p>
         </div>
         
@@ -316,12 +351,22 @@ export function TenantsPage() {
           >
             Entornos
           </button>
+          <button
+            onClick={() => setViewMode("applications")}
+            className={`px-4 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors ${
+              viewMode === "applications"
+                ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+            }`}
+          >
+            Aplicaciones
+          </button>
         </div>
       </div>
 
       {/* Barra de herramientas */}
       <div className="flex flex-col sm:flex-row gap-3">
-        {(viewMode === "customers" || viewMode === "environments") && (
+        {(viewMode === "customers" || viewMode === "environments" || viewMode === "applications") && (
           <div className="relative flex-1">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -340,19 +385,35 @@ export function TenantsPage() {
               type="text"
               value={
                 viewMode === "customers" ? customerSearchQuery :
-                environmentSearchQuery
+                viewMode === "environments" ? environmentSearchQuery :
+                applicationsSearchQuery
               }
               onChange={(e) => {
                 if (viewMode === "customers") setCustomerSearchQuery(e.target.value);
-                else setEnvironmentSearchQuery(e.target.value);
+                else if (viewMode === "environments") setEnvironmentSearchQuery(e.target.value);
+                else setApplicationsSearchQuery(e.target.value);
               }}
               placeholder={
                 viewMode === "customers" ? "Buscar customers..." :
-                "Buscar entornos..."
+                viewMode === "environments" ? "Buscar entornos..." :
+                "Buscar aplicaciones por nombre, publisher, cliente o entorno..."
               }
               className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
             />
           </div>
+        )}
+
+        {/* Filtros para aplicaciones */}
+        {viewMode === "applications" && (
+          <select
+            value={filterEnvironmentType}
+            onChange={(e) => setFilterEnvironmentType(e.target.value as any)}
+            className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="all">Todos los tipos de entorno</option>
+            <option value="Production">Production</option>
+            <option value="Sandbox">Sandbox</option>
+          </select>
         )}
 
         <div className="flex items-center gap-3 ml-auto">
@@ -494,6 +555,27 @@ export function TenantsPage() {
                 </svg>
               )}
               Sincronizar Todos
+            </button>
+          )}
+
+          {viewMode === "applications" && (
+            <button
+              onClick={handleSyncApplications}
+              disabled={isSyncingApps}
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-wait rounded-lg transition-colors whitespace-nowrap"
+              title="Sincronizar todas las aplicaciones desde Business Central"
+            >
+              {isSyncingApps ? (
+                <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              ) : (
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              )}
+              Sincronizar Aplicaciones
             </button>
           )}
 
@@ -654,6 +736,44 @@ export function TenantsPage() {
               </p>
             </div>
           )}
+        </>
+      )}
+
+      {viewMode === "applications" && (
+        <>
+          {(() => {
+            // Filtrar aplicaciones
+            const filteredApps = applications.filter((app) => {
+              // Filtro de búsqueda
+              const matchesSearch = applicationsSearchQuery === "" || 
+                app.name.toLowerCase().includes(applicationsSearchQuery.toLowerCase()) ||
+                app.publisher.toLowerCase().includes(applicationsSearchQuery.toLowerCase()) ||
+                app.customerName.toLowerCase().includes(applicationsSearchQuery.toLowerCase()) ||
+                app.environmentName.toLowerCase().includes(applicationsSearchQuery.toLowerCase());
+              
+              // Filtro de tipo de entorno
+              const matchesEnvironmentType = filterEnvironmentType === "all" || 
+                app.environmentType === filterEnvironmentType;
+              
+              return matchesSearch && matchesEnvironmentType;
+            });
+
+            return filteredApps.length > 0 ? (
+              <ApplicationsList applications={filteredApps} isLoading={applicationsLoading} />
+            ) : (
+              <div className="text-center py-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {applicationsSearchQuery ? `No se encontraron aplicaciones con "${applicationsSearchQuery}"` : "No hay aplicaciones"}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                  Haz clic en "Sincronizar Aplicaciones" para obtener las aplicaciones de Business Central
+                </p>
+              </div>
+            );
+          })()}
         </>
       )}
     </div>
