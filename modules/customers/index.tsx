@@ -54,14 +54,7 @@ export function TenantsPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(undefined);
   const [viewMode, setViewMode] = useState<ViewMode>("customers");
   const [isSyncingAll, setIsSyncingAll] = useState(false);
-  const [syncResult, setSyncResult] = useState<{
-    success: number;
-    failed: number;
-    total: number;
-    errors: Array<{ tenantId: string; customerName: string; error: string }>;
-  } | null>(null);
 
-  const isLoading = tenantsLoading || customersLoading || environmentsLoading || applicationsLoading;
   const error = tenantsError || customersError || environmentsError || applicationsError;
 
   const handleRefresh = async () => {
@@ -111,12 +104,10 @@ export function TenantsPage() {
 
   const handleSyncAll = async () => {
     setIsSyncingAll(true);
-    setSyncResult(null);
     
     try {
       const { syncAllEnvironments } = await import("./services/environmentService");
       const result = await syncAllEnvironments();
-      setSyncResult(result);
       
       // Recargar los datos después de la sincronización
       await reloadEnvironments();
@@ -137,28 +128,6 @@ export function TenantsPage() {
     }
   };
 
-  const handleCreateTenant = (customerId?: string) => {
-    if (customerId) {
-      // Crear un objeto parcial solo con customerId para pre-seleccionar el cliente
-      setSelectedTenant({ 
-        id: "",
-        customerId,
-        description: "",
-        grantType: "",
-        clientId: "",
-        clientSecret: "",
-        scope: "",
-        token: "",
-        tokenExpiresAt: "",
-        createdAt: new Date(),
-        modifiedAt: new Date(),
-      } as Tenant);
-    } else {
-      setSelectedTenant(undefined);
-    }
-    setIsModalOpen(true);
-  };
-
   const handleCreateCustomer = () => {
     setSelectedCustomer(undefined);
     setIsCustomerModalOpen(true);
@@ -167,23 +136,6 @@ export function TenantsPage() {
   const handleEditCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
     setIsCustomerModalOpen(true);
-  };
-
-  const handleEditTenant = async (tenant: Tenant) => {
-    try {
-      // Cargar el tenant completo con su conexión
-      const response = await fetch(`/api/customers/tenants/${tenant.id}`);
-      if (response.ok) {
-        const fullTenant = await response.json();
-        setSelectedTenant(fullTenant);
-      } else {
-        setSelectedTenant(tenant);
-      }
-    } catch (error) {
-      console.error("Error loading tenant:", error);
-      setSelectedTenant(tenant);
-    }
-    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
