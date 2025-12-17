@@ -1,4 +1,4 @@
-import type { EnvironmentWithCustomer } from "../types";
+import type { EnvironmentWithCustomer } from "@/modules/customers/types";
 
 interface EnvironmentCardProps {
   environment: EnvironmentWithCustomer;

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Tenant } from "../types";
-import { fetchTenants } from "../services/tenantService";
-import { dataCache, CACHE_KEYS } from "../../shared/utils/cache";
+import type { Tenant } from "@/modules/customers/types";
+import { fetchTenants } from "@/modules/customers/services/tenantService";
+import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 export function useTenants() {
   const [tenants, setTenants] = useState<Tenant[]>(() => {

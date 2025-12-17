@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import type { Customer, Tenant } from "../types";
+import type { Customer, Tenant } from "@/modules/customers/types";
 import ConfirmationModal from "./ConfirmationModal";
 import TenantFormModal from "./TenantFormModal";
-import { useCustomerTenants } from "../hooks/useCustomerTenants";
+import { useCustomerTenants } from "@/modules/customers/hooks/useCustomerTenants";
 
 interface CustomerFormModalProps {
   isOpen: boolean;

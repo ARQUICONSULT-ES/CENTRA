@@ -17,7 +17,7 @@ import type {
   SaveStep,
   AddRepoModalProps,
   AddFileModalProps,
-} from "../types";
+} from "@/modules/repos/types";
 import {
   fetchFileContent,
   fetchBranches,
@@ -27,8 +27,8 @@ import {
   updateSettings,
   uploadDependency,
   deleteDependency,
-} from "../services/dependenciesService";
-import { parseRepoUrl, getRepoName, formatFileSize } from "../services/utils";
+} from "@/modules/repos/services/dependenciesService";
+import { parseRepoUrl, getRepoName, formatFileSize } from "@/modules/repos/services/utils";
 
 const LoadingSpinner = ({ text = "Cargando..." }: { text?: string }) => (
   <div className="flex items-center justify-center h-32">

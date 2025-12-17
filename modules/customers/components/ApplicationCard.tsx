@@ -1,6 +1,6 @@
 "use client";
 
-import type { ApplicationWithEnvironment } from "../types";
+import type { ApplicationWithEnvironment } from "@/modules/customers/types";
 
 interface ApplicationCardProps {
   application: ApplicationWithEnvironment;

@@ -1,4 +1,4 @@
-import { WorkflowStatus } from "../types";
+import { WorkflowStatus } from "@/modules/repos/types";
 
 const GITHUB_API_BASE = "/api/github";
 

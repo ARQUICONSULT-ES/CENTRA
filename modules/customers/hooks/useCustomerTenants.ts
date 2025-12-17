@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Tenant } from "../types";
+import type { Tenant } from "@/modules/customers/types";
 
 export function useCustomerTenants(customerId?: string) {
   const [tenants, setTenants] = useState<Tenant[]>([]);

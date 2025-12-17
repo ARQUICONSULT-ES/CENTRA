@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { EnvironmentWithCustomer } from '../types';
+import type { EnvironmentWithCustomer } from '@/modules/customers/types';
 
 type SortBy = 'name' | 'customer' | 'type';
 

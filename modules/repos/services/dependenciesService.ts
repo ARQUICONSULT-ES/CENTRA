@@ -3,7 +3,7 @@ import {
   FileDependency,
   RepoDependencies,
   AppFileDependencyInfo,
-} from "../types";
+} from "@/modules/repos/types";
 
 const GITHUB_API_BASE = "/api/github";
 

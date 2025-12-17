@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import type { Customer } from "../types";
-import { fetchCustomers } from "../services/customerService";
-import { dataCache, CACHE_KEYS } from "../../shared/utils/cache";
+import type { Customer } from "@/modules/customers/types";
+import { fetchCustomers } from "@/modules/customers/services/customerService";
+import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 export function useCustomers() {
   const [customers, setCustomers] = useState<Customer[]>(() => {

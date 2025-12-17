@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
 import EnvironmentCard from "./EnvironmentCard";
-import type { EnvironmentWithCustomer } from "../types";
+import type { EnvironmentWithCustomer } from "@/modules/customers/types";
 
 interface EnvironmentListProps {
   environments: EnvironmentWithCustomer[];

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import type { CustomerCardProps } from "../types";
+import type { CustomerCardProps } from "@/modules/customers/types";
 
 export function CustomerCard({ customer, onEdit }: CustomerCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

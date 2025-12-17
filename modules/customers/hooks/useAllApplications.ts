@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchAllApplications } from '../services/applicationService';
-import type { ApplicationWithEnvironment } from '../types';
-import { dataCache, CACHE_KEYS } from '../../shared/utils/cache';
+import { fetchAllApplications } from '@/modules/customers/services/applicationService';
+import type { ApplicationWithEnvironment } from '@/modules/customers/types';
+import { dataCache, CACHE_KEYS } from '@/modules/shared/utils/cache';
 
 export function useAllApplications() {
   const [applications, setApplications] = useState<ApplicationWithEnvironment[]>(() => {

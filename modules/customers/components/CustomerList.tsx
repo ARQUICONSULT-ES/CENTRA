@@ -1,9 +1,9 @@
 "use client";
 
 import { forwardRef, useImperativeHandle } from "react";
-import type { CustomerListProps, CustomerListHandle } from "../types";
+import type { CustomerListProps, CustomerListHandle } from "@/modules/customers/types";
 import { CustomerCard } from "./CustomerCard";
-import { useCustomers } from "../hooks/useCustomers";
+import { useCustomers } from "@/modules/customers/hooks/useCustomers";
 
 export const CustomerList = forwardRef<CustomerListHandle, CustomerListProps>(
   function CustomerList({ customers, onEdit }, ref) {

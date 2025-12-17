@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
-import { ReleaseInfo, Commit } from "../types";
+import { ReleaseInfo, Commit } from "@/modules/repos/types";
 import { 
   fetchLatestRelease as fetchLatestReleaseService,
   fetchCompareCommits as fetchCompareCommitsService 
-} from "../services/releaseService";
+} from "@/modules/repos/services/releaseService";
 
 interface UseReleaseReturn {
   latestRelease: ReleaseInfo | null;

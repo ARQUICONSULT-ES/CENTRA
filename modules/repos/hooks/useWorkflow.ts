@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
-import { WorkflowStatus } from "../types";
+import { WorkflowStatus } from "@/modules/repos/types";
 import { 
   fetchWorkflowStatus as fetchWorkflowStatusService, 
   triggerWorkflow as triggerWorkflowService 
-} from "../services/workflowService";
+} from "@/modules/repos/services/workflowService";
 
 interface TriggerWorkflowParams {
   owner: string;

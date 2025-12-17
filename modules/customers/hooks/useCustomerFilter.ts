@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { Customer } from "../types";
+import type { Customer } from "@/modules/customers/types";
 
 type SortOption = "name" | "id";
 

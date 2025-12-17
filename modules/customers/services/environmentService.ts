@@ -1,5 +1,5 @@
-import type { Environment, EnvironmentWithCustomer } from "../types";
-import { dataCache, CACHE_KEYS } from "../../shared/utils/cache";
+import type { Environment, EnvironmentWithCustomer } from "@/modules/customers/types";
+import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 const API_BASE = "/api/customers";
 

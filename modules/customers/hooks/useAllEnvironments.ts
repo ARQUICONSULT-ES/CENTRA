@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchAllEnvironments } from '../services/environmentService';
-import type { EnvironmentWithCustomer } from '../types';
-import { dataCache, CACHE_KEYS } from '../../shared/utils/cache';
+import { fetchAllEnvironments } from '@/modules/customers/services/environmentService';
+import type { EnvironmentWithCustomer } from '@/modules/customers/types';
+import { dataCache, CACHE_KEYS } from '@/modules/shared/utils/cache';
 
 export function useAllEnvironments() {
   const [environments, setEnvironments] = useState<EnvironmentWithCustomer[]>(() => {

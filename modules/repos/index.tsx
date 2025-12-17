@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef } from "react";
-import { RepoList } from "./components/RepoList";
-import type { RepoListHandle } from "./types";
-import { useRepos } from "./hooks/useRepos";
-import { useRepoFilter } from "./hooks/useRepoFilter";
+import { RepoList } from "@/modules/repos/components/RepoList";
+import type { RepoListHandle } from "@/modules/repos/types";
+import { useRepos } from "@/modules/repos/hooks/useRepos";
+import { useRepoFilter } from "@/modules/repos/hooks/useRepoFilter";
 
 function SkeletonCard() {
   return (

@@ -1,12 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CustomerList } from "../components/CustomerList";
-import { CustomerListSkeleton } from "../components/CustomerCardSkeleton";
-import CustomerFormModal from "../components/CustomerFormModal";
-import type { Customer, CustomerListHandle } from "../types";
-import { useCustomers } from "../hooks/useCustomers";
-import { useCustomerFilter } from "../hooks/useCustomerFilter";
+import { CustomerList } from "@/modules/customers/components/CustomerList";
+import { CustomerListSkeleton } from "@/modules/customers/components/CustomerCardSkeleton";
+import CustomerFormModal from "@/modules/customers/components/CustomerFormModal";
+import type { Customer, CustomerListHandle } from "@/modules/customers/types";
+import { useCustomers } from "@/modules/customers/hooks/useCustomers";
+import { useCustomerFilter } from "@/modules/customers/hooks/useCustomerFilter";
 
 export function CustomersPage() {
   const { customers, isLoading, isRefreshing, error, refreshCustomers } = useCustomers();

@@ -1,5 +1,5 @@
-import type { ApplicationWithEnvironment } from "../types";
-import { dataCache, CACHE_KEYS } from "../../shared/utils/cache";
+import type { ApplicationWithEnvironment } from "@/modules/customers/types";
+import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 /**
  * Obtiene todas las aplicaciones de todos los entornos desde la base de datos

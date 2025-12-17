@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ApplicationsList } from "../components/ApplicationsList";
-import { ApplicationListSkeleton } from "../components/ApplicationCardSkeleton";
-import { useAllApplications } from "../hooks/useAllApplications";
-import { syncAllApplications } from "../services/applicationService";
+import { ApplicationsList } from "@/modules/customers/components/ApplicationsList";
+import { ApplicationListSkeleton } from "@/modules/customers/components/ApplicationCardSkeleton";
+import { useAllApplications } from "@/modules/customers/hooks/useAllApplications";
+import { syncAllApplications } from "@/modules/customers/services/applicationService";
 
 export function ApplicationsPage() {
   const { applications, loading, isRefreshing, error, reload } = useAllApplications();

@@ -9,11 +9,11 @@ import type {
   ReleaseInfo, 
   RepoCardProps, 
   Commit 
-} from "../types";
-import { languageColors } from "../types";
-import { useWorkflow } from "../hooks/useWorkflow";
-import { useRelease } from "../hooks/useRelease";
-import { getNextMinorVersion, getRelativeTime } from "../services/utils";
+} from "@/modules/repos/types";
+import { languageColors } from "@/modules/repos/types";
+import { useWorkflow } from "@/modules/repos/hooks/useWorkflow";
+import { useRelease } from "@/modules/repos/hooks/useRelease";
+import { getNextMinorVersion, getRelativeTime } from "@/modules/repos/services/utils";
 
 export function RepoCard({ 
   repo, 

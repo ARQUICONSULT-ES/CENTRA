@@ -1,5 +1,5 @@
-import type { Customer } from "../types";
-import { dataCache, CACHE_KEYS } from "../../shared/utils/cache";
+import type { Customer } from "@/modules/customers/types";
+import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 const API_BASE = "/api/customers";
 

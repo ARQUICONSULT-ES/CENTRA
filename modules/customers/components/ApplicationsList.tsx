@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { ApplicationWithEnvironment } from "../types";
+import type { ApplicationWithEnvironment } from "@/modules/customers/types";
 import { ApplicationCard } from "./ApplicationCard";
 
 interface ApplicationsListProps {

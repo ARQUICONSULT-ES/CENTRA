@@ -1,4 +1,4 @@
-import type { Tenant } from "../types";
+import type { Tenant } from "@/modules/customers/types";
 
 const API_BASE = "/api/customers";
 

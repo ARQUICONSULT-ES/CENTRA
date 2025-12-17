@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { GitHubRepository } from "@/types/github";
-import { RepoExtraInfo } from "../types";
-import { fetchBatchReleases } from "../services/releaseService";
-import { fetchBatchWorkflows } from "../services/workflowService";
-import { dataCache, CACHE_KEYS } from "../../shared/utils/cache";
+import { RepoExtraInfo } from "@/modules/repos/types";
+import { fetchBatchReleases } from "@/modules/repos/services/releaseService";
+import { fetchBatchWorkflows } from "@/modules/repos/services/workflowService";
+import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 interface UseRepoExtraInfoReturn {
   extraInfo: Record<string, RepoExtraInfo>;

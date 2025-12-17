@@ -1,12 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import EnvironmentList from "../components/EnvironmentList";
-import { EnvironmentListSkeleton } from "../components/EnvironmentCardSkeleton";
-import type { EnvironmentListRef } from "../components/EnvironmentList";
-import { useAllEnvironments } from "../hooks/useAllEnvironments";
-import { useEnvironmentFilter } from "../hooks/useEnvironmentFilter";
-import { useTenants } from "../hooks/useTenants";
+import EnvironmentList from "@/modules/customers/components/EnvironmentList";
+import { EnvironmentListSkeleton } from "@/modules/customers/components/EnvironmentCardSkeleton";
+import type { EnvironmentListRef } from "@/modules/customers/components/EnvironmentList";
+import { useAllEnvironments } from "@/modules/customers/hooks/useAllEnvironments";
+import { useEnvironmentFilter } from "@/modules/customers/hooks/useEnvironmentFilter";
+import { useTenants } from "@/modules/customers/hooks/useTenants";
 
 export function EnvironmentsPage() {
   const { tenants, fetchTenants } = useTenants();

@@ -1,4 +1,4 @@
-import { ReleaseInfo, Commit } from "../types";
+import { ReleaseInfo, Commit } from "@/modules/repos/types";
 
 const GITHUB_API_BASE = "/api/github";
 
