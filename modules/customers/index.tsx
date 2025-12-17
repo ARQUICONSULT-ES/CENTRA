@@ -10,6 +10,7 @@ import type { TenantListHandle, Tenant, Customer, CustomerListHandle } from "./t
 import { useTenants } from "./hooks/useTenants";
 import { useCustomers } from "./hooks/useCustomers";
 import { useTenantFilter } from "./hooks/useTenantFilter";
+import { useCustomerFilter } from "./hooks/useCustomerFilter";
 
 type ViewMode = "grouped" | "customers" | "tenants";
 
@@ -40,11 +41,18 @@ export function TenantsPage() {
   const { customers, isLoading: customersLoading, error: customersError, refreshCustomers } = useCustomers();
   const {
     filteredTenants,
-    searchQuery,
-    setSearchQuery,
-    sortBy,
-    setSortBy,
+    searchQuery: tenantSearchQuery,
+    setSearchQuery: setTenantSearchQuery,
+    sortBy: tenantSortBy,
+    setSortBy: setTenantSortBy,
   } = useTenantFilter(tenants);
+  const {
+    filteredCustomers,
+    searchQuery: customerSearchQuery,
+    setSearchQuery: setCustomerSearchQuery,
+    sortBy: customerSortBy,
+    setSortBy: setCustomerSortBy,
+  } = useCustomerFilter(customers);
   const tenantListRef = useRef<TenantListHandle>(null);
   const customerListRef = useRef<CustomerListHandle>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -265,7 +273,7 @@ export function TenantsPage() {
 
       {/* Barra de herramientas */}
       <div className="flex flex-col sm:flex-row gap-3">
-        {viewMode === "tenants" && (
+        {(viewMode === "tenants" || viewMode === "customers") && (
           <div className="relative flex-1">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -282,9 +290,9 @@ export function TenantsPage() {
             </svg>
             <input
               type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar tenants..."
+              value={viewMode === "customers" ? customerSearchQuery : tenantSearchQuery}
+              onChange={(e) => viewMode === "customers" ? setCustomerSearchQuery(e.target.value) : setTenantSearchQuery(e.target.value)}
+              placeholder={viewMode === "customers" ? "Buscar customers..." : "Buscar tenants..."}
               className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
             />
           </div>
@@ -298,9 +306,9 @@ export function TenantsPage() {
               </span>
               <div className="inline-flex rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden">
                 <button
-                  onClick={() => setSortBy("updated")}
+                  onClick={() => setTenantSortBy("updated")}
                   className={`px-3 py-2 text-sm font-medium transition-colors ${
-                    sortBy === "updated"
+                    tenantSortBy === "updated"
                       ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
                       : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
                   }`}
@@ -308,9 +316,9 @@ export function TenantsPage() {
                   Recientes
                 </button>
                 <button
-                  onClick={() => setSortBy("name")}
+                  onClick={() => setTenantSortBy("name")}
                   className={`px-3 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors ${
-                    sortBy === "name"
+                    tenantSortBy === "name"
                       ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
                       : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
                   }`}
@@ -318,14 +326,44 @@ export function TenantsPage() {
                   Nombre
                 </button>
                 <button
-                  onClick={() => setSortBy("tenant")}
+                  onClick={() => setTenantSortBy("tenant")}
                   className={`px-3 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors ${
-                    sortBy === "tenant"
+                    tenantSortBy === "tenant"
                       ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
                       : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
                   }`}
                 >
                   Tenant
+                </button>
+              </div>
+            </div>
+          )}
+
+          {viewMode === "customers" && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                Ordenar:
+              </span>
+              <div className="inline-flex rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden">
+                <button
+                  onClick={() => setCustomerSortBy("name")}
+                  className={`px-3 py-2 text-sm font-medium transition-colors ${
+                    customerSortBy === "name"
+                      ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                      : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  Nombre
+                </button>
+                <button
+                  onClick={() => setCustomerSortBy("id")}
+                  className={`px-3 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors ${
+                    customerSortBy === "id"
+                      ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                      : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  ID
                 </button>
               </div>
             </div>
@@ -507,7 +545,20 @@ export function TenantsPage() {
       )}
 
       {viewMode === "customers" && (
-        <CustomerList ref={customerListRef} customers={customers} onEdit={handleEditCustomer} />
+        <>
+          {filteredCustomers.length > 0 ? (
+            <CustomerList ref={customerListRef} customers={filteredCustomers} onEdit={handleEditCustomer} />
+          ) : (
+            <div className="text-center py-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              <p className="text-gray-600 dark:text-gray-400">
+                {customerSearchQuery ? `No se encontraron customers con "${customerSearchQuery}"` : "No hay customers"}
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       {viewMode === "tenants" && (
@@ -520,7 +571,7 @@ export function TenantsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               <p className="text-gray-600 dark:text-gray-400">
-                {searchQuery ? `No se encontraron tenants con "${searchQuery}"` : "No hay tenants"}
+                {tenantSearchQuery ? `No se encontraron tenants con "${tenantSearchQuery}"` : "No hay tenants"}
               </p>
             </div>
           )}
