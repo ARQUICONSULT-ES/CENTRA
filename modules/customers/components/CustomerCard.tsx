@@ -47,11 +47,18 @@ export function CustomerCard({ customer, onEdit }: CustomerCardProps) {
           >
             {customer.customerName}
           </button>
-          {customer.tenantsCount !== undefined && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-              {customer.tenantsCount} tenant{customer.tenantsCount !== 1 ? 's' : ''}
-            </p>
-          )}
+          <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
+            {customer.tenantsCount !== undefined && (
+              <div>
+                {customer.tenantsCount} tenant{customer.tenantsCount !== 1 ? 's' : ''}
+              </div>
+            )}
+            {customer.activeEnvironmentsCount !== undefined && (
+              <div>
+                {customer.activeEnvironmentsCount} entorno{customer.activeEnvironmentsCount !== 1 ? 's' : ''}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Menú de 3 puntos */}

@@ -14,16 +14,35 @@ export async function GET() {
             tenants: true,
           },
         },
+        tenants: {
+          include: {
+            environments: {
+              where: {
+                NOT: {
+                  status: 'SoftDeleted',
+                },
+              },
+            },
+          },
+        },
       },
     });
 
-    // Mapear para incluir el conteo de tenants
-    const customersWithCount = customers.map(customer => ({
-      id: customer.id,
-      customerName: customer.customerName,
-      imageBase64: customer.imageBase64,
-      tenantsCount: customer._count.tenants,
-    }));
+    // Mapear para incluir el conteo de tenants y entornos activos
+    const customersWithCount = customers.map(customer => {
+      const activeEnvironmentsCount = customer.tenants.reduce(
+        (total, tenant) => total + tenant.environments.length,
+        0
+      );
+
+      return {
+        id: customer.id,
+        customerName: customer.customerName,
+        imageBase64: customer.imageBase64,
+        tenantsCount: customer._count.tenants,
+        activeEnvironmentsCount,
+      };
+    });
 
     return NextResponse.json(customersWithCount);
   } catch (error) {
