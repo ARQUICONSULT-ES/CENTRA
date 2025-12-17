@@ -244,7 +244,7 @@ export function TenantsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Clientes y Tenants
+            Administración de clientes
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             {customers.length} clientes • {tenants.length} tenants • {environments.length} entornos • {applications.length} aplicaciones
