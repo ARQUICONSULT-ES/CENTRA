@@ -20,25 +20,16 @@ export default function EnvironmentCard({ environment }: EnvironmentCardProps) {
   
   return (
     <div className={`group relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 ${isDeleted ? 'opacity-60 bg-red-50 dark:bg-red-900/10' : ''}`}>
-      {/* Descripción del tenant en esquina superior derecha */}
-      {environment.tenantDescription && (
-        <div className="absolute top-3 right-3">
-          <span className="px-2 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 rounded flex-shrink-0">
-            {environment.tenantDescription}
-          </span>
-        </div>
-      )}
-      
-      {/* Tipo de entorno debajo de la descripción del tenant */}
+      {/* Tipo de entorno en esquina superior derecha */}
       {environment.type && (
-        <div className={`absolute right-3 ${environment.tenantDescription ? 'top-10' : 'top-3'}`}>
+        <div className="absolute top-3 right-3">
           <span className={`px-2 py-0.5 text-xs font-medium rounded flex-shrink-0 ${getTypeColor(environment.type)}`}>
             {environment.type}
           </span>
         </div>
       )}
       {isDeleted && (
-        <div className={`absolute right-3 ${environment.tenantDescription && environment.type ? 'top-[4.5rem]' : environment.tenantDescription || environment.type ? 'top-10' : 'top-3'}`}>
+        <div className={`absolute right-3 ${environment.type ? 'top-10' : 'top-3'}`}>
           <span className="px-1.5 py-0.5 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded flex-shrink-0">
             Eliminado
           </span>
