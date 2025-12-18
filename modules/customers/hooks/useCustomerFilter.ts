@@ -1,47 +1,53 @@
 "use client";
 
-import { useState, useMemo } from "react";
 import type { Customer } from "@/modules/customers/types";
+import type { FilterConfig } from "@/modules/customers/types/filters";
+import { useGenericFilter } from "./useGenericFilter";
 
-type SortOption = "name" | "id";
+// Configuración de filtros para clientes
+export const customerFilterConfig: FilterConfig<Customer> = {
+  fields: [
+    {
+      key: "id",
+      label: "ID del Cliente",
+      type: "text",
+      operator: "contains",
+      placeholder: "Filtrar por ID...",
+      getValue: (customer) => customer.id,
+    },
+    {
+      key: "customerName",
+      label: "Nombre del Cliente",
+      type: "text",
+      operator: "contains",
+      placeholder: "Filtrar por nombre...",
+      getValue: (customer) => customer.customerName,
+    },
+    {
+      key: "tenantsCount",
+      label: "Número de Tenants",
+      type: "range",
+      operator: "between",
+      placeholder: "Mínimo",
+      min: 0,
+      getValue: (customer) => customer.tenantsCount ?? 0,
+    },
+    {
+      key: "activeEnvironmentsCount",
+      label: "Entornos Activos",
+      type: "range",
+      operator: "between",
+      placeholder: "Mínimo",
+      min: 0,
+      getValue: (customer) => customer.activeEnvironmentsCount ?? 0,
+    },
+  ],
+};
 
+/**
+ * Hook para filtrar clientes usando el sistema genérico de filtros
+ */
 export function useCustomerFilter(customers: Customer[]) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("name");
-
-  const filteredCustomers = useMemo(() => {
-    let result = [...customers];
-
-    // Filtrado por búsqueda
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(
-        (customer) =>
-          customer.customerName.toLowerCase().includes(query) ||
-          customer.id.toLowerCase().includes(query)
-      );
-    }
-
-    // Ordenamiento
-    result.sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return a.customerName.localeCompare(b.customerName);
-        case "id":
-          return a.id.localeCompare(b.id);
-        default:
-          return 0;
-      }
-    });
-
-    return result;
-  }, [customers, searchQuery, sortBy]);
-
-  return {
-    filteredCustomers,
-    searchQuery,
-    setSearchQuery,
-    sortBy,
-    setSortBy,
-  };
+  return useGenericFilter(customers, customerFilterConfig, "customerName");
 }
+

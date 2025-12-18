@@ -4,23 +4,29 @@ import { useRef, useState } from "react";
 import { CustomerList } from "@/modules/customers/components/CustomerList";
 import { CustomerListSkeleton } from "@/modules/customers/components/CustomerCardSkeleton";
 import CustomerFormModal from "@/modules/customers/components/CustomerFormModal";
+import { GenericFilterPanel } from "@/modules/customers/components/CustomerFilterPanel";
 import type { Customer, CustomerListHandle } from "@/modules/customers/types";
 import { useCustomers } from "@/modules/customers/hooks/useCustomers";
-import { useCustomerFilter } from "@/modules/customers/hooks/useCustomerFilter";
+import { useCustomerFilter, customerFilterConfig } from "@/modules/customers/hooks/useCustomerFilter";
 
 export function CustomersPage() {
   const { customers, isLoading, isRefreshing, error, refreshCustomers } = useCustomers();
   const {
-    filteredCustomers,
+    filteredItems,
     searchQuery,
     setSearchQuery,
     sortBy,
     setSortBy,
+    filters,
+    updateFilter,
+    clearFilters,
+    hasActiveFilters,
   } = useCustomerFilter(customers);
   
   const customerListRef = useRef<CustomerListHandle>(null);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(undefined);
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
   const handleRefresh = async () => {
     await refreshCustomers();
@@ -123,9 +129,9 @@ export function CustomersPage() {
             </span>
             <div className="inline-flex rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden">
               <button
-                onClick={() => setSortBy("name")}
+                onClick={() => setSortBy("customerName")}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  sortBy === "name"
+                  sortBy === "customerName"
                     ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
                     : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
                 }`}
@@ -177,6 +183,17 @@ export function CustomersPage() {
         </div>
       </div>
 
+      {/* Panel de filtros avanzados */}
+      <GenericFilterPanel
+        config={customerFilterConfig}
+        filters={filters}
+        onFilterChange={updateFilter}
+        onClearFilters={clearFilters}
+        hasActiveFilters={hasActiveFilters}
+        isOpen={isFilterPanelOpen}
+        onToggle={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+      />
+
       {/* Modal */}
       <CustomerFormModal
         isOpen={isCustomerModalOpen}
@@ -188,8 +205,8 @@ export function CustomersPage() {
       {/* Contenido */}
       {isLoading ? (
         <CustomerListSkeleton count={6} />
-      ) : filteredCustomers.length > 0 ? (
-        <CustomerList ref={customerListRef} customers={filteredCustomers} onEdit={handleEditCustomer} />
+      ) : filteredItems.length > 0 ? (
+        <CustomerList ref={customerListRef} customers={filteredItems} onEdit={handleEditCustomer} />
       ) : (
         <div className="text-center py-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
           <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
