@@ -33,7 +33,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { name, email, password, role, githubToken } = body;
+    const { name, email, password, role, githubToken, allowedCustomerIds } = body;
 
     // Validar campos requeridos
     if (!name || !email || !role) {
@@ -83,6 +83,25 @@ export async function PUT(
       updateData.password = hashedPassword;
     }
 
+    // Actualizar las relaciones de clientes permitidos
+    if (allowedCustomerIds !== undefined) {
+      // Primero eliminamos todas las relaciones existentes
+      await prisma.userCustomer.deleteMany({
+        where: { userId: id },
+      });
+
+      // Luego creamos las nuevas relaciones si hay IDs
+      if (allowedCustomerIds && allowedCustomerIds.length > 0) {
+        updateData.allowedCustomers = {
+          create: allowedCustomerIds.map((customerId: string) => ({
+            customer: {
+              connect: { id: customerId },
+            },
+          })),
+        };
+      }
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id },
       data: updateData,
@@ -95,10 +114,31 @@ export async function PUT(
         createdAt: true,
         updatedAt: true,
         password: false,
+        allowedCustomers: {
+          select: {
+            customer: {
+              select: {
+                id: true,
+                customerName: true,
+                imageBase64: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    return NextResponse.json({ user: updatedUser });
+    // Transformar la estructura
+    const transformedUser = {
+      ...updatedUser,
+      allowedCustomers: updatedUser.allowedCustomers.map(ac => ({
+        id: ac.customer.id,
+        name: ac.customer.customerName,
+        logo: ac.customer.imageBase64,
+      })),
+    };
+
+    return NextResponse.json({ user: transformedUser });
   } catch (error) {
     console.error("Error al actualizar usuario:", error);
     return NextResponse.json(

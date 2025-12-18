@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { User, UserFormData } from "@/modules/admin/types";
+import type { User, UserFormData, AllowedCustomer } from "@/modules/admin/types";
 import { useUserForm } from "@/modules/admin/hooks/useUserForm";
+import { CustomerSelector } from "./CustomerSelector";
 
 interface UserFormModalProps {
   isOpen: boolean;
@@ -23,7 +24,9 @@ export default function UserFormModal({
     password: "",
     role: "USER",
     githubToken: "",
+    allowedCustomerIds: [],
   });
+  const [selectedCustomers, setSelectedCustomers] = useState<AllowedCustomer[]>([]);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -48,7 +51,9 @@ export default function UserFormModal({
         password: "",
         role: user.role,
         githubToken: user.githubToken || "",
+        allowedCustomerIds: user.allowedCustomers?.map(c => c.id) || [],
       });
+      setSelectedCustomers(user.allowedCustomers || []);
       setShowPassword(false);
       setShowResetPasswordModal(false);
       setNewPassword("");
@@ -61,7 +66,9 @@ export default function UserFormModal({
         password: "",
         role: "USER",
         githubToken: "",
+        allowedCustomerIds: [],
       });
+      setSelectedCustomers([]);
       setShowPassword(false);
       setShowResetPasswordModal(false);
       setNewPassword("");
@@ -83,6 +90,7 @@ export default function UserFormModal({
           email: formData.email,
           role: formData.role,
           githubToken: formData.githubToken,
+          allowedCustomerIds: selectedCustomers.map(c => c.id),
         };
 
         await updateUser(user.id, dataToSend);
@@ -93,7 +101,12 @@ export default function UserFormModal({
           return;
         }
 
-        await createUser(formData);
+        const dataToSend: UserFormData = {
+          ...formData,
+          allowedCustomerIds: selectedCustomers.map(c => c.id),
+        };
+
+        await createUser(dataToSend);
       }
     } catch (err) {
       // El error ya se maneja en el hook
@@ -307,6 +320,22 @@ export default function UserFormModal({
                     Restablecer Contraseña
                   </div>
                 </button>
+              </div>
+            )}
+
+            {/* Customer Permissions (solo para usuarios no admin) */}
+            {formData.role === 'USER' && (
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Permisos de Clientes
+                </label>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                  Selecciona los clientes que este usuario podrá ver. También podrá ver sus tenants, entornos y aplicaciones.
+                </p>
+                <CustomerSelector
+                  selectedCustomers={selectedCustomers}
+                  onChange={setSelectedCustomers}
+                />
               </div>
             )}
 

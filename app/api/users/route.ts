@@ -41,10 +41,31 @@ export async function GET() {
         createdAt: true,
         updatedAt: true,
         password: false, // No devolver password
+        allowedCustomers: {
+          select: {
+            customer: {
+              select: {
+                id: true,
+                customerName: true,
+                imageBase64: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    return NextResponse.json({ users });
+    // Transformar la estructura de allowedCustomers
+    const transformedUsers = users.map(user => ({
+      ...user,
+      allowedCustomers: user.allowedCustomers.map(ac => ({
+        id: ac.customer.id,
+        name: ac.customer.customerName,
+        logo: ac.customer.imageBase64,
+      })),
+    }));
+
+    return NextResponse.json({ users: transformedUsers });
   } catch (error) {
     console.error("Error al obtener usuarios:", error);
     return NextResponse.json(
@@ -79,7 +100,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, email, password, role, githubToken } = body;
+    const { name, email, password, role, githubToken, allowedCustomerIds } = body;
 
     // Validar campos requeridos
     if (!name || !email || !password || !role) {
@@ -104,7 +125,7 @@ export async function POST(request: Request) {
     // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear el nuevo usuario
+    // Crear el nuevo usuario con relaciones de clientes
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -112,6 +133,13 @@ export async function POST(request: Request) {
         password: hashedPassword,
         role,
         githubToken: githubToken || null,
+        allowedCustomers: allowedCustomerIds && allowedCustomerIds.length > 0 ? {
+          create: allowedCustomerIds.map((customerId: string) => ({
+            customer: {
+              connect: { id: customerId },
+            },
+          })),
+        } : undefined,
       },
       select: {
         id: true,
@@ -122,10 +150,31 @@ export async function POST(request: Request) {
         createdAt: true,
         updatedAt: true,
         password: false,
+        allowedCustomers: {
+          select: {
+            customer: {
+              select: {
+                id: true,
+                customerName: true,
+                imageBase64: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    return NextResponse.json({ user: newUser }, { status: 201 });
+    // Transformar la estructura
+    const transformedUser = {
+      ...newUser,
+      allowedCustomers: newUser.allowedCustomers.map(ac => ({
+        id: ac.customer.id,
+        name: ac.customer.customerName,
+        logo: ac.customer.imageBase64,
+      })),
+    };
+
+    return NextResponse.json({ user: transformedUser }, { status: 201 });
   } catch (error) {
     console.error("Error al crear usuario:", error);
     return NextResponse.json(

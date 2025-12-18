@@ -137,6 +137,12 @@ exports.Prisma.CustomerScalarFieldEnum = {
   imageBase64: 'imageBase64'
 };
 
+exports.Prisma.UserCustomerScalarFieldEnum = {
+  userId: 'userId',
+  customerId: 'customerId',
+  assignedAt: 'assignedAt'
+};
+
 exports.Prisma.TenantScalarFieldEnum = {
   id: 'id',
   customerId: 'customerId',
@@ -196,6 +202,7 @@ exports.Role = exports.$Enums.Role = {
 exports.Prisma.ModelName = {
   User: 'User',
   Customer: 'Customer',
+  UserCustomer: 'UserCustomer',
   Tenant: 'Tenant',
   Environment: 'Environment',
   Extension: 'Extension'

@@ -24,6 +24,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Customer = $Result.DefaultSelection<Prisma.$CustomerPayload>
 /**
+ * Model UserCustomer
+ * 
+ */
+export type UserCustomer = $Result.DefaultSelection<Prisma.$UserCustomerPayload>
+/**
  * Model Tenant
  * 
  */
@@ -192,6 +197,16 @@ export class PrismaClient<
     * ```
     */
   get customer(): Prisma.CustomerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userCustomer`: Exposes CRUD operations for the **UserCustomer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserCustomers
+    * const userCustomers = await prisma.userCustomer.findMany()
+    * ```
+    */
+  get userCustomer(): Prisma.UserCustomerDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.tenant`: Exposes CRUD operations for the **Tenant** model.
@@ -658,6 +673,7 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     Customer: 'Customer',
+    UserCustomer: 'UserCustomer',
     Tenant: 'Tenant',
     Environment: 'Environment',
     Extension: 'Extension'
@@ -676,7 +692,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "tenant" | "environment" | "extension"
+      modelProps: "user" | "customer" | "userCustomer" | "tenant" | "environment" | "extension"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -825,6 +841,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CustomerCountArgs<ExtArgs>
             result: $Utils.Optional<CustomerCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserCustomer: {
+        payload: Prisma.$UserCustomerPayload<ExtArgs>
+        fields: Prisma.UserCustomerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserCustomerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserCustomerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>
+          }
+          findFirst: {
+            args: Prisma.UserCustomerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserCustomerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>
+          }
+          findMany: {
+            args: Prisma.UserCustomerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>[]
+          }
+          create: {
+            args: Prisma.UserCustomerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>
+          }
+          createMany: {
+            args: Prisma.UserCustomerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserCustomerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>[]
+          }
+          delete: {
+            args: Prisma.UserCustomerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>
+          }
+          update: {
+            args: Prisma.UserCustomerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserCustomerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserCustomerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserCustomerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserCustomerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserCustomerPayload>
+          }
+          aggregate: {
+            args: Prisma.UserCustomerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserCustomer>
+          }
+          groupBy: {
+            args: Prisma.UserCustomerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserCustomerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserCustomerCountArgs<ExtArgs>
+            result: $Utils.Optional<UserCustomerCountAggregateOutputType> | number
           }
         }
       }
@@ -1160,6 +1250,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     customer?: CustomerOmit
+    userCustomer?: UserCustomerOmit
     tenant?: TenantOmit
     environment?: EnvironmentOmit
     extension?: ExtensionOmit
@@ -1239,15 +1330,48 @@ export namespace Prisma {
 
 
   /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    allowedCustomers: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    allowedCustomers?: boolean | UserCountOutputTypeCountAllowedCustomersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAllowedCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserCustomerWhereInput
+  }
+
+
+  /**
    * Count Type CustomerCountOutputType
    */
 
   export type CustomerCountOutputType = {
     tenants: number
+    allowedUsers: number
   }
 
   export type CustomerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenants?: boolean | CustomerCountOutputTypeCountTenantsArgs
+    allowedUsers?: boolean | CustomerCountOutputTypeCountAllowedUsersArgs
   }
 
   // Custom InputTypes
@@ -1266,6 +1390,13 @@ export namespace Prisma {
    */
   export type CustomerCountOutputTypeCountTenantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TenantWhereInput
+  }
+
+  /**
+   * CustomerCountOutputType without action
+   */
+  export type CustomerCountOutputTypeCountAllowedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserCustomerWhereInput
   }
 
 
@@ -1523,6 +1654,8 @@ export namespace Prisma {
     githubToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1559,10 +1692,18 @@ export namespace Prisma {
   }
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "githubToken" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
-    objects: {}
+    objects: {
+      allowedCustomers: Prisma.$UserCustomerPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
@@ -1966,6 +2107,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    allowedCustomers<T extends User$allowedCustomersArgs<ExtArgs> = {}>(args?: Subset<T, User$allowedCustomersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2020,6 +2162,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -2038,6 +2184,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -2055,6 +2205,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -2104,6 +2258,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where?: UserWhereInput
@@ -2152,6 +2310,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where?: UserWhereInput
@@ -2194,6 +2356,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to create a User.
      */
@@ -2242,6 +2408,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to update a User.
      */
@@ -2309,6 +2479,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * The filter to search for the User to update in case it exists.
      */
     where: UserWhereUniqueInput
@@ -2335,6 +2509,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter which User to delete.
      */
     where: UserWhereUniqueInput
@@ -2355,6 +2533,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.allowedCustomers
+   */
+  export type User$allowedCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    where?: UserCustomerWhereInput
+    orderBy?: UserCustomerOrderByWithRelationInput | UserCustomerOrderByWithRelationInput[]
+    cursor?: UserCustomerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserCustomerScalarFieldEnum | UserCustomerScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2366,6 +2568,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
   }
 
 
@@ -2518,6 +2724,7 @@ export namespace Prisma {
     customerName?: boolean
     imageBase64?: boolean
     tenants?: boolean | Customer$tenantsArgs<ExtArgs>
+    allowedUsers?: boolean | Customer$allowedUsersArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
@@ -2542,6 +2749,7 @@ export namespace Prisma {
   export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerName" | "imageBase64", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenants?: boolean | Customer$tenantsArgs<ExtArgs>
+    allowedUsers?: boolean | Customer$allowedUsersArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2551,6 +2759,7 @@ export namespace Prisma {
     name: "Customer"
     objects: {
       tenants: Prisma.$TenantPayload<ExtArgs>[]
+      allowedUsers: Prisma.$UserCustomerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2951,6 +3160,7 @@ export namespace Prisma {
   export interface Prisma__CustomerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     tenants<T extends Customer$tenantsArgs<ExtArgs> = {}>(args?: Subset<T, Customer$tenantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    allowedUsers<T extends Customer$allowedUsersArgs<ExtArgs> = {}>(args?: Subset<T, Customer$allowedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3395,6 +3605,30 @@ export namespace Prisma {
   }
 
   /**
+   * Customer.allowedUsers
+   */
+  export type Customer$allowedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    where?: UserCustomerWhereInput
+    orderBy?: UserCustomerOrderByWithRelationInput | UserCustomerOrderByWithRelationInput[]
+    cursor?: UserCustomerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserCustomerScalarFieldEnum | UserCustomerScalarFieldEnum[]
+  }
+
+  /**
    * Customer without action
    */
   export type CustomerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3410,6 +3644,1046 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CustomerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserCustomer
+   */
+
+  export type AggregateUserCustomer = {
+    _count: UserCustomerCountAggregateOutputType | null
+    _min: UserCustomerMinAggregateOutputType | null
+    _max: UserCustomerMaxAggregateOutputType | null
+  }
+
+  export type UserCustomerMinAggregateOutputType = {
+    userId: string | null
+    customerId: string | null
+    assignedAt: Date | null
+  }
+
+  export type UserCustomerMaxAggregateOutputType = {
+    userId: string | null
+    customerId: string | null
+    assignedAt: Date | null
+  }
+
+  export type UserCustomerCountAggregateOutputType = {
+    userId: number
+    customerId: number
+    assignedAt: number
+    _all: number
+  }
+
+
+  export type UserCustomerMinAggregateInputType = {
+    userId?: true
+    customerId?: true
+    assignedAt?: true
+  }
+
+  export type UserCustomerMaxAggregateInputType = {
+    userId?: true
+    customerId?: true
+    assignedAt?: true
+  }
+
+  export type UserCustomerCountAggregateInputType = {
+    userId?: true
+    customerId?: true
+    assignedAt?: true
+    _all?: true
+  }
+
+  export type UserCustomerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserCustomer to aggregate.
+     */
+    where?: UserCustomerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserCustomers to fetch.
+     */
+    orderBy?: UserCustomerOrderByWithRelationInput | UserCustomerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserCustomerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserCustomers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserCustomers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserCustomers
+    **/
+    _count?: true | UserCustomerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserCustomerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserCustomerMaxAggregateInputType
+  }
+
+  export type GetUserCustomerAggregateType<T extends UserCustomerAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserCustomer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserCustomer[P]>
+      : GetScalarType<T[P], AggregateUserCustomer[P]>
+  }
+
+
+
+
+  export type UserCustomerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserCustomerWhereInput
+    orderBy?: UserCustomerOrderByWithAggregationInput | UserCustomerOrderByWithAggregationInput[]
+    by: UserCustomerScalarFieldEnum[] | UserCustomerScalarFieldEnum
+    having?: UserCustomerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserCustomerCountAggregateInputType | true
+    _min?: UserCustomerMinAggregateInputType
+    _max?: UserCustomerMaxAggregateInputType
+  }
+
+  export type UserCustomerGroupByOutputType = {
+    userId: string
+    customerId: string
+    assignedAt: Date
+    _count: UserCustomerCountAggregateOutputType | null
+    _min: UserCustomerMinAggregateOutputType | null
+    _max: UserCustomerMaxAggregateOutputType | null
+  }
+
+  type GetUserCustomerGroupByPayload<T extends UserCustomerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserCustomerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserCustomerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserCustomerGroupByOutputType[P]>
+            : GetScalarType<T[P], UserCustomerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserCustomerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    customerId?: boolean
+    assignedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userCustomer"]>
+
+  export type UserCustomerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    customerId?: boolean
+    assignedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userCustomer"]>
+
+  export type UserCustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    customerId?: boolean
+    assignedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userCustomer"]>
+
+  export type UserCustomerSelectScalar = {
+    userId?: boolean
+    customerId?: boolean
+    assignedAt?: boolean
+  }
+
+  export type UserCustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "customerId" | "assignedAt", ExtArgs["result"]["userCustomer"]>
+  export type UserCustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }
+  export type UserCustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }
+  export type UserCustomerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }
+
+  export type $UserCustomerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserCustomer"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      customer: Prisma.$CustomerPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      userId: string
+      customerId: string
+      assignedAt: Date
+    }, ExtArgs["result"]["userCustomer"]>
+    composites: {}
+  }
+
+  type UserCustomerGetPayload<S extends boolean | null | undefined | UserCustomerDefaultArgs> = $Result.GetResult<Prisma.$UserCustomerPayload, S>
+
+  type UserCustomerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserCustomerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserCustomerCountAggregateInputType | true
+    }
+
+  export interface UserCustomerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserCustomer'], meta: { name: 'UserCustomer' } }
+    /**
+     * Find zero or one UserCustomer that matches the filter.
+     * @param {UserCustomerFindUniqueArgs} args - Arguments to find a UserCustomer
+     * @example
+     * // Get one UserCustomer
+     * const userCustomer = await prisma.userCustomer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserCustomerFindUniqueArgs>(args: SelectSubset<T, UserCustomerFindUniqueArgs<ExtArgs>>): Prisma__UserCustomerClient<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserCustomer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserCustomerFindUniqueOrThrowArgs} args - Arguments to find a UserCustomer
+     * @example
+     * // Get one UserCustomer
+     * const userCustomer = await prisma.userCustomer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserCustomerFindUniqueOrThrowArgs>(args: SelectSubset<T, UserCustomerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserCustomerClient<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserCustomer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCustomerFindFirstArgs} args - Arguments to find a UserCustomer
+     * @example
+     * // Get one UserCustomer
+     * const userCustomer = await prisma.userCustomer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserCustomerFindFirstArgs>(args?: SelectSubset<T, UserCustomerFindFirstArgs<ExtArgs>>): Prisma__UserCustomerClient<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserCustomer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCustomerFindFirstOrThrowArgs} args - Arguments to find a UserCustomer
+     * @example
+     * // Get one UserCustomer
+     * const userCustomer = await prisma.userCustomer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserCustomerFindFirstOrThrowArgs>(args?: SelectSubset<T, UserCustomerFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserCustomerClient<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserCustomers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCustomerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserCustomers
+     * const userCustomers = await prisma.userCustomer.findMany()
+     * 
+     * // Get first 10 UserCustomers
+     * const userCustomers = await prisma.userCustomer.findMany({ take: 10 })
+     * 
+     * // Only select the `userId`
+     * const userCustomerWithUserIdOnly = await prisma.userCustomer.findMany({ select: { userId: true } })
+     * 
+     */
+    findMany<T extends UserCustomerFindManyArgs>(args?: SelectSubset<T, UserCustomerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserCustomer.
+     * @param {UserCustomerCreateArgs} args - Arguments to create a UserCustomer.
+     * @example
+     * // Create one UserCustomer
+     * const UserCustomer = await prisma.userCustomer.create({
+     *   data: {
+     *     // ... data to create a UserCustomer
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserCustomerCreateArgs>(args: SelectSubset<T, UserCustomerCreateArgs<ExtArgs>>): Prisma__UserCustomerClient<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserCustomers.
+     * @param {UserCustomerCreateManyArgs} args - Arguments to create many UserCustomers.
+     * @example
+     * // Create many UserCustomers
+     * const userCustomer = await prisma.userCustomer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserCustomerCreateManyArgs>(args?: SelectSubset<T, UserCustomerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserCustomers and returns the data saved in the database.
+     * @param {UserCustomerCreateManyAndReturnArgs} args - Arguments to create many UserCustomers.
+     * @example
+     * // Create many UserCustomers
+     * const userCustomer = await prisma.userCustomer.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserCustomers and only return the `userId`
+     * const userCustomerWithUserIdOnly = await prisma.userCustomer.createManyAndReturn({
+     *   select: { userId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserCustomerCreateManyAndReturnArgs>(args?: SelectSubset<T, UserCustomerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserCustomer.
+     * @param {UserCustomerDeleteArgs} args - Arguments to delete one UserCustomer.
+     * @example
+     * // Delete one UserCustomer
+     * const UserCustomer = await prisma.userCustomer.delete({
+     *   where: {
+     *     // ... filter to delete one UserCustomer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserCustomerDeleteArgs>(args: SelectSubset<T, UserCustomerDeleteArgs<ExtArgs>>): Prisma__UserCustomerClient<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserCustomer.
+     * @param {UserCustomerUpdateArgs} args - Arguments to update one UserCustomer.
+     * @example
+     * // Update one UserCustomer
+     * const userCustomer = await prisma.userCustomer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserCustomerUpdateArgs>(args: SelectSubset<T, UserCustomerUpdateArgs<ExtArgs>>): Prisma__UserCustomerClient<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserCustomers.
+     * @param {UserCustomerDeleteManyArgs} args - Arguments to filter UserCustomers to delete.
+     * @example
+     * // Delete a few UserCustomers
+     * const { count } = await prisma.userCustomer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserCustomerDeleteManyArgs>(args?: SelectSubset<T, UserCustomerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserCustomers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCustomerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserCustomers
+     * const userCustomer = await prisma.userCustomer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserCustomerUpdateManyArgs>(args: SelectSubset<T, UserCustomerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserCustomers and returns the data updated in the database.
+     * @param {UserCustomerUpdateManyAndReturnArgs} args - Arguments to update many UserCustomers.
+     * @example
+     * // Update many UserCustomers
+     * const userCustomer = await prisma.userCustomer.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserCustomers and only return the `userId`
+     * const userCustomerWithUserIdOnly = await prisma.userCustomer.updateManyAndReturn({
+     *   select: { userId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserCustomerUpdateManyAndReturnArgs>(args: SelectSubset<T, UserCustomerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserCustomer.
+     * @param {UserCustomerUpsertArgs} args - Arguments to update or create a UserCustomer.
+     * @example
+     * // Update or create a UserCustomer
+     * const userCustomer = await prisma.userCustomer.upsert({
+     *   create: {
+     *     // ... data to create a UserCustomer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserCustomer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserCustomerUpsertArgs>(args: SelectSubset<T, UserCustomerUpsertArgs<ExtArgs>>): Prisma__UserCustomerClient<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserCustomers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCustomerCountArgs} args - Arguments to filter UserCustomers to count.
+     * @example
+     * // Count the number of UserCustomers
+     * const count = await prisma.userCustomer.count({
+     *   where: {
+     *     // ... the filter for the UserCustomers we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserCustomerCountArgs>(
+      args?: Subset<T, UserCustomerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserCustomerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserCustomer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCustomerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserCustomerAggregateArgs>(args: Subset<T, UserCustomerAggregateArgs>): Prisma.PrismaPromise<GetUserCustomerAggregateType<T>>
+
+    /**
+     * Group by UserCustomer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCustomerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserCustomerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserCustomerGroupByArgs['orderBy'] }
+        : { orderBy?: UserCustomerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserCustomerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserCustomerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserCustomer model
+   */
+  readonly fields: UserCustomerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserCustomer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserCustomerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserCustomer model
+   */
+  interface UserCustomerFieldRefs {
+    readonly userId: FieldRef<"UserCustomer", 'String'>
+    readonly customerId: FieldRef<"UserCustomer", 'String'>
+    readonly assignedAt: FieldRef<"UserCustomer", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserCustomer findUnique
+   */
+  export type UserCustomerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserCustomer to fetch.
+     */
+    where: UserCustomerWhereUniqueInput
+  }
+
+  /**
+   * UserCustomer findUniqueOrThrow
+   */
+  export type UserCustomerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserCustomer to fetch.
+     */
+    where: UserCustomerWhereUniqueInput
+  }
+
+  /**
+   * UserCustomer findFirst
+   */
+  export type UserCustomerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserCustomer to fetch.
+     */
+    where?: UserCustomerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserCustomers to fetch.
+     */
+    orderBy?: UserCustomerOrderByWithRelationInput | UserCustomerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserCustomers.
+     */
+    cursor?: UserCustomerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserCustomers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserCustomers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserCustomers.
+     */
+    distinct?: UserCustomerScalarFieldEnum | UserCustomerScalarFieldEnum[]
+  }
+
+  /**
+   * UserCustomer findFirstOrThrow
+   */
+  export type UserCustomerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserCustomer to fetch.
+     */
+    where?: UserCustomerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserCustomers to fetch.
+     */
+    orderBy?: UserCustomerOrderByWithRelationInput | UserCustomerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserCustomers.
+     */
+    cursor?: UserCustomerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserCustomers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserCustomers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserCustomers.
+     */
+    distinct?: UserCustomerScalarFieldEnum | UserCustomerScalarFieldEnum[]
+  }
+
+  /**
+   * UserCustomer findMany
+   */
+  export type UserCustomerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserCustomers to fetch.
+     */
+    where?: UserCustomerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserCustomers to fetch.
+     */
+    orderBy?: UserCustomerOrderByWithRelationInput | UserCustomerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserCustomers.
+     */
+    cursor?: UserCustomerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserCustomers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserCustomers.
+     */
+    skip?: number
+    distinct?: UserCustomerScalarFieldEnum | UserCustomerScalarFieldEnum[]
+  }
+
+  /**
+   * UserCustomer create
+   */
+  export type UserCustomerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserCustomer.
+     */
+    data: XOR<UserCustomerCreateInput, UserCustomerUncheckedCreateInput>
+  }
+
+  /**
+   * UserCustomer createMany
+   */
+  export type UserCustomerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserCustomers.
+     */
+    data: UserCustomerCreateManyInput | UserCustomerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserCustomer createManyAndReturn
+   */
+  export type UserCustomerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserCustomers.
+     */
+    data: UserCustomerCreateManyInput | UserCustomerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserCustomer update
+   */
+  export type UserCustomerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserCustomer.
+     */
+    data: XOR<UserCustomerUpdateInput, UserCustomerUncheckedUpdateInput>
+    /**
+     * Choose, which UserCustomer to update.
+     */
+    where: UserCustomerWhereUniqueInput
+  }
+
+  /**
+   * UserCustomer updateMany
+   */
+  export type UserCustomerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserCustomers.
+     */
+    data: XOR<UserCustomerUpdateManyMutationInput, UserCustomerUncheckedUpdateManyInput>
+    /**
+     * Filter which UserCustomers to update
+     */
+    where?: UserCustomerWhereInput
+    /**
+     * Limit how many UserCustomers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserCustomer updateManyAndReturn
+   */
+  export type UserCustomerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * The data used to update UserCustomers.
+     */
+    data: XOR<UserCustomerUpdateManyMutationInput, UserCustomerUncheckedUpdateManyInput>
+    /**
+     * Filter which UserCustomers to update
+     */
+    where?: UserCustomerWhereInput
+    /**
+     * Limit how many UserCustomers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserCustomer upsert
+   */
+  export type UserCustomerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserCustomer to update in case it exists.
+     */
+    where: UserCustomerWhereUniqueInput
+    /**
+     * In case the UserCustomer found by the `where` argument doesn't exist, create a new UserCustomer with this data.
+     */
+    create: XOR<UserCustomerCreateInput, UserCustomerUncheckedCreateInput>
+    /**
+     * In case the UserCustomer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserCustomerUpdateInput, UserCustomerUncheckedUpdateInput>
+  }
+
+  /**
+   * UserCustomer delete
+   */
+  export type UserCustomerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    /**
+     * Filter which UserCustomer to delete.
+     */
+    where: UserCustomerWhereUniqueInput
+  }
+
+  /**
+   * UserCustomer deleteMany
+   */
+  export type UserCustomerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserCustomers to delete
+     */
+    where?: UserCustomerWhereInput
+    /**
+     * Limit how many UserCustomers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserCustomer without action
+   */
+  export type UserCustomerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
   }
 
 
@@ -6853,6 +8127,15 @@ export namespace Prisma {
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
 
 
+  export const UserCustomerScalarFieldEnum: {
+    userId: 'userId',
+    customerId: 'customerId',
+    assignedAt: 'assignedAt'
+  };
+
+  export type UserCustomerScalarFieldEnum = (typeof UserCustomerScalarFieldEnum)[keyof typeof UserCustomerScalarFieldEnum]
+
+
   export const TenantScalarFieldEnum: {
     id: 'id',
     customerId: 'customerId',
@@ -6999,6 +8282,7 @@ export namespace Prisma {
     githubToken?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    allowedCustomers?: UserCustomerListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7010,6 +8294,7 @@ export namespace Prisma {
     githubToken?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    allowedCustomers?: UserCustomerOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -7024,6 +8309,7 @@ export namespace Prisma {
     githubToken?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    allowedCustomers?: UserCustomerListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -7062,6 +8348,7 @@ export namespace Prisma {
     customerName?: StringFilter<"Customer"> | string
     imageBase64?: StringNullableFilter<"Customer"> | string | null
     tenants?: TenantListRelationFilter
+    allowedUsers?: UserCustomerListRelationFilter
   }
 
   export type CustomerOrderByWithRelationInput = {
@@ -7069,6 +8356,7 @@ export namespace Prisma {
     customerName?: SortOrder
     imageBase64?: SortOrderInput | SortOrder
     tenants?: TenantOrderByRelationAggregateInput
+    allowedUsers?: UserCustomerOrderByRelationAggregateInput
   }
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
@@ -7079,6 +8367,7 @@ export namespace Prisma {
     customerName?: StringFilter<"Customer"> | string
     imageBase64?: StringNullableFilter<"Customer"> | string | null
     tenants?: TenantListRelationFilter
+    allowedUsers?: UserCustomerListRelationFilter
   }, "id">
 
   export type CustomerOrderByWithAggregationInput = {
@@ -7097,6 +8386,55 @@ export namespace Prisma {
     id?: UuidWithAggregatesFilter<"Customer"> | string
     customerName?: StringWithAggregatesFilter<"Customer"> | string
     imageBase64?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+  }
+
+  export type UserCustomerWhereInput = {
+    AND?: UserCustomerWhereInput | UserCustomerWhereInput[]
+    OR?: UserCustomerWhereInput[]
+    NOT?: UserCustomerWhereInput | UserCustomerWhereInput[]
+    userId?: UuidFilter<"UserCustomer"> | string
+    customerId?: UuidFilter<"UserCustomer"> | string
+    assignedAt?: DateTimeFilter<"UserCustomer"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+  }
+
+  export type UserCustomerOrderByWithRelationInput = {
+    userId?: SortOrder
+    customerId?: SortOrder
+    assignedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    customer?: CustomerOrderByWithRelationInput
+  }
+
+  export type UserCustomerWhereUniqueInput = Prisma.AtLeast<{
+    userId_customerId?: UserCustomerUserIdCustomerIdCompoundUniqueInput
+    AND?: UserCustomerWhereInput | UserCustomerWhereInput[]
+    OR?: UserCustomerWhereInput[]
+    NOT?: UserCustomerWhereInput | UserCustomerWhereInput[]
+    userId?: UuidFilter<"UserCustomer"> | string
+    customerId?: UuidFilter<"UserCustomer"> | string
+    assignedAt?: DateTimeFilter<"UserCustomer"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+  }, "userId_customerId">
+
+  export type UserCustomerOrderByWithAggregationInput = {
+    userId?: SortOrder
+    customerId?: SortOrder
+    assignedAt?: SortOrder
+    _count?: UserCustomerCountOrderByAggregateInput
+    _max?: UserCustomerMaxOrderByAggregateInput
+    _min?: UserCustomerMinOrderByAggregateInput
+  }
+
+  export type UserCustomerScalarWhereWithAggregatesInput = {
+    AND?: UserCustomerScalarWhereWithAggregatesInput | UserCustomerScalarWhereWithAggregatesInput[]
+    OR?: UserCustomerScalarWhereWithAggregatesInput[]
+    NOT?: UserCustomerScalarWhereWithAggregatesInput | UserCustomerScalarWhereWithAggregatesInput[]
+    userId?: UuidWithAggregatesFilter<"UserCustomer"> | string
+    customerId?: UuidWithAggregatesFilter<"UserCustomer"> | string
+    assignedAt?: DateTimeWithAggregatesFilter<"UserCustomer"> | Date | string
   }
 
   export type TenantWhereInput = {
@@ -7346,6 +8684,7 @@ export namespace Prisma {
     githubToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    allowedCustomers?: UserCustomerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7357,6 +8696,7 @@ export namespace Prisma {
     githubToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    allowedCustomers?: UserCustomerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -7368,6 +8708,7 @@ export namespace Prisma {
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    allowedCustomers?: UserCustomerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -7379,6 +8720,7 @@ export namespace Prisma {
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    allowedCustomers?: UserCustomerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -7419,6 +8761,7 @@ export namespace Prisma {
     customerName: string
     imageBase64?: string | null
     tenants?: TenantCreateNestedManyWithoutCustomerInput
+    allowedUsers?: UserCustomerCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateInput = {
@@ -7426,6 +8769,7 @@ export namespace Prisma {
     customerName: string
     imageBase64?: string | null
     tenants?: TenantUncheckedCreateNestedManyWithoutCustomerInput
+    allowedUsers?: UserCustomerUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUpdateInput = {
@@ -7433,6 +8777,7 @@ export namespace Prisma {
     customerName?: StringFieldUpdateOperationsInput | string
     imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
     tenants?: TenantUpdateManyWithoutCustomerNestedInput
+    allowedUsers?: UserCustomerUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateInput = {
@@ -7440,6 +8785,7 @@ export namespace Prisma {
     customerName?: StringFieldUpdateOperationsInput | string
     imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
     tenants?: TenantUncheckedUpdateManyWithoutCustomerNestedInput
+    allowedUsers?: UserCustomerUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerCreateManyInput = {
@@ -7458,6 +8804,46 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     customerName?: StringFieldUpdateOperationsInput | string
     imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserCustomerCreateInput = {
+    assignedAt?: Date | string
+    user: UserCreateNestedOneWithoutAllowedCustomersInput
+    customer: CustomerCreateNestedOneWithoutAllowedUsersInput
+  }
+
+  export type UserCustomerUncheckedCreateInput = {
+    userId: string
+    customerId: string
+    assignedAt?: Date | string
+  }
+
+  export type UserCustomerUpdateInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAllowedCustomersNestedInput
+    customer?: CustomerUpdateOneRequiredWithoutAllowedUsersNestedInput
+  }
+
+  export type UserCustomerUncheckedUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCustomerCreateManyInput = {
+    userId: string
+    customerId: string
+    assignedAt?: Date | string
+  }
+
+  export type UserCustomerUpdateManyMutationInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCustomerUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TenantCreateInput = {
@@ -7781,9 +9167,19 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type UserCustomerListRelationFilter = {
+    every?: UserCustomerWhereInput
+    some?: UserCustomerWhereInput
+    none?: UserCustomerWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type UserCustomerOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -7922,6 +9318,39 @@ export namespace Prisma {
     imageBase64?: SortOrder
   }
 
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type CustomerScalarRelationFilter = {
+    is?: CustomerWhereInput
+    isNot?: CustomerWhereInput
+  }
+
+  export type UserCustomerUserIdCustomerIdCompoundUniqueInput = {
+    userId: string
+    customerId: string
+  }
+
+  export type UserCustomerCountOrderByAggregateInput = {
+    userId?: SortOrder
+    customerId?: SortOrder
+    assignedAt?: SortOrder
+  }
+
+  export type UserCustomerMaxOrderByAggregateInput = {
+    userId?: SortOrder
+    customerId?: SortOrder
+    assignedAt?: SortOrder
+  }
+
+  export type UserCustomerMinOrderByAggregateInput = {
+    userId?: SortOrder
+    customerId?: SortOrder
+    assignedAt?: SortOrder
+  }
+
   export type UuidNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -7943,11 +9372,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type CustomerScalarRelationFilter = {
-    is?: CustomerWhereInput
-    isNot?: CustomerWhereInput
   }
 
   export type EnvironmentListRelationFilter = {
@@ -8131,6 +9555,20 @@ export namespace Prisma {
     state?: SortOrder
   }
 
+  export type UserCustomerCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
+    createMany?: UserCustomerCreateManyUserInputEnvelope
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+  }
+
+  export type UserCustomerUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
+    createMany?: UserCustomerCreateManyUserInputEnvelope
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -8147,6 +9585,34 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type UserCustomerUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
+    upsert?: UserCustomerUpsertWithWhereUniqueWithoutUserInput | UserCustomerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserCustomerCreateManyUserInputEnvelope
+    set?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    disconnect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    delete?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    update?: UserCustomerUpdateWithWhereUniqueWithoutUserInput | UserCustomerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserCustomerUpdateManyWithWhereWithoutUserInput | UserCustomerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+  }
+
+  export type UserCustomerUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
+    upsert?: UserCustomerUpsertWithWhereUniqueWithoutUserInput | UserCustomerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserCustomerCreateManyUserInputEnvelope
+    set?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    disconnect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    delete?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    update?: UserCustomerUpdateWithWhereUniqueWithoutUserInput | UserCustomerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserCustomerUpdateManyWithWhereWithoutUserInput | UserCustomerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+  }
+
   export type TenantCreateNestedManyWithoutCustomerInput = {
     create?: XOR<TenantCreateWithoutCustomerInput, TenantUncheckedCreateWithoutCustomerInput> | TenantCreateWithoutCustomerInput[] | TenantUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: TenantCreateOrConnectWithoutCustomerInput | TenantCreateOrConnectWithoutCustomerInput[]
@@ -8154,11 +9620,25 @@ export namespace Prisma {
     connect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
   }
 
+  export type UserCustomerCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<UserCustomerCreateWithoutCustomerInput, UserCustomerUncheckedCreateWithoutCustomerInput> | UserCustomerCreateWithoutCustomerInput[] | UserCustomerUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutCustomerInput | UserCustomerCreateOrConnectWithoutCustomerInput[]
+    createMany?: UserCustomerCreateManyCustomerInputEnvelope
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+  }
+
   export type TenantUncheckedCreateNestedManyWithoutCustomerInput = {
     create?: XOR<TenantCreateWithoutCustomerInput, TenantUncheckedCreateWithoutCustomerInput> | TenantCreateWithoutCustomerInput[] | TenantUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: TenantCreateOrConnectWithoutCustomerInput | TenantCreateOrConnectWithoutCustomerInput[]
     createMany?: TenantCreateManyCustomerInputEnvelope
     connect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+  }
+
+  export type UserCustomerUncheckedCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<UserCustomerCreateWithoutCustomerInput, UserCustomerUncheckedCreateWithoutCustomerInput> | UserCustomerCreateWithoutCustomerInput[] | UserCustomerUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutCustomerInput | UserCustomerCreateOrConnectWithoutCustomerInput[]
+    createMany?: UserCustomerCreateManyCustomerInputEnvelope
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
   }
 
   export type TenantUpdateManyWithoutCustomerNestedInput = {
@@ -8175,6 +9655,20 @@ export namespace Prisma {
     deleteMany?: TenantScalarWhereInput | TenantScalarWhereInput[]
   }
 
+  export type UserCustomerUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<UserCustomerCreateWithoutCustomerInput, UserCustomerUncheckedCreateWithoutCustomerInput> | UserCustomerCreateWithoutCustomerInput[] | UserCustomerUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutCustomerInput | UserCustomerCreateOrConnectWithoutCustomerInput[]
+    upsert?: UserCustomerUpsertWithWhereUniqueWithoutCustomerInput | UserCustomerUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: UserCustomerCreateManyCustomerInputEnvelope
+    set?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    disconnect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    delete?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    update?: UserCustomerUpdateWithWhereUniqueWithoutCustomerInput | UserCustomerUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: UserCustomerUpdateManyWithWhereWithoutCustomerInput | UserCustomerUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+  }
+
   export type TenantUncheckedUpdateManyWithoutCustomerNestedInput = {
     create?: XOR<TenantCreateWithoutCustomerInput, TenantUncheckedCreateWithoutCustomerInput> | TenantCreateWithoutCustomerInput[] | TenantUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: TenantCreateOrConnectWithoutCustomerInput | TenantCreateOrConnectWithoutCustomerInput[]
@@ -8187,6 +9681,48 @@ export namespace Prisma {
     update?: TenantUpdateWithWhereUniqueWithoutCustomerInput | TenantUpdateWithWhereUniqueWithoutCustomerInput[]
     updateMany?: TenantUpdateManyWithWhereWithoutCustomerInput | TenantUpdateManyWithWhereWithoutCustomerInput[]
     deleteMany?: TenantScalarWhereInput | TenantScalarWhereInput[]
+  }
+
+  export type UserCustomerUncheckedUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<UserCustomerCreateWithoutCustomerInput, UserCustomerUncheckedCreateWithoutCustomerInput> | UserCustomerCreateWithoutCustomerInput[] | UserCustomerUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutCustomerInput | UserCustomerCreateOrConnectWithoutCustomerInput[]
+    upsert?: UserCustomerUpsertWithWhereUniqueWithoutCustomerInput | UserCustomerUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: UserCustomerCreateManyCustomerInputEnvelope
+    set?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    disconnect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    delete?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    update?: UserCustomerUpdateWithWhereUniqueWithoutCustomerInput | UserCustomerUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: UserCustomerUpdateManyWithWhereWithoutCustomerInput | UserCustomerUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutAllowedCustomersInput = {
+    create?: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAllowedCustomersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CustomerCreateNestedOneWithoutAllowedUsersInput = {
+    create?: XOR<CustomerCreateWithoutAllowedUsersInput, CustomerUncheckedCreateWithoutAllowedUsersInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutAllowedUsersInput
+    connect?: CustomerWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutAllowedCustomersNestedInput = {
+    create?: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAllowedCustomersInput
+    upsert?: UserUpsertWithoutAllowedCustomersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAllowedCustomersInput, UserUpdateWithoutAllowedCustomersInput>, UserUncheckedUpdateWithoutAllowedCustomersInput>
+  }
+
+  export type CustomerUpdateOneRequiredWithoutAllowedUsersNestedInput = {
+    create?: XOR<CustomerCreateWithoutAllowedUsersInput, CustomerUncheckedCreateWithoutAllowedUsersInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutAllowedUsersInput
+    upsert?: CustomerUpsertWithoutAllowedUsersInput
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutAllowedUsersInput, CustomerUpdateWithoutAllowedUsersInput>, CustomerUncheckedUpdateWithoutAllowedUsersInput>
   }
 
   export type CustomerCreateNestedOneWithoutTenantsInput = {
@@ -8520,6 +10056,51 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type UserCustomerCreateWithoutUserInput = {
+    assignedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutAllowedUsersInput
+  }
+
+  export type UserCustomerUncheckedCreateWithoutUserInput = {
+    customerId: string
+    assignedAt?: Date | string
+  }
+
+  export type UserCustomerCreateOrConnectWithoutUserInput = {
+    where: UserCustomerWhereUniqueInput
+    create: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserCustomerCreateManyUserInputEnvelope = {
+    data: UserCustomerCreateManyUserInput | UserCustomerCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCustomerUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserCustomerWhereUniqueInput
+    update: XOR<UserCustomerUpdateWithoutUserInput, UserCustomerUncheckedUpdateWithoutUserInput>
+    create: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserCustomerUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserCustomerWhereUniqueInput
+    data: XOR<UserCustomerUpdateWithoutUserInput, UserCustomerUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserCustomerUpdateManyWithWhereWithoutUserInput = {
+    where: UserCustomerScalarWhereInput
+    data: XOR<UserCustomerUpdateManyMutationInput, UserCustomerUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserCustomerScalarWhereInput = {
+    AND?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+    OR?: UserCustomerScalarWhereInput[]
+    NOT?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+    userId?: UuidFilter<"UserCustomer"> | string
+    customerId?: UuidFilter<"UserCustomer"> | string
+    assignedAt?: DateTimeFilter<"UserCustomer"> | Date | string
+  }
+
   export type TenantCreateWithoutCustomerInput = {
     id: string
     description?: string | null
@@ -8560,6 +10141,26 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserCustomerCreateWithoutCustomerInput = {
+    assignedAt?: Date | string
+    user: UserCreateNestedOneWithoutAllowedCustomersInput
+  }
+
+  export type UserCustomerUncheckedCreateWithoutCustomerInput = {
+    userId: string
+    assignedAt?: Date | string
+  }
+
+  export type UserCustomerCreateOrConnectWithoutCustomerInput = {
+    where: UserCustomerWhereUniqueInput
+    create: XOR<UserCustomerCreateWithoutCustomerInput, UserCustomerUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type UserCustomerCreateManyCustomerInputEnvelope = {
+    data: UserCustomerCreateManyCustomerInput | UserCustomerCreateManyCustomerInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TenantUpsertWithWhereUniqueWithoutCustomerInput = {
     where: TenantWhereUniqueInput
     update: XOR<TenantUpdateWithoutCustomerInput, TenantUncheckedUpdateWithoutCustomerInput>
@@ -8594,16 +10195,138 @@ export namespace Prisma {
     tokenExpiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
   }
 
+  export type UserCustomerUpsertWithWhereUniqueWithoutCustomerInput = {
+    where: UserCustomerWhereUniqueInput
+    update: XOR<UserCustomerUpdateWithoutCustomerInput, UserCustomerUncheckedUpdateWithoutCustomerInput>
+    create: XOR<UserCustomerCreateWithoutCustomerInput, UserCustomerUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type UserCustomerUpdateWithWhereUniqueWithoutCustomerInput = {
+    where: UserCustomerWhereUniqueInput
+    data: XOR<UserCustomerUpdateWithoutCustomerInput, UserCustomerUncheckedUpdateWithoutCustomerInput>
+  }
+
+  export type UserCustomerUpdateManyWithWhereWithoutCustomerInput = {
+    where: UserCustomerScalarWhereInput
+    data: XOR<UserCustomerUpdateManyMutationInput, UserCustomerUncheckedUpdateManyWithoutCustomerInput>
+  }
+
+  export type UserCreateWithoutAllowedCustomersInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    githubToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserUncheckedCreateWithoutAllowedCustomersInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    role?: $Enums.Role
+    githubToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserCreateOrConnectWithoutAllowedCustomersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
+  }
+
+  export type CustomerCreateWithoutAllowedUsersInput = {
+    id?: string
+    customerName: string
+    imageBase64?: string | null
+    tenants?: TenantCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerUncheckedCreateWithoutAllowedUsersInput = {
+    id?: string
+    customerName: string
+    imageBase64?: string | null
+    tenants?: TenantUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerCreateOrConnectWithoutAllowedUsersInput = {
+    where: CustomerWhereUniqueInput
+    create: XOR<CustomerCreateWithoutAllowedUsersInput, CustomerUncheckedCreateWithoutAllowedUsersInput>
+  }
+
+  export type UserUpsertWithoutAllowedCustomersInput = {
+    update: XOR<UserUpdateWithoutAllowedCustomersInput, UserUncheckedUpdateWithoutAllowedCustomersInput>
+    create: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAllowedCustomersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAllowedCustomersInput, UserUncheckedUpdateWithoutAllowedCustomersInput>
+  }
+
+  export type UserUpdateWithoutAllowedCustomersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    githubToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUncheckedUpdateWithoutAllowedCustomersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    githubToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerUpsertWithoutAllowedUsersInput = {
+    update: XOR<CustomerUpdateWithoutAllowedUsersInput, CustomerUncheckedUpdateWithoutAllowedUsersInput>
+    create: XOR<CustomerCreateWithoutAllowedUsersInput, CustomerUncheckedCreateWithoutAllowedUsersInput>
+    where?: CustomerWhereInput
+  }
+
+  export type CustomerUpdateToOneWithWhereWithoutAllowedUsersInput = {
+    where?: CustomerWhereInput
+    data: XOR<CustomerUpdateWithoutAllowedUsersInput, CustomerUncheckedUpdateWithoutAllowedUsersInput>
+  }
+
+  export type CustomerUpdateWithoutAllowedUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    tenants?: TenantUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutAllowedUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    tenants?: TenantUncheckedUpdateManyWithoutCustomerNestedInput
+  }
+
   export type CustomerCreateWithoutTenantsInput = {
     id?: string
     customerName: string
     imageBase64?: string | null
+    allowedUsers?: UserCustomerCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutTenantsInput = {
     id?: string
     customerName: string
     imageBase64?: string | null
+    allowedUsers?: UserCustomerUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutTenantsInput = {
@@ -8658,12 +10381,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     customerName?: StringFieldUpdateOperationsInput | string
     imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedUsers?: UserCustomerUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutTenantsInput = {
     id?: StringFieldUpdateOperationsInput | string
     customerName?: StringFieldUpdateOperationsInput | string
     imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedUsers?: UserCustomerUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type EnvironmentUpsertWithWhereUniqueWithoutTenantInput = {
@@ -8890,6 +10615,26 @@ export namespace Prisma {
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type UserCustomerCreateManyUserInput = {
+    customerId: string
+    assignedAt?: Date | string
+  }
+
+  export type UserCustomerUpdateWithoutUserInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutAllowedUsersNestedInput
+  }
+
+  export type UserCustomerUncheckedUpdateWithoutUserInput = {
+    customerId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCustomerUncheckedUpdateManyWithoutUserInput = {
+    customerId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TenantCreateManyCustomerInput = {
     id: string
     description?: string | null
@@ -8902,6 +10647,11 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+  }
+
+  export type UserCustomerCreateManyCustomerInput = {
+    userId: string
+    assignedAt?: Date | string
   }
 
   export type TenantUpdateWithoutCustomerInput = {
@@ -8946,6 +10696,21 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserCustomerUpdateWithoutCustomerInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAllowedCustomersNestedInput
+  }
+
+  export type UserCustomerUncheckedUpdateWithoutCustomerInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCustomerUncheckedUpdateManyWithoutCustomerInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EnvironmentCreateManyTenantInput = {

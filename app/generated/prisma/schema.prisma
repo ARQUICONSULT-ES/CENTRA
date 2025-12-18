@@ -30,7 +30,7 @@ model User {
   updatedAt   DateTime @updatedAt
 
   // Relación: Un usuario puede tener acceso a muchos customers
-  // customers  Customer[]
+  allowedCustomers UserCustomer[]
 }
 
 // Tabla principal: Customers
@@ -40,7 +40,22 @@ model Customer {
   imageBase64  String?  @db.Text
   tenants      Tenant[]
 
+  // Relación: Un customer puede ser accedido por muchos usuarios
+  allowedUsers UserCustomer[]
+
   @@map("customers")
+}
+
+// Tabla intermedia para la relación muchos a muchos entre User y Customer
+model UserCustomer {
+  userId     String   @db.Uuid
+  customerId String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now())
+
+  @@id([userId, customerId])
+  @@map("user_customers")
 }
 
 // Tabla de Tenants
