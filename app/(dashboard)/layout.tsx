@@ -82,6 +82,14 @@ export default function DashboardLayout({
                 >
                   Aplicaciones
                 </Link>
+                {session?.user?.role === "ADMIN" && (
+                  <Link
+                    href="/admin"
+                    className="text-sm font-medium text-purple-700 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300"
+                  >
+                    Administración
+                  </Link>
+                )}
               </nav>
             </div>
 
