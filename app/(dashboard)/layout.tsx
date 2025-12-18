@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { UserMenu } from "@/components/UserMenu";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function DashboardLayout({
@@ -13,7 +13,11 @@ export default function DashboardLayout({
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Función para determinar si una ruta está activa
+  const isActive = (path: string) => pathname === path;
 
   // Redirigir a login si no hay sesión
   useEffect(() => {
@@ -63,34 +67,69 @@ export default function DashboardLayout({
               <nav className="hidden md:flex items-center gap-4 lg:gap-6">
                 <Link
                   href="/repos"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                  className={`text-sm font-medium transition-colors relative ${
+                    isActive('/repos')
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
+                  }`}
                 >
                   Repositorios
+                  {isActive('/repos') && (
+                    <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400"></span>
+                  )}
                 </Link>
                 <Link
                   href="/customers"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                  className={`text-sm font-medium transition-colors relative ${
+                    isActive('/customers')
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
+                  }`}
                 >
                   Clientes
+                  {isActive('/customers') && (
+                    <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400"></span>
+                  )}
                 </Link>
                 <Link
                   href="/environments"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                  className={`text-sm font-medium transition-colors relative ${
+                    isActive('/environments')
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
+                  }`}
                 >
                   Entornos
+                  {isActive('/environments') && (
+                    <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400"></span>
+                  )}
                 </Link>
                 <Link
                   href="/applications"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                  className={`text-sm font-medium transition-colors relative ${
+                    isActive('/applications')
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
+                  }`}
                 >
                   Aplicaciones
+                  {isActive('/applications') && (
+                    <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400"></span>
+                  )}
                 </Link>
                 {session?.user?.role === "ADMIN" && (
                   <Link
                     href="/admin"
-                    className="text-sm font-medium text-purple-700 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                    className={`text-sm font-medium transition-colors relative ${
+                      isActive('/admin')
+                        ? 'text-purple-600 dark:text-purple-400'
+                        : 'text-purple-700 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300'
+                    }`}
                   >
                     Administración
+                    {isActive('/admin') && (
+                      <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-purple-600 dark:bg-purple-400"></span>
+                    )}
                   </Link>
                 )}
               </nav>
@@ -133,28 +172,44 @@ export default function DashboardLayout({
               <Link
                 href="/repos"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive('/repos')
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
               >
                 Repositorios
               </Link>
               <Link
                 href="/customers"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive('/customers')
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
               >
                 Clientes
               </Link>
               <Link
                 href="/environments"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive('/environments')
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
               >
                 Entornos
               </Link>
               <Link
                 href="/applications"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive('/applications')
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
               >
                 Aplicaciones
               </Link>
@@ -162,7 +217,11 @@ export default function DashboardLayout({
                 <Link
                   href="/admin"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-4 py-2 text-sm font-medium text-purple-700 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                  className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isActive('/admin')
+                      ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                      : 'text-purple-700 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-gray-800'
+                  }`}
                 >
                   Administración
                 </Link>
