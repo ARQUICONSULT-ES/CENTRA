@@ -7,9 +7,10 @@ import bcrypt from "bcryptjs";
 // PUT - Actualizar usuario
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
@@ -44,7 +45,7 @@ export async function PUT(
 
     // Verificar que el usuario a actualizar existe
     const userToUpdate = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!userToUpdate) {
@@ -82,7 +83,7 @@ export async function PUT(
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
       select: {
         id: true,
@@ -108,9 +109,10 @@ export async function PUT(
 // DELETE - Eliminar usuario
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
@@ -133,7 +135,7 @@ export async function DELETE(
     }
 
     // Evitar que el admin se elimine a sí mismo
-    if (currentUser.id === params.id) {
+    if (currentUser.id === id) {
       return NextResponse.json(
         { error: "No puedes eliminar tu propio usuario" },
         { status: 400 }
@@ -142,7 +144,7 @@ export async function DELETE(
 
     // Verificar que el usuario existe
     const userToDelete = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!userToDelete) {
@@ -153,7 +155,7 @@ export async function DELETE(
     }
 
     await prisma.user.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: "Usuario eliminado correctamente" });

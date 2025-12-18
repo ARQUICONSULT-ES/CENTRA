@@ -68,8 +68,14 @@ export const REPOS_CACHE_KEYS = {
   WORKFLOWS: 'workflows',
 } as const;
 
+// Keys para el cache - Módulo Admin
+export const ADMIN_CACHE_KEYS = {
+  USERS: 'users',
+} as const;
+
 // Exportar todos los cache keys
 export const CACHE_KEYS = {
   ...CUSTOMERS_CACHE_KEYS,
   ...REPOS_CACHE_KEYS,
+  ...ADMIN_CACHE_KEYS,
 } as const;

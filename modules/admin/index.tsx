@@ -12,13 +12,14 @@ import type { User } from "@/modules/admin/types";
 export function AdminPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { users, isLoading, refetch } = useUsers();
+  const { users, isLoading, isRefreshing, refreshUsers } = useUsers();
   const {
     filteredUsers,
     searchQuery,
     setSearchQuery,
   } = useUserFilter(users);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
   // Verificar que el usuario sea admin
   if (status === "loading") {
@@ -42,18 +43,25 @@ export function AdminPage() {
 
   const handleUserClick = (user: User) => {
     setSelectedUser(user);
+    setIsUserModalOpen(true);
+  };
+
+  const handleCreateUser = () => {
+    setSelectedUser(undefined);
+    setIsUserModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setSelectedUser(null);
+    setIsUserModalOpen(false);
+    setSelectedUser(undefined);
   };
 
-  const handleSave = () => {
-    refetch();
+  const handleSave = async () => {
+    await refreshUsers();
   };
 
-  const handleRefresh = () => {
-    refetch();
+  const handleRefresh = async () => {
+    await refreshUsers();
   };
 
   return (
@@ -91,6 +99,7 @@ export function AdminPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por nombre o email..."
+            autoComplete="off"
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
           />
         </div>
@@ -98,11 +107,11 @@ export function AdminPage() {
         <div className="flex items-center gap-3 ml-auto">
           <button
             onClick={handleRefresh}
-            disabled={isLoading}
+            disabled={isRefreshing}
             className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-wait rounded-lg transition-colors whitespace-nowrap"
             title="Actualizar"
           >
-            {isLoading ? (
+            {isRefreshing ? (
               <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -114,18 +123,27 @@ export function AdminPage() {
             )}
             Actualizar
           </button>
+
+          <button
+            onClick={handleCreateUser}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-green-600 hover:bg-green-500 rounded-lg transition-colors whitespace-nowrap"
+            title="Crear nuevo usuario"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Añadir usuario
+          </button>
         </div>
       </div>
 
       {/* User Form Modal */}
-      {selectedUser && (
-        <UserFormModal
-          isOpen={!!selectedUser}
-          onClose={handleCloseModal}
-          user={selectedUser}
-          onSave={handleSave}
-        />
-      )}
+      <UserFormModal
+        isOpen={isUserModalOpen}
+        onClose={handleCloseModal}
+        user={selectedUser}
+        onSave={handleSave}
+      />
 
       {/* Contenido */}
       {isLoading ? (
