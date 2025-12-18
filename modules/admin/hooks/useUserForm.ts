@@ -5,9 +5,10 @@ import type { User, UserFormData } from "@/modules/admin/types";
 
 interface UseUserFormProps {
   onSuccess?: () => void;
+  protectedMode?: boolean; // Usar endpoint /api/users/me en lugar de /api/users/:id
 }
 
-export function useUserForm({ onSuccess }: UseUserFormProps = {}) {
+export function useUserForm({ onSuccess, protectedMode = false }: UseUserFormProps = {}) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,7 +47,10 @@ export function useUserForm({ onSuccess }: UseUserFormProps = {}) {
     setError(null);
 
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      // Usar endpoint diferente en modo protegido
+      const endpoint = protectedMode ? "/api/users/me" : `/api/users/${userId}`;
+      
+      const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

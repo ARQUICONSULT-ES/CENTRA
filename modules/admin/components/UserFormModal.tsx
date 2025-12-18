@@ -10,6 +10,7 @@ interface UserFormModalProps {
   onClose: () => void;
   user?: User;
   onSave: () => void;
+  protectedMode?: boolean; // Modo protegido: sin rol, permisos ni eliminación
 }
 
 export default function UserFormModal({
@@ -17,6 +18,7 @@ export default function UserFormModal({
   onClose,
   user,
   onSave,
+  protectedMode = false,
 }: UserFormModalProps) {
   const [formData, setFormData] = useState<UserFormData>({
     name: "",
@@ -39,6 +41,7 @@ export default function UserFormModal({
       onSave();
       onClose();
     },
+    protectedMode, // Pasar el modo protegido al hook
   });
 
   const isEditMode = !!user;
@@ -166,7 +169,7 @@ export default function UserFormModal({
           <div className="sticky top-0 z-10 border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {isEditMode ? "Editar Usuario" : "Crear Nuevo Usuario"}
+                {protectedMode ? "Ajustes de Usuario" : (isEditMode ? "Editar Usuario" : "Crear Nuevo Usuario")}
               </h2>
               <button
                 onClick={onClose}
@@ -295,19 +298,39 @@ export default function UserFormModal({
             )}
 
             {/* Role */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Rol <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value as 'ADMIN' | 'USER' })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-              >
-                <option value="USER">Usuario</option>
-                <option value="ADMIN">Administrador</option>
-              </select>
-            </div>
+            {protectedMode ? (
+              // Modo protegido: mostrar rol como información solo lectura
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
+                      Tu rol: <span className="font-semibold">{formData.role === 'ADMIN' ? 'Administrador' : 'Usuario'}</span>
+                    </p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      No puedes modificar tu rol ni tus permisos de clientes. Contacta con un administrador si necesitas cambios.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Modo normal: permitir editar rol
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Rol <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={formData.role}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value as 'ADMIN' | 'USER' })}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="USER">Usuario</option>
+                  <option value="ADMIN">Administrador</option>
+                </select>
+              </div>
+            )}
 
             {/* Reset Password Button (solo en modo edición) */}
             {isEditMode && (
@@ -321,14 +344,14 @@ export default function UserFormModal({
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                     </svg>
-                    Restablecer Contraseña
+                    {protectedMode ? "Cambiar Contraseña" : "Restablecer Contraseña"}
                   </div>
                 </button>
               </div>
             )}
 
-            {/* Customer Permissions (solo para usuarios no admin) */}
-            {formData.role === 'USER' && (
+            {/* Customer Permissions (solo para usuarios no admin y no en modo protegido) */}
+            {!protectedMode && formData.role === 'USER' && (
               <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Permisos de Clientes
@@ -345,7 +368,7 @@ export default function UserFormModal({
 
             {/* Actions */}
             <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-              {isEditMode ? (
+              {isEditMode && !protectedMode ? (
                 <button
                   type="button"
                   onClick={() => setShowDeleteConfirm(true)}
@@ -413,7 +436,7 @@ export default function UserFormModal({
           <div className="w-full max-w-md rounded-xl bg-white p-6 dark:bg-gray-800">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Restablecer Contraseña
+                {protectedMode ? "Cambiar Contraseña" : "Restablecer Contraseña"}
               </h3>
               <button
                 onClick={() => {
@@ -431,7 +454,7 @@ export default function UserFormModal({
             </div>
 
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Establece una nueva contraseña para <strong>{user.name}</strong>
+              {protectedMode ? "Establece tu nueva contraseña" : `Establece una nueva contraseña para ${user.name}`}
             </p>
 
             {passwordError && (
@@ -487,7 +510,7 @@ export default function UserFormModal({
                 disabled={isLoading || !newPassword || !confirmPassword}
                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Restableciendo..." : "Restablecer"}
+                {isLoading ? (protectedMode ? "Cambiando..." : "Restableciendo...") : (protectedMode ? "Cambiar" : "Restablecer")}
               </button>
             </div>
           </div>

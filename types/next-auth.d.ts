@@ -7,6 +7,8 @@ declare module "next-auth" {
     name: string;
     role: string;
     image?: string;
+    githubToken?: string;
+    createdAt?: string;
   }
 
   interface Session {
@@ -16,6 +18,8 @@ declare module "next-auth" {
       name: string;
       role: string;
       image?: string;
+      githubToken?: string;
+      createdAt?: string;
     };
   }
 }
@@ -24,5 +28,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     role: string;
+    githubToken?: string;
+    createdAt?: string;
   }
 }
