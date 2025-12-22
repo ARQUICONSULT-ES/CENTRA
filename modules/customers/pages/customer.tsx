@@ -130,7 +130,7 @@ export function CustomersPage() {
             <div className="inline-flex rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden">
               <button
                 onClick={() => setSortBy("customerName")}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                className={`px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
                   sortBy === "customerName"
                     ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
                     : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -140,7 +140,7 @@ export function CustomersPage() {
               </button>
               <button
                 onClick={() => setSortBy("id")}
-                className={`px-3 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors ${
+                className={`px-3 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors cursor-pointer ${
                   sortBy === "id"
                     ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
                     : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"

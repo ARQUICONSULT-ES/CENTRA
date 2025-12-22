@@ -43,7 +43,7 @@ export function CustomerCard({ customer, onEdit }: CustomerCardProps) {
         <div className="flex-1 min-w-0">
           <button
             onClick={handleEdit}
-            className="font-semibold text-gray-900 dark:text-white text-base truncate text-left hover:text-blue-600 dark:hover:text-blue-400 transition-colors block w-full"
+            className="font-semibold text-gray-900 dark:text-white text-base truncate text-left hover:text-blue-600 dark:hover:text-blue-400 transition-colors block w-full cursor-pointer"
           >
             {customer.customerName}
           </button>
@@ -86,7 +86,7 @@ export function CustomerCard({ customer, onEdit }: CustomerCardProps) {
         <div className="relative" ref={menuRef}>
           <button
             onClick={handleMenuToggle}
-            className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors"
+            className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors cursor-pointer"
             title="Más opciones"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

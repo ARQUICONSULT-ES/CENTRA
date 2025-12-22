@@ -532,7 +532,7 @@ export function RepoCard({
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               disabled={isUpdatingAlGo}
-              className="p-2 text-gray-400 hover:text-gray-300 hover:bg-gray-800 rounded-md transition-colors disabled:opacity-50"
+              className="p-2 text-gray-400 hover:text-gray-300 hover:bg-gray-800 rounded-md transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isUpdatingAlGo ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

@@ -150,7 +150,7 @@ export function CustomerSelector({ selectedCustomers, onChange }: CustomerSelect
                   key={customer.id}
                   type="button"
                   onClick={() => handleToggleCustomer(customer)}
-                  className={`px-3 py-2 flex items-center gap-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
+                  className={`px-3 py-2 flex items-center gap-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer ${
                     selected ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-white dark:bg-gray-900'
                   }`}
                 >

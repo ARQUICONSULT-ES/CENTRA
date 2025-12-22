@@ -1003,7 +1003,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                             <button
                               onClick={() => handleRemoveDependency(index)}
                               disabled={isSaving}
-                              className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                               title="Eliminar dependencia"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1085,7 +1085,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                           <button
                             onClick={() => handleRemoveFileDependency(file.name)}
                             disabled={isSaving}
-                            className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             title="Eliminar archivo"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1425,7 +1425,7 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
                   <button
                     key={repo.id}
                     onClick={() => toggleRepoSelection(repo.id)}
-                    className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                    className={`w-full text-left p-3 rounded-lg border transition-colors cursor-pointer ${
                       isSelected
                         ? "border-blue-500 bg-blue-500/10"
                         : "border-gray-700 bg-gray-900 hover:border-gray-600"
@@ -1649,7 +1649,7 @@ function AddFileModal({ onClose, onAdd }: AddFileModalProps) {
                   </div>
                   <button
                     onClick={() => removeFile(index)}
-                    className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors"
+                    className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors cursor-pointer"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

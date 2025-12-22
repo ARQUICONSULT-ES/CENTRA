@@ -208,7 +208,7 @@ export function GenericFilterPanel<T>({
       {/* Header del panel */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-t-lg"
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-t-lg cursor-pointer"
       >
         <div className="flex items-center gap-2">
           <svg

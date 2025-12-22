@@ -85,7 +85,7 @@ export function ApplicationsList({
             {/* Header del cliente */}
             <button
               onClick={() => toggleCustomer(data.customerId)}
-              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-3">
                 {/* Icono de expandir/colapsar */}

@@ -341,7 +341,7 @@ export default function TenantFormModal({
                       !formData.clientSecret || 
                       !formData.scope
                     }
-                    className="px-3 py-1.5 text-sm text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                    className="px-3 py-1.5 text-sm text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 cursor-pointer"
                     title={
                       !formData.grantType || !formData.clientId || !formData.clientSecret || !formData.scope
                         ? "Completa la configuración de conexión para refrescar el token"
