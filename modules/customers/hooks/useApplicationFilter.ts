@@ -128,19 +128,23 @@ export function useApplicationFilter(applications: ApplicationWithEnvironment[])
     }
 
     if (advancedFilters.publisher) {
-      result = result.filter(app => app.publisher === advancedFilters.publisher);
+      const publishers = advancedFilters.publisher.split(',');
+      result = result.filter(app => publishers.includes(app.publisher));
     }
 
     if (advancedFilters.customerName) {
-      result = result.filter(app => app.customerName === advancedFilters.customerName);
+      const customers = advancedFilters.customerName.split(',');
+      result = result.filter(app => customers.includes(app.customerName));
     }
 
     if (advancedFilters.environmentName) {
-      result = result.filter(app => app.environmentName === advancedFilters.environmentName);
+      const environments = advancedFilters.environmentName.split(',');
+      result = result.filter(app => environments.includes(app.environmentName));
     }
 
     if (advancedFilters.environmentType) {
-      result = result.filter(app => app.environmentType === advancedFilters.environmentType);
+      const types = advancedFilters.environmentType.split(',');
+      result = result.filter(app => app.environmentType && types.includes(app.environmentType));
     }
 
     if (advancedFilters.publishedAs) {

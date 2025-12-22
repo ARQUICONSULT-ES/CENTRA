@@ -125,7 +125,7 @@ export function EnvironmentFilterPanel({
   );
 }
 
-// Componente de dropdown minimalista
+// Componente de dropdown con selección múltiple
 interface FilterDropdownProps {
   label: string;
   value: string;
@@ -158,8 +158,40 @@ function FilterDropdown({
     }
   }, [isOpen]);
 
-  const displayValue = value || placeholder;
-  const hasValue = !!value;
+  // Parsear valores seleccionados (separados por coma)
+  const selectedValues = value ? value.split(',') : [];
+  const hasValue = selectedValues.length > 0;
+
+  // Función para toggle un valor
+  const toggleValue = (optionValue: string) => {
+    let newValues: string[];
+    
+    if (selectedValues.includes(optionValue)) {
+      // Remover si ya está seleccionado
+      newValues = selectedValues.filter(v => v !== optionValue);
+    } else {
+      // Añadir si no está seleccionado
+      newValues = [...selectedValues, optionValue];
+    }
+    
+    onChange(newValues.join(','));
+  };
+
+  // Seleccionar todos
+  const selectAll = () => {
+    onChange('');
+  };
+
+  // Generar texto de display
+  const getDisplayText = () => {
+    if (!hasValue) return placeholder;
+    
+    if (selectedValues.length <= 3) {
+      return selectedValues.join(', ');
+    }
+    
+    return `${selectedValues.slice(0, 3).join(', ')}...`;
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -174,11 +206,11 @@ function FilterDropdown({
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
           {label}:
         </span>
-        <span className={`text-xs ${hasValue ? 'font-medium' : ''}`}>
-          {displayValue}
+        <span className={`text-xs ${hasValue ? 'font-medium' : ''} max-w-[200px] truncate`}>
+          {getDisplayText()}
         </span>
         <svg
-          className={`w-3.5 h-3.5 transition-transform ${
+          className={`w-3.5 h-3.5 transition-transform flex-shrink-0 ${
             isOpen ? "rotate-180" : ""
           }`}
           fill="none"
@@ -195,32 +227,60 @@ function FilterDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full min-w-[180px] max-h-60 overflow-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
+        <div className="absolute z-50 mt-1 w-full min-w-[200px] max-h-60 overflow-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
+          {/* Opción "Todos" */}
           <button
             onClick={() => {
-              onChange("");
-              setIsOpen(false);
+              selectAll();
             }}
-            className="w-full px-3 py-2 text-left text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className={`w-full px-3 py-2 text-left text-xs transition-colors flex items-center gap-2 ${
+              !hasValue
+                ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
+                : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+            }`}
           >
+            <div className={`w-4 h-4 rounded border flex items-center justify-center ${
+              !hasValue
+                ? "bg-blue-600 border-blue-600"
+                : "border-gray-300 dark:border-gray-600"
+            }`}>
+              {!hasValue && (
+                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
             {placeholder}
           </button>
-          {options.map((option) => (
-            <button
-              key={option}
-              onClick={() => {
-                onChange(option);
-                setIsOpen(false);
-              }}
-              className={`w-full px-3 py-2 text-left text-xs transition-colors ${
-                value === option
-                  ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-              }`}
-            >
-              {option}
-            </button>
-          ))}
+          
+          {/* Opciones individuales */}
+          {options.map((option) => {
+            const isSelected = selectedValues.includes(option);
+            return (
+              <button
+                key={option}
+                onClick={() => toggleValue(option)}
+                className={`w-full px-3 py-2 text-left text-xs transition-colors flex items-center gap-2 ${
+                  isSelected
+                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                }`}
+              >
+                <div className={`w-4 h-4 rounded border flex items-center justify-center ${
+                  isSelected
+                    ? "bg-blue-600 border-blue-600"
+                    : "border-gray-300 dark:border-gray-600"
+                }`}>
+                  {isSelected && (
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+                {option}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

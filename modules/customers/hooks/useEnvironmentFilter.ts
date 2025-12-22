@@ -112,26 +112,31 @@ export function useEnvironmentFilter(environments: EnvironmentWithCustomer[]) {
 
     // Si hay un filtro de estado específico, aplicarlo
     if (advancedFilters.status) {
-      result = result.filter(env => env.status === advancedFilters.status);
+      const statuses = advancedFilters.status.split(',');
+      result = result.filter(env => statuses.includes(env.status || ''));
     } else {
       // Si no hay filtro de estado, excluir softdeleted por defecto
       result = result.filter(env => env.status?.toLowerCase() !== 'softdeleted');
     }
 
     if (advancedFilters.type) {
-      result = result.filter(env => env.type === advancedFilters.type);
+      const types = advancedFilters.type.split(',');
+      result = result.filter(env => env.type && types.includes(env.type));
     }
 
     if (advancedFilters.customer) {
-      result = result.filter(env => env.customerName === advancedFilters.customer);
+      const customers = advancedFilters.customer.split(',');
+      result = result.filter(env => customers.includes(env.customerName));
     }
 
     if (advancedFilters.platformVersion) {
-      result = result.filter(env => env.platformVersion === advancedFilters.platformVersion);
+      const versions = advancedFilters.platformVersion.split(',');
+      result = result.filter(env => env.platformVersion && versions.includes(env.platformVersion));
     }
 
     if (advancedFilters.applicationVersion) {
-      result = result.filter(env => env.applicationVersion === advancedFilters.applicationVersion);
+      const versions = advancedFilters.applicationVersion.split(',');
+      result = result.filter(env => env.applicationVersion && versions.includes(env.applicationVersion));
     }
 
     return result;
