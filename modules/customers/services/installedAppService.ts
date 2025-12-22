@@ -1,29 +1,29 @@
-import type { ApplicationWithEnvironment } from "@/modules/customers/types";
+import type { InstalledAppWithEnvironment } from "@/modules/customers/types";
 import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 /**
- * Obtiene todas las aplicaciones de todos los entornos desde la base de datos
+ * Obtiene todas las aplicaciones instaladas de todos los entornos desde la base de datos
  */
-export async function fetchAllApplications(): Promise<ApplicationWithEnvironment[]> {
+export async function fetchAllInstalledApps(): Promise<InstalledAppWithEnvironment[]> {
   try {
     const response = await fetch("/api/installedapps");
     
     if (!response.ok) {
-      throw new Error('Error al cargar aplicaciones');
+      throw new Error('Error al cargar aplicaciones instaladas');
     }
     
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching all applications:", error);
+    console.error("Error fetching all installed apps:", error);
     throw error;
   }
 }
 
 /**
- * Sincroniza las aplicaciones de todos los entornos con Business Central
+ * Sincroniza las aplicaciones instaladas de todos los entornos con Business Central
  */
-export async function syncAllApplications(): Promise<{
+export async function syncAllInstalledApps(): Promise<{
   success: number;
   failed: number;
   total: number;
@@ -48,11 +48,11 @@ export async function syncAllApplications(): Promise<{
     const data = await response.json();
     
     // Invalidar cache después de sincronizar
-    dataCache.invalidate(CACHE_KEYS.APPLICATIONS);
+    dataCache.invalidate(CACHE_KEYS.INSTALLED_APPS);
     
     return data;
   } catch (error) {
-    console.error("Error syncing all applications:", error);
+    console.error("Error syncing all installed apps:", error);
     throw error;
   }
 }

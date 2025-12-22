@@ -39,10 +39,10 @@ export type Tenant = $Result.DefaultSelection<Prisma.$TenantPayload>
  */
 export type Environment = $Result.DefaultSelection<Prisma.$EnvironmentPayload>
 /**
- * Model Extension
+ * Model InstalledApp
  * 
  */
-export type Extension = $Result.DefaultSelection<Prisma.$ExtensionPayload>
+export type InstalledApp = $Result.DefaultSelection<Prisma.$InstalledAppPayload>
 
 /**
  * Enums
@@ -229,14 +229,14 @@ export class PrismaClient<
   get environment(): Prisma.EnvironmentDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.extension`: Exposes CRUD operations for the **Extension** model.
+   * `prisma.installedApp`: Exposes CRUD operations for the **InstalledApp** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Extensions
-    * const extensions = await prisma.extension.findMany()
+    * // Fetch zero or more InstalledApps
+    * const installedApps = await prisma.installedApp.findMany()
     * ```
     */
-  get extension(): Prisma.ExtensionDelegate<ExtArgs, ClientOptions>;
+  get installedApp(): Prisma.InstalledAppDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -676,7 +676,7 @@ export namespace Prisma {
     UserCustomer: 'UserCustomer',
     Tenant: 'Tenant',
     Environment: 'Environment',
-    Extension: 'Extension'
+    InstalledApp: 'InstalledApp'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -692,7 +692,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "userCustomer" | "tenant" | "environment" | "extension"
+      modelProps: "user" | "customer" | "userCustomer" | "tenant" | "environment" | "installedApp"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1066,77 +1066,77 @@ export namespace Prisma {
           }
         }
       }
-      Extension: {
-        payload: Prisma.$ExtensionPayload<ExtArgs>
-        fields: Prisma.ExtensionFieldRefs
+      InstalledApp: {
+        payload: Prisma.$InstalledAppPayload<ExtArgs>
+        fields: Prisma.InstalledAppFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.ExtensionFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload> | null
+            args: Prisma.InstalledAppFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.ExtensionFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>
+            args: Prisma.InstalledAppFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>
           }
           findFirst: {
-            args: Prisma.ExtensionFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload> | null
+            args: Prisma.InstalledAppFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.ExtensionFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>
+            args: Prisma.InstalledAppFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>
           }
           findMany: {
-            args: Prisma.ExtensionFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>[]
+            args: Prisma.InstalledAppFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>[]
           }
           create: {
-            args: Prisma.ExtensionCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>
+            args: Prisma.InstalledAppCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>
           }
           createMany: {
-            args: Prisma.ExtensionCreateManyArgs<ExtArgs>
+            args: Prisma.InstalledAppCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.ExtensionCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>[]
+            args: Prisma.InstalledAppCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>[]
           }
           delete: {
-            args: Prisma.ExtensionDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>
+            args: Prisma.InstalledAppDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>
           }
           update: {
-            args: Prisma.ExtensionUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>
+            args: Prisma.InstalledAppUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>
           }
           deleteMany: {
-            args: Prisma.ExtensionDeleteManyArgs<ExtArgs>
+            args: Prisma.InstalledAppDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.ExtensionUpdateManyArgs<ExtArgs>
+            args: Prisma.InstalledAppUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.ExtensionUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>[]
+            args: Prisma.InstalledAppUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>[]
           }
           upsert: {
-            args: Prisma.ExtensionUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ExtensionPayload>
+            args: Prisma.InstalledAppUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InstalledAppPayload>
           }
           aggregate: {
-            args: Prisma.ExtensionAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateExtension>
+            args: Prisma.InstalledAppAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInstalledApp>
           }
           groupBy: {
-            args: Prisma.ExtensionGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ExtensionGroupByOutputType>[]
+            args: Prisma.InstalledAppGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InstalledAppGroupByOutputType>[]
           }
           count: {
-            args: Prisma.ExtensionCountArgs<ExtArgs>
-            result: $Utils.Optional<ExtensionCountAggregateOutputType> | number
+            args: Prisma.InstalledAppCountArgs<ExtArgs>
+            result: $Utils.Optional<InstalledAppCountAggregateOutputType> | number
           }
         }
       }
@@ -1253,7 +1253,7 @@ export namespace Prisma {
     userCustomer?: UserCustomerOmit
     tenant?: TenantOmit
     environment?: EnvironmentOmit
-    extension?: ExtensionOmit
+    installedApp?: InstalledAppOmit
   }
 
   /* Types for Logging */
@@ -1436,11 +1436,11 @@ export namespace Prisma {
    */
 
   export type EnvironmentCountOutputType = {
-    extensions: number
+    installedApps: number
   }
 
   export type EnvironmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    extensions?: boolean | EnvironmentCountOutputTypeCountExtensionsArgs
+    installedApps?: boolean | EnvironmentCountOutputTypeCountInstalledAppsArgs
   }
 
   // Custom InputTypes
@@ -1457,8 +1457,8 @@ export namespace Prisma {
   /**
    * EnvironmentCountOutputType without action
    */
-  export type EnvironmentCountOutputTypeCountExtensionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ExtensionWhereInput
+  export type EnvironmentCountOutputTypeCountInstalledAppsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InstalledAppWhereInput
   }
 
 
@@ -6068,7 +6068,7 @@ export namespace Prisma {
     applicationVersion?: boolean
     platformVersion?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
-    extensions?: boolean | Environment$extensionsArgs<ExtArgs>
+    installedApps?: boolean | Environment$installedAppsArgs<ExtArgs>
     _count?: boolean | EnvironmentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["environment"]>
 
@@ -6110,7 +6110,7 @@ export namespace Prisma {
   export type EnvironmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"tenantId" | "name" | "type" | "status" | "webClientUrl" | "locationName" | "applicationVersion" | "platformVersion", ExtArgs["result"]["environment"]>
   export type EnvironmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
-    extensions?: boolean | Environment$extensionsArgs<ExtArgs>
+    installedApps?: boolean | Environment$installedAppsArgs<ExtArgs>
     _count?: boolean | EnvironmentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type EnvironmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6124,7 +6124,7 @@ export namespace Prisma {
     name: "Environment"
     objects: {
       tenant: Prisma.$TenantPayload<ExtArgs>
-      extensions: Prisma.$ExtensionPayload<ExtArgs>[]
+      installedApps: Prisma.$InstalledAppPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       tenantId: string
@@ -6530,7 +6530,7 @@ export namespace Prisma {
   export interface Prisma__EnvironmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    extensions<T extends Environment$extensionsArgs<ExtArgs> = {}>(args?: Subset<T, Environment$extensionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    installedApps<T extends Environment$installedAppsArgs<ExtArgs> = {}>(args?: Subset<T, Environment$installedAppsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6964,27 +6964,27 @@ export namespace Prisma {
   }
 
   /**
-   * Environment.extensions
+   * Environment.installedApps
    */
-  export type Environment$extensionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Environment$installedAppsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
-    where?: ExtensionWhereInput
-    orderBy?: ExtensionOrderByWithRelationInput | ExtensionOrderByWithRelationInput[]
-    cursor?: ExtensionWhereUniqueInput
+    include?: InstalledAppInclude<ExtArgs> | null
+    where?: InstalledAppWhereInput
+    orderBy?: InstalledAppOrderByWithRelationInput | InstalledAppOrderByWithRelationInput[]
+    cursor?: InstalledAppWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ExtensionScalarFieldEnum | ExtensionScalarFieldEnum[]
+    distinct?: InstalledAppScalarFieldEnum | InstalledAppScalarFieldEnum[]
   }
 
   /**
@@ -7007,16 +7007,16 @@ export namespace Prisma {
 
 
   /**
-   * Model Extension
+   * Model InstalledApp
    */
 
-  export type AggregateExtension = {
-    _count: ExtensionCountAggregateOutputType | null
-    _min: ExtensionMinAggregateOutputType | null
-    _max: ExtensionMaxAggregateOutputType | null
+  export type AggregateInstalledApp = {
+    _count: InstalledAppCountAggregateOutputType | null
+    _min: InstalledAppMinAggregateOutputType | null
+    _max: InstalledAppMaxAggregateOutputType | null
   }
 
-  export type ExtensionMinAggregateOutputType = {
+  export type InstalledAppMinAggregateOutputType = {
     tenantId: string | null
     environmentName: string | null
     id: string | null
@@ -7027,7 +7027,7 @@ export namespace Prisma {
     state: string | null
   }
 
-  export type ExtensionMaxAggregateOutputType = {
+  export type InstalledAppMaxAggregateOutputType = {
     tenantId: string | null
     environmentName: string | null
     id: string | null
@@ -7038,7 +7038,7 @@ export namespace Prisma {
     state: string | null
   }
 
-  export type ExtensionCountAggregateOutputType = {
+  export type InstalledAppCountAggregateOutputType = {
     tenantId: number
     environmentName: number
     id: number
@@ -7051,7 +7051,7 @@ export namespace Prisma {
   }
 
 
-  export type ExtensionMinAggregateInputType = {
+  export type InstalledAppMinAggregateInputType = {
     tenantId?: true
     environmentName?: true
     id?: true
@@ -7062,7 +7062,7 @@ export namespace Prisma {
     state?: true
   }
 
-  export type ExtensionMaxAggregateInputType = {
+  export type InstalledAppMaxAggregateInputType = {
     tenantId?: true
     environmentName?: true
     id?: true
@@ -7073,7 +7073,7 @@ export namespace Prisma {
     state?: true
   }
 
-  export type ExtensionCountAggregateInputType = {
+  export type InstalledAppCountAggregateInputType = {
     tenantId?: true
     environmentName?: true
     id?: true
@@ -7085,79 +7085,79 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type ExtensionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Extension to aggregate.
+     * Filter which InstalledApp to aggregate.
      */
-    where?: ExtensionWhereInput
+    where?: InstalledAppWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Extensions to fetch.
+     * Determine the order of InstalledApps to fetch.
      */
-    orderBy?: ExtensionOrderByWithRelationInput | ExtensionOrderByWithRelationInput[]
+    orderBy?: InstalledAppOrderByWithRelationInput | InstalledAppOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: ExtensionWhereUniqueInput
+    cursor?: InstalledAppWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Extensions from the position of the cursor.
+     * Take `±n` InstalledApps from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Extensions.
+     * Skip the first `n` InstalledApps.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Extensions
+     * Count returned InstalledApps
     **/
-    _count?: true | ExtensionCountAggregateInputType
+    _count?: true | InstalledAppCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: ExtensionMinAggregateInputType
+    _min?: InstalledAppMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: ExtensionMaxAggregateInputType
+    _max?: InstalledAppMaxAggregateInputType
   }
 
-  export type GetExtensionAggregateType<T extends ExtensionAggregateArgs> = {
-        [P in keyof T & keyof AggregateExtension]: P extends '_count' | 'count'
+  export type GetInstalledAppAggregateType<T extends InstalledAppAggregateArgs> = {
+        [P in keyof T & keyof AggregateInstalledApp]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateExtension[P]>
-      : GetScalarType<T[P], AggregateExtension[P]>
+        : GetScalarType<T[P], AggregateInstalledApp[P]>
+      : GetScalarType<T[P], AggregateInstalledApp[P]>
   }
 
 
 
 
-  export type ExtensionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ExtensionWhereInput
-    orderBy?: ExtensionOrderByWithAggregationInput | ExtensionOrderByWithAggregationInput[]
-    by: ExtensionScalarFieldEnum[] | ExtensionScalarFieldEnum
-    having?: ExtensionScalarWhereWithAggregatesInput
+  export type InstalledAppGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InstalledAppWhereInput
+    orderBy?: InstalledAppOrderByWithAggregationInput | InstalledAppOrderByWithAggregationInput[]
+    by: InstalledAppScalarFieldEnum[] | InstalledAppScalarFieldEnum
+    having?: InstalledAppScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: ExtensionCountAggregateInputType | true
-    _min?: ExtensionMinAggregateInputType
-    _max?: ExtensionMaxAggregateInputType
+    _count?: InstalledAppCountAggregateInputType | true
+    _min?: InstalledAppMinAggregateInputType
+    _max?: InstalledAppMaxAggregateInputType
   }
 
-  export type ExtensionGroupByOutputType = {
+  export type InstalledAppGroupByOutputType = {
     tenantId: string
     environmentName: string
     id: string
@@ -7166,26 +7166,26 @@ export namespace Prisma {
     publisher: string
     publishedAs: string
     state: string | null
-    _count: ExtensionCountAggregateOutputType | null
-    _min: ExtensionMinAggregateOutputType | null
-    _max: ExtensionMaxAggregateOutputType | null
+    _count: InstalledAppCountAggregateOutputType | null
+    _min: InstalledAppMinAggregateOutputType | null
+    _max: InstalledAppMaxAggregateOutputType | null
   }
 
-  type GetExtensionGroupByPayload<T extends ExtensionGroupByArgs> = Prisma.PrismaPromise<
+  type GetInstalledAppGroupByPayload<T extends InstalledAppGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<ExtensionGroupByOutputType, T['by']> &
+      PickEnumerable<InstalledAppGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof ExtensionGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof InstalledAppGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], ExtensionGroupByOutputType[P]>
-            : GetScalarType<T[P], ExtensionGroupByOutputType[P]>
+              : GetScalarType<T[P], InstalledAppGroupByOutputType[P]>
+            : GetScalarType<T[P], InstalledAppGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type ExtensionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type InstalledAppSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     tenantId?: boolean
     environmentName?: boolean
     id?: boolean
@@ -7195,9 +7195,9 @@ export namespace Prisma {
     publishedAs?: boolean
     state?: boolean
     environment?: boolean | EnvironmentDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["extension"]>
+  }, ExtArgs["result"]["installedApp"]>
 
-  export type ExtensionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type InstalledAppSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     tenantId?: boolean
     environmentName?: boolean
     id?: boolean
@@ -7207,9 +7207,9 @@ export namespace Prisma {
     publishedAs?: boolean
     state?: boolean
     environment?: boolean | EnvironmentDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["extension"]>
+  }, ExtArgs["result"]["installedApp"]>
 
-  export type ExtensionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type InstalledAppSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     tenantId?: boolean
     environmentName?: boolean
     id?: boolean
@@ -7219,9 +7219,9 @@ export namespace Prisma {
     publishedAs?: boolean
     state?: boolean
     environment?: boolean | EnvironmentDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["extension"]>
+  }, ExtArgs["result"]["installedApp"]>
 
-  export type ExtensionSelectScalar = {
+  export type InstalledAppSelectScalar = {
     tenantId?: boolean
     environmentName?: boolean
     id?: boolean
@@ -7232,19 +7232,19 @@ export namespace Prisma {
     state?: boolean
   }
 
-  export type ExtensionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"tenantId" | "environmentName" | "id" | "name" | "version" | "publisher" | "publishedAs" | "state", ExtArgs["result"]["extension"]>
-  export type ExtensionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"tenantId" | "environmentName" | "id" | "name" | "version" | "publisher" | "publishedAs" | "state", ExtArgs["result"]["installedApp"]>
+  export type InstalledAppInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     environment?: boolean | EnvironmentDefaultArgs<ExtArgs>
   }
-  export type ExtensionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     environment?: boolean | EnvironmentDefaultArgs<ExtArgs>
   }
-  export type ExtensionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     environment?: boolean | EnvironmentDefaultArgs<ExtArgs>
   }
 
-  export type $ExtensionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Extension"
+  export type $InstalledAppPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InstalledApp"
     objects: {
       environment: Prisma.$EnvironmentPayload<ExtArgs>
     }
@@ -7257,136 +7257,136 @@ export namespace Prisma {
       publisher: string
       publishedAs: string
       state: string | null
-    }, ExtArgs["result"]["extension"]>
+    }, ExtArgs["result"]["installedApp"]>
     composites: {}
   }
 
-  type ExtensionGetPayload<S extends boolean | null | undefined | ExtensionDefaultArgs> = $Result.GetResult<Prisma.$ExtensionPayload, S>
+  type InstalledAppGetPayload<S extends boolean | null | undefined | InstalledAppDefaultArgs> = $Result.GetResult<Prisma.$InstalledAppPayload, S>
 
-  type ExtensionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ExtensionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ExtensionCountAggregateInputType | true
+  type InstalledAppCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InstalledAppFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InstalledAppCountAggregateInputType | true
     }
 
-  export interface ExtensionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Extension'], meta: { name: 'Extension' } }
+  export interface InstalledAppDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InstalledApp'], meta: { name: 'InstalledApp' } }
     /**
-     * Find zero or one Extension that matches the filter.
-     * @param {ExtensionFindUniqueArgs} args - Arguments to find a Extension
+     * Find zero or one InstalledApp that matches the filter.
+     * @param {InstalledAppFindUniqueArgs} args - Arguments to find a InstalledApp
      * @example
-     * // Get one Extension
-     * const extension = await prisma.extension.findUnique({
+     * // Get one InstalledApp
+     * const installedApp = await prisma.installedApp.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends ExtensionFindUniqueArgs>(args: SelectSubset<T, ExtensionFindUniqueArgs<ExtArgs>>): Prisma__ExtensionClient<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends InstalledAppFindUniqueArgs>(args: SelectSubset<T, InstalledAppFindUniqueArgs<ExtArgs>>): Prisma__InstalledAppClient<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one Extension that matches the filter or throw an error with `error.code='P2025'`
+     * Find one InstalledApp that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {ExtensionFindUniqueOrThrowArgs} args - Arguments to find a Extension
+     * @param {InstalledAppFindUniqueOrThrowArgs} args - Arguments to find a InstalledApp
      * @example
-     * // Get one Extension
-     * const extension = await prisma.extension.findUniqueOrThrow({
+     * // Get one InstalledApp
+     * const installedApp = await prisma.installedApp.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends ExtensionFindUniqueOrThrowArgs>(args: SelectSubset<T, ExtensionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExtensionClient<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends InstalledAppFindUniqueOrThrowArgs>(args: SelectSubset<T, InstalledAppFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InstalledAppClient<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Extension that matches the filter.
+     * Find the first InstalledApp that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExtensionFindFirstArgs} args - Arguments to find a Extension
+     * @param {InstalledAppFindFirstArgs} args - Arguments to find a InstalledApp
      * @example
-     * // Get one Extension
-     * const extension = await prisma.extension.findFirst({
+     * // Get one InstalledApp
+     * const installedApp = await prisma.installedApp.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends ExtensionFindFirstArgs>(args?: SelectSubset<T, ExtensionFindFirstArgs<ExtArgs>>): Prisma__ExtensionClient<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends InstalledAppFindFirstArgs>(args?: SelectSubset<T, InstalledAppFindFirstArgs<ExtArgs>>): Prisma__InstalledAppClient<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Extension that matches the filter or
+     * Find the first InstalledApp that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExtensionFindFirstOrThrowArgs} args - Arguments to find a Extension
+     * @param {InstalledAppFindFirstOrThrowArgs} args - Arguments to find a InstalledApp
      * @example
-     * // Get one Extension
-     * const extension = await prisma.extension.findFirstOrThrow({
+     * // Get one InstalledApp
+     * const installedApp = await prisma.installedApp.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends ExtensionFindFirstOrThrowArgs>(args?: SelectSubset<T, ExtensionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExtensionClient<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends InstalledAppFindFirstOrThrowArgs>(args?: SelectSubset<T, InstalledAppFindFirstOrThrowArgs<ExtArgs>>): Prisma__InstalledAppClient<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more Extensions that matches the filter.
+     * Find zero or more InstalledApps that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExtensionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {InstalledAppFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Extensions
-     * const extensions = await prisma.extension.findMany()
+     * // Get all InstalledApps
+     * const installedApps = await prisma.installedApp.findMany()
      * 
-     * // Get first 10 Extensions
-     * const extensions = await prisma.extension.findMany({ take: 10 })
+     * // Get first 10 InstalledApps
+     * const installedApps = await prisma.installedApp.findMany({ take: 10 })
      * 
      * // Only select the `tenantId`
-     * const extensionWithTenantIdOnly = await prisma.extension.findMany({ select: { tenantId: true } })
+     * const installedAppWithTenantIdOnly = await prisma.installedApp.findMany({ select: { tenantId: true } })
      * 
      */
-    findMany<T extends ExtensionFindManyArgs>(args?: SelectSubset<T, ExtensionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends InstalledAppFindManyArgs>(args?: SelectSubset<T, InstalledAppFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Extension.
-     * @param {ExtensionCreateArgs} args - Arguments to create a Extension.
+     * Create a InstalledApp.
+     * @param {InstalledAppCreateArgs} args - Arguments to create a InstalledApp.
      * @example
-     * // Create one Extension
-     * const Extension = await prisma.extension.create({
+     * // Create one InstalledApp
+     * const InstalledApp = await prisma.installedApp.create({
      *   data: {
-     *     // ... data to create a Extension
+     *     // ... data to create a InstalledApp
      *   }
      * })
      * 
      */
-    create<T extends ExtensionCreateArgs>(args: SelectSubset<T, ExtensionCreateArgs<ExtArgs>>): Prisma__ExtensionClient<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends InstalledAppCreateArgs>(args: SelectSubset<T, InstalledAppCreateArgs<ExtArgs>>): Prisma__InstalledAppClient<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many Extensions.
-     * @param {ExtensionCreateManyArgs} args - Arguments to create many Extensions.
+     * Create many InstalledApps.
+     * @param {InstalledAppCreateManyArgs} args - Arguments to create many InstalledApps.
      * @example
-     * // Create many Extensions
-     * const extension = await prisma.extension.createMany({
+     * // Create many InstalledApps
+     * const installedApp = await prisma.installedApp.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends ExtensionCreateManyArgs>(args?: SelectSubset<T, ExtensionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends InstalledAppCreateManyArgs>(args?: SelectSubset<T, InstalledAppCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Extensions and returns the data saved in the database.
-     * @param {ExtensionCreateManyAndReturnArgs} args - Arguments to create many Extensions.
+     * Create many InstalledApps and returns the data saved in the database.
+     * @param {InstalledAppCreateManyAndReturnArgs} args - Arguments to create many InstalledApps.
      * @example
-     * // Create many Extensions
-     * const extension = await prisma.extension.createManyAndReturn({
+     * // Create many InstalledApps
+     * const installedApp = await prisma.installedApp.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Extensions and only return the `tenantId`
-     * const extensionWithTenantIdOnly = await prisma.extension.createManyAndReturn({
+     * // Create many InstalledApps and only return the `tenantId`
+     * const installedAppWithTenantIdOnly = await prisma.installedApp.createManyAndReturn({
      *   select: { tenantId: true },
      *   data: [
      *     // ... provide data here
@@ -7396,28 +7396,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends ExtensionCreateManyAndReturnArgs>(args?: SelectSubset<T, ExtensionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends InstalledAppCreateManyAndReturnArgs>(args?: SelectSubset<T, InstalledAppCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a Extension.
-     * @param {ExtensionDeleteArgs} args - Arguments to delete one Extension.
+     * Delete a InstalledApp.
+     * @param {InstalledAppDeleteArgs} args - Arguments to delete one InstalledApp.
      * @example
-     * // Delete one Extension
-     * const Extension = await prisma.extension.delete({
+     * // Delete one InstalledApp
+     * const InstalledApp = await prisma.installedApp.delete({
      *   where: {
-     *     // ... filter to delete one Extension
+     *     // ... filter to delete one InstalledApp
      *   }
      * })
      * 
      */
-    delete<T extends ExtensionDeleteArgs>(args: SelectSubset<T, ExtensionDeleteArgs<ExtArgs>>): Prisma__ExtensionClient<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends InstalledAppDeleteArgs>(args: SelectSubset<T, InstalledAppDeleteArgs<ExtArgs>>): Prisma__InstalledAppClient<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one Extension.
-     * @param {ExtensionUpdateArgs} args - Arguments to update one Extension.
+     * Update one InstalledApp.
+     * @param {InstalledAppUpdateArgs} args - Arguments to update one InstalledApp.
      * @example
-     * // Update one Extension
-     * const extension = await prisma.extension.update({
+     * // Update one InstalledApp
+     * const installedApp = await prisma.installedApp.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -7427,30 +7427,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends ExtensionUpdateArgs>(args: SelectSubset<T, ExtensionUpdateArgs<ExtArgs>>): Prisma__ExtensionClient<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends InstalledAppUpdateArgs>(args: SelectSubset<T, InstalledAppUpdateArgs<ExtArgs>>): Prisma__InstalledAppClient<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more Extensions.
-     * @param {ExtensionDeleteManyArgs} args - Arguments to filter Extensions to delete.
+     * Delete zero or more InstalledApps.
+     * @param {InstalledAppDeleteManyArgs} args - Arguments to filter InstalledApps to delete.
      * @example
-     * // Delete a few Extensions
-     * const { count } = await prisma.extension.deleteMany({
+     * // Delete a few InstalledApps
+     * const { count } = await prisma.installedApp.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends ExtensionDeleteManyArgs>(args?: SelectSubset<T, ExtensionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends InstalledAppDeleteManyArgs>(args?: SelectSubset<T, InstalledAppDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Extensions.
+     * Update zero or more InstalledApps.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExtensionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {InstalledAppUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Extensions
-     * const extension = await prisma.extension.updateMany({
+     * // Update many InstalledApps
+     * const installedApp = await prisma.installedApp.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -7460,14 +7460,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends ExtensionUpdateManyArgs>(args: SelectSubset<T, ExtensionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends InstalledAppUpdateManyArgs>(args: SelectSubset<T, InstalledAppUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Extensions and returns the data updated in the database.
-     * @param {ExtensionUpdateManyAndReturnArgs} args - Arguments to update many Extensions.
+     * Update zero or more InstalledApps and returns the data updated in the database.
+     * @param {InstalledAppUpdateManyAndReturnArgs} args - Arguments to update many InstalledApps.
      * @example
-     * // Update many Extensions
-     * const extension = await prisma.extension.updateManyAndReturn({
+     * // Update many InstalledApps
+     * const installedApp = await prisma.installedApp.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -7476,8 +7476,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more Extensions and only return the `tenantId`
-     * const extensionWithTenantIdOnly = await prisma.extension.updateManyAndReturn({
+     * // Update zero or more InstalledApps and only return the `tenantId`
+     * const installedAppWithTenantIdOnly = await prisma.installedApp.updateManyAndReturn({
      *   select: { tenantId: true },
      *   where: {
      *     // ... provide filter here
@@ -7490,56 +7490,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends ExtensionUpdateManyAndReturnArgs>(args: SelectSubset<T, ExtensionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends InstalledAppUpdateManyAndReturnArgs>(args: SelectSubset<T, InstalledAppUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one Extension.
-     * @param {ExtensionUpsertArgs} args - Arguments to update or create a Extension.
+     * Create or update one InstalledApp.
+     * @param {InstalledAppUpsertArgs} args - Arguments to update or create a InstalledApp.
      * @example
-     * // Update or create a Extension
-     * const extension = await prisma.extension.upsert({
+     * // Update or create a InstalledApp
+     * const installedApp = await prisma.installedApp.upsert({
      *   create: {
-     *     // ... data to create a Extension
+     *     // ... data to create a InstalledApp
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Extension we want to update
+     *     // ... the filter for the InstalledApp we want to update
      *   }
      * })
      */
-    upsert<T extends ExtensionUpsertArgs>(args: SelectSubset<T, ExtensionUpsertArgs<ExtArgs>>): Prisma__ExtensionClient<$Result.GetResult<Prisma.$ExtensionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends InstalledAppUpsertArgs>(args: SelectSubset<T, InstalledAppUpsertArgs<ExtArgs>>): Prisma__InstalledAppClient<$Result.GetResult<Prisma.$InstalledAppPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of Extensions.
+     * Count the number of InstalledApps.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExtensionCountArgs} args - Arguments to filter Extensions to count.
+     * @param {InstalledAppCountArgs} args - Arguments to filter InstalledApps to count.
      * @example
-     * // Count the number of Extensions
-     * const count = await prisma.extension.count({
+     * // Count the number of InstalledApps
+     * const count = await prisma.installedApp.count({
      *   where: {
-     *     // ... the filter for the Extensions we want to count
+     *     // ... the filter for the InstalledApps we want to count
      *   }
      * })
     **/
-    count<T extends ExtensionCountArgs>(
-      args?: Subset<T, ExtensionCountArgs>,
+    count<T extends InstalledAppCountArgs>(
+      args?: Subset<T, InstalledAppCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], ExtensionCountAggregateOutputType>
+          : GetScalarType<T['select'], InstalledAppCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Extension.
+     * Allows you to perform aggregations operations on a InstalledApp.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExtensionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {InstalledAppAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -7559,13 +7559,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends ExtensionAggregateArgs>(args: Subset<T, ExtensionAggregateArgs>): Prisma.PrismaPromise<GetExtensionAggregateType<T>>
+    aggregate<T extends InstalledAppAggregateArgs>(args: Subset<T, InstalledAppAggregateArgs>): Prisma.PrismaPromise<GetInstalledAppAggregateType<T>>
 
     /**
-     * Group by Extension.
+     * Group by InstalledApp.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExtensionGroupByArgs} args - Group by arguments.
+     * @param {InstalledAppGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -7580,14 +7580,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends ExtensionGroupByArgs,
+      T extends InstalledAppGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ExtensionGroupByArgs['orderBy'] }
-        : { orderBy?: ExtensionGroupByArgs['orderBy'] },
+        ? { orderBy: InstalledAppGroupByArgs['orderBy'] }
+        : { orderBy?: InstalledAppGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -7636,20 +7636,20 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, ExtensionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExtensionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, InstalledAppGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInstalledAppGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Extension model
+   * Fields of the InstalledApp model
    */
-  readonly fields: ExtensionFieldRefs;
+  readonly fields: InstalledAppFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Extension.
+   * The delegate class that acts as a "Promise-like" for InstalledApp.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__ExtensionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__InstalledAppClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     environment<T extends EnvironmentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EnvironmentDefaultArgs<ExtArgs>>): Prisma__EnvironmentClient<$Result.GetResult<Prisma.$EnvironmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -7678,428 +7678,428 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Extension model
+   * Fields of the InstalledApp model
    */
-  interface ExtensionFieldRefs {
-    readonly tenantId: FieldRef<"Extension", 'String'>
-    readonly environmentName: FieldRef<"Extension", 'String'>
-    readonly id: FieldRef<"Extension", 'String'>
-    readonly name: FieldRef<"Extension", 'String'>
-    readonly version: FieldRef<"Extension", 'String'>
-    readonly publisher: FieldRef<"Extension", 'String'>
-    readonly publishedAs: FieldRef<"Extension", 'String'>
-    readonly state: FieldRef<"Extension", 'String'>
+  interface InstalledAppFieldRefs {
+    readonly tenantId: FieldRef<"InstalledApp", 'String'>
+    readonly environmentName: FieldRef<"InstalledApp", 'String'>
+    readonly id: FieldRef<"InstalledApp", 'String'>
+    readonly name: FieldRef<"InstalledApp", 'String'>
+    readonly version: FieldRef<"InstalledApp", 'String'>
+    readonly publisher: FieldRef<"InstalledApp", 'String'>
+    readonly publishedAs: FieldRef<"InstalledApp", 'String'>
+    readonly state: FieldRef<"InstalledApp", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * Extension findUnique
+   * InstalledApp findUnique
    */
-  export type ExtensionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * Filter, which Extension to fetch.
+     * Filter, which InstalledApp to fetch.
      */
-    where: ExtensionWhereUniqueInput
+    where: InstalledAppWhereUniqueInput
   }
 
   /**
-   * Extension findUniqueOrThrow
+   * InstalledApp findUniqueOrThrow
    */
-  export type ExtensionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * Filter, which Extension to fetch.
+     * Filter, which InstalledApp to fetch.
      */
-    where: ExtensionWhereUniqueInput
+    where: InstalledAppWhereUniqueInput
   }
 
   /**
-   * Extension findFirst
+   * InstalledApp findFirst
    */
-  export type ExtensionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * Filter, which Extension to fetch.
+     * Filter, which InstalledApp to fetch.
      */
-    where?: ExtensionWhereInput
+    where?: InstalledAppWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Extensions to fetch.
+     * Determine the order of InstalledApps to fetch.
      */
-    orderBy?: ExtensionOrderByWithRelationInput | ExtensionOrderByWithRelationInput[]
+    orderBy?: InstalledAppOrderByWithRelationInput | InstalledAppOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Extensions.
+     * Sets the position for searching for InstalledApps.
      */
-    cursor?: ExtensionWhereUniqueInput
+    cursor?: InstalledAppWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Extensions from the position of the cursor.
+     * Take `±n` InstalledApps from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Extensions.
+     * Skip the first `n` InstalledApps.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Extensions.
+     * Filter by unique combinations of InstalledApps.
      */
-    distinct?: ExtensionScalarFieldEnum | ExtensionScalarFieldEnum[]
+    distinct?: InstalledAppScalarFieldEnum | InstalledAppScalarFieldEnum[]
   }
 
   /**
-   * Extension findFirstOrThrow
+   * InstalledApp findFirstOrThrow
    */
-  export type ExtensionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * Filter, which Extension to fetch.
+     * Filter, which InstalledApp to fetch.
      */
-    where?: ExtensionWhereInput
+    where?: InstalledAppWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Extensions to fetch.
+     * Determine the order of InstalledApps to fetch.
      */
-    orderBy?: ExtensionOrderByWithRelationInput | ExtensionOrderByWithRelationInput[]
+    orderBy?: InstalledAppOrderByWithRelationInput | InstalledAppOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Extensions.
+     * Sets the position for searching for InstalledApps.
      */
-    cursor?: ExtensionWhereUniqueInput
+    cursor?: InstalledAppWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Extensions from the position of the cursor.
+     * Take `±n` InstalledApps from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Extensions.
+     * Skip the first `n` InstalledApps.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Extensions.
+     * Filter by unique combinations of InstalledApps.
      */
-    distinct?: ExtensionScalarFieldEnum | ExtensionScalarFieldEnum[]
+    distinct?: InstalledAppScalarFieldEnum | InstalledAppScalarFieldEnum[]
   }
 
   /**
-   * Extension findMany
+   * InstalledApp findMany
    */
-  export type ExtensionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * Filter, which Extensions to fetch.
+     * Filter, which InstalledApps to fetch.
      */
-    where?: ExtensionWhereInput
+    where?: InstalledAppWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Extensions to fetch.
+     * Determine the order of InstalledApps to fetch.
      */
-    orderBy?: ExtensionOrderByWithRelationInput | ExtensionOrderByWithRelationInput[]
+    orderBy?: InstalledAppOrderByWithRelationInput | InstalledAppOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Extensions.
+     * Sets the position for listing InstalledApps.
      */
-    cursor?: ExtensionWhereUniqueInput
+    cursor?: InstalledAppWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Extensions from the position of the cursor.
+     * Take `±n` InstalledApps from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Extensions.
+     * Skip the first `n` InstalledApps.
      */
     skip?: number
-    distinct?: ExtensionScalarFieldEnum | ExtensionScalarFieldEnum[]
+    distinct?: InstalledAppScalarFieldEnum | InstalledAppScalarFieldEnum[]
   }
 
   /**
-   * Extension create
+   * InstalledApp create
    */
-  export type ExtensionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * The data needed to create a Extension.
+     * The data needed to create a InstalledApp.
      */
-    data: XOR<ExtensionCreateInput, ExtensionUncheckedCreateInput>
+    data: XOR<InstalledAppCreateInput, InstalledAppUncheckedCreateInput>
   }
 
   /**
-   * Extension createMany
+   * InstalledApp createMany
    */
-  export type ExtensionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Extensions.
+     * The data used to create many InstalledApps.
      */
-    data: ExtensionCreateManyInput | ExtensionCreateManyInput[]
+    data: InstalledAppCreateManyInput | InstalledAppCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * Extension createManyAndReturn
+   * InstalledApp createManyAndReturn
    */
-  export type ExtensionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelectCreateManyAndReturn<ExtArgs> | null
+    select?: InstalledAppSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
-     * The data used to create many Extensions.
+     * The data used to create many InstalledApps.
      */
-    data: ExtensionCreateManyInput | ExtensionCreateManyInput[]
+    data: InstalledAppCreateManyInput | InstalledAppCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: InstalledAppIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Extension update
+   * InstalledApp update
    */
-  export type ExtensionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * The data needed to update a Extension.
+     * The data needed to update a InstalledApp.
      */
-    data: XOR<ExtensionUpdateInput, ExtensionUncheckedUpdateInput>
+    data: XOR<InstalledAppUpdateInput, InstalledAppUncheckedUpdateInput>
     /**
-     * Choose, which Extension to update.
+     * Choose, which InstalledApp to update.
      */
-    where: ExtensionWhereUniqueInput
+    where: InstalledAppWhereUniqueInput
   }
 
   /**
-   * Extension updateMany
+   * InstalledApp updateMany
    */
-  export type ExtensionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Extensions.
+     * The data used to update InstalledApps.
      */
-    data: XOR<ExtensionUpdateManyMutationInput, ExtensionUncheckedUpdateManyInput>
+    data: XOR<InstalledAppUpdateManyMutationInput, InstalledAppUncheckedUpdateManyInput>
     /**
-     * Filter which Extensions to update
+     * Filter which InstalledApps to update
      */
-    where?: ExtensionWhereInput
+    where?: InstalledAppWhereInput
     /**
-     * Limit how many Extensions to update.
+     * Limit how many InstalledApps to update.
      */
     limit?: number
   }
 
   /**
-   * Extension updateManyAndReturn
+   * InstalledApp updateManyAndReturn
    */
-  export type ExtensionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: InstalledAppSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
-     * The data used to update Extensions.
+     * The data used to update InstalledApps.
      */
-    data: XOR<ExtensionUpdateManyMutationInput, ExtensionUncheckedUpdateManyInput>
+    data: XOR<InstalledAppUpdateManyMutationInput, InstalledAppUncheckedUpdateManyInput>
     /**
-     * Filter which Extensions to update
+     * Filter which InstalledApps to update
      */
-    where?: ExtensionWhereInput
+    where?: InstalledAppWhereInput
     /**
-     * Limit how many Extensions to update.
+     * Limit how many InstalledApps to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: InstalledAppIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Extension upsert
+   * InstalledApp upsert
    */
-  export type ExtensionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * The filter to search for the Extension to update in case it exists.
+     * The filter to search for the InstalledApp to update in case it exists.
      */
-    where: ExtensionWhereUniqueInput
+    where: InstalledAppWhereUniqueInput
     /**
-     * In case the Extension found by the `where` argument doesn't exist, create a new Extension with this data.
+     * In case the InstalledApp found by the `where` argument doesn't exist, create a new InstalledApp with this data.
      */
-    create: XOR<ExtensionCreateInput, ExtensionUncheckedCreateInput>
+    create: XOR<InstalledAppCreateInput, InstalledAppUncheckedCreateInput>
     /**
-     * In case the Extension was found with the provided `where` argument, update it with this data.
+     * In case the InstalledApp was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<ExtensionUpdateInput, ExtensionUncheckedUpdateInput>
+    update: XOR<InstalledAppUpdateInput, InstalledAppUncheckedUpdateInput>
   }
 
   /**
-   * Extension delete
+   * InstalledApp delete
    */
-  export type ExtensionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
     /**
-     * Filter which Extension to delete.
+     * Filter which InstalledApp to delete.
      */
-    where: ExtensionWhereUniqueInput
+    where: InstalledAppWhereUniqueInput
   }
 
   /**
-   * Extension deleteMany
+   * InstalledApp deleteMany
    */
-  export type ExtensionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Extensions to delete
+     * Filter which InstalledApps to delete
      */
-    where?: ExtensionWhereInput
+    where?: InstalledAppWhereInput
     /**
-     * Limit how many Extensions to delete.
+     * Limit how many InstalledApps to delete.
      */
     limit?: number
   }
 
   /**
-   * Extension without action
+   * InstalledApp without action
    */
-  export type ExtensionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type InstalledAppDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Extension
+     * Select specific fields to fetch from the InstalledApp
      */
-    select?: ExtensionSelect<ExtArgs> | null
+    select?: InstalledAppSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Extension
+     * Omit specific fields from the InstalledApp
      */
-    omit?: ExtensionOmit<ExtArgs> | null
+    omit?: InstalledAppOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExtensionInclude<ExtArgs> | null
+    include?: InstalledAppInclude<ExtArgs> | null
   }
 
 
@@ -8182,7 +8182,7 @@ export namespace Prisma {
   export type EnvironmentScalarFieldEnum = (typeof EnvironmentScalarFieldEnum)[keyof typeof EnvironmentScalarFieldEnum]
 
 
-  export const ExtensionScalarFieldEnum: {
+  export const InstalledAppScalarFieldEnum: {
     tenantId: 'tenantId',
     environmentName: 'environmentName',
     id: 'id',
@@ -8193,7 +8193,7 @@ export namespace Prisma {
     state: 'state'
   };
 
-  export type ExtensionScalarFieldEnum = (typeof ExtensionScalarFieldEnum)[keyof typeof ExtensionScalarFieldEnum]
+  export type InstalledAppScalarFieldEnum = (typeof InstalledAppScalarFieldEnum)[keyof typeof InstalledAppScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8562,7 +8562,7 @@ export namespace Prisma {
     applicationVersion?: StringNullableFilter<"Environment"> | string | null
     platformVersion?: StringNullableFilter<"Environment"> | string | null
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
-    extensions?: ExtensionListRelationFilter
+    installedApps?: InstalledAppListRelationFilter
   }
 
   export type EnvironmentOrderByWithRelationInput = {
@@ -8575,7 +8575,7 @@ export namespace Prisma {
     applicationVersion?: SortOrderInput | SortOrder
     platformVersion?: SortOrderInput | SortOrder
     tenant?: TenantOrderByWithRelationInput
-    extensions?: ExtensionOrderByRelationAggregateInput
+    installedApps?: InstalledAppOrderByRelationAggregateInput
   }
 
   export type EnvironmentWhereUniqueInput = Prisma.AtLeast<{
@@ -8592,7 +8592,7 @@ export namespace Prisma {
     applicationVersion?: StringNullableFilter<"Environment"> | string | null
     platformVersion?: StringNullableFilter<"Environment"> | string | null
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
-    extensions?: ExtensionListRelationFilter
+    installedApps?: InstalledAppListRelationFilter
   }, "tenantId_name">
 
   export type EnvironmentOrderByWithAggregationInput = {
@@ -8623,22 +8623,22 @@ export namespace Prisma {
     platformVersion?: StringNullableWithAggregatesFilter<"Environment"> | string | null
   }
 
-  export type ExtensionWhereInput = {
-    AND?: ExtensionWhereInput | ExtensionWhereInput[]
-    OR?: ExtensionWhereInput[]
-    NOT?: ExtensionWhereInput | ExtensionWhereInput[]
-    tenantId?: UuidFilter<"Extension"> | string
-    environmentName?: StringFilter<"Extension"> | string
-    id?: UuidFilter<"Extension"> | string
-    name?: StringFilter<"Extension"> | string
-    version?: StringFilter<"Extension"> | string
-    publisher?: StringFilter<"Extension"> | string
-    publishedAs?: StringFilter<"Extension"> | string
-    state?: StringNullableFilter<"Extension"> | string | null
+  export type InstalledAppWhereInput = {
+    AND?: InstalledAppWhereInput | InstalledAppWhereInput[]
+    OR?: InstalledAppWhereInput[]
+    NOT?: InstalledAppWhereInput | InstalledAppWhereInput[]
+    tenantId?: UuidFilter<"InstalledApp"> | string
+    environmentName?: StringFilter<"InstalledApp"> | string
+    id?: UuidFilter<"InstalledApp"> | string
+    name?: StringFilter<"InstalledApp"> | string
+    version?: StringFilter<"InstalledApp"> | string
+    publisher?: StringFilter<"InstalledApp"> | string
+    publishedAs?: StringFilter<"InstalledApp"> | string
+    state?: StringNullableFilter<"InstalledApp"> | string | null
     environment?: XOR<EnvironmentScalarRelationFilter, EnvironmentWhereInput>
   }
 
-  export type ExtensionOrderByWithRelationInput = {
+  export type InstalledAppOrderByWithRelationInput = {
     tenantId?: SortOrder
     environmentName?: SortOrder
     id?: SortOrder
@@ -8650,23 +8650,23 @@ export namespace Prisma {
     environment?: EnvironmentOrderByWithRelationInput
   }
 
-  export type ExtensionWhereUniqueInput = Prisma.AtLeast<{
-    tenantId_environmentName_id?: ExtensionTenantIdEnvironmentNameIdCompoundUniqueInput
-    AND?: ExtensionWhereInput | ExtensionWhereInput[]
-    OR?: ExtensionWhereInput[]
-    NOT?: ExtensionWhereInput | ExtensionWhereInput[]
-    tenantId?: UuidFilter<"Extension"> | string
-    environmentName?: StringFilter<"Extension"> | string
-    id?: UuidFilter<"Extension"> | string
-    name?: StringFilter<"Extension"> | string
-    version?: StringFilter<"Extension"> | string
-    publisher?: StringFilter<"Extension"> | string
-    publishedAs?: StringFilter<"Extension"> | string
-    state?: StringNullableFilter<"Extension"> | string | null
+  export type InstalledAppWhereUniqueInput = Prisma.AtLeast<{
+    tenantId_environmentName_id?: InstalledAppTenantIdEnvironmentNameIdCompoundUniqueInput
+    AND?: InstalledAppWhereInput | InstalledAppWhereInput[]
+    OR?: InstalledAppWhereInput[]
+    NOT?: InstalledAppWhereInput | InstalledAppWhereInput[]
+    tenantId?: UuidFilter<"InstalledApp"> | string
+    environmentName?: StringFilter<"InstalledApp"> | string
+    id?: UuidFilter<"InstalledApp"> | string
+    name?: StringFilter<"InstalledApp"> | string
+    version?: StringFilter<"InstalledApp"> | string
+    publisher?: StringFilter<"InstalledApp"> | string
+    publishedAs?: StringFilter<"InstalledApp"> | string
+    state?: StringNullableFilter<"InstalledApp"> | string | null
     environment?: XOR<EnvironmentScalarRelationFilter, EnvironmentWhereInput>
   }, "tenantId_environmentName_id">
 
-  export type ExtensionOrderByWithAggregationInput = {
+  export type InstalledAppOrderByWithAggregationInput = {
     tenantId?: SortOrder
     environmentName?: SortOrder
     id?: SortOrder
@@ -8675,23 +8675,23 @@ export namespace Prisma {
     publisher?: SortOrder
     publishedAs?: SortOrder
     state?: SortOrderInput | SortOrder
-    _count?: ExtensionCountOrderByAggregateInput
-    _max?: ExtensionMaxOrderByAggregateInput
-    _min?: ExtensionMinOrderByAggregateInput
+    _count?: InstalledAppCountOrderByAggregateInput
+    _max?: InstalledAppMaxOrderByAggregateInput
+    _min?: InstalledAppMinOrderByAggregateInput
   }
 
-  export type ExtensionScalarWhereWithAggregatesInput = {
-    AND?: ExtensionScalarWhereWithAggregatesInput | ExtensionScalarWhereWithAggregatesInput[]
-    OR?: ExtensionScalarWhereWithAggregatesInput[]
-    NOT?: ExtensionScalarWhereWithAggregatesInput | ExtensionScalarWhereWithAggregatesInput[]
-    tenantId?: UuidWithAggregatesFilter<"Extension"> | string
-    environmentName?: StringWithAggregatesFilter<"Extension"> | string
-    id?: UuidWithAggregatesFilter<"Extension"> | string
-    name?: StringWithAggregatesFilter<"Extension"> | string
-    version?: StringWithAggregatesFilter<"Extension"> | string
-    publisher?: StringWithAggregatesFilter<"Extension"> | string
-    publishedAs?: StringWithAggregatesFilter<"Extension"> | string
-    state?: StringNullableWithAggregatesFilter<"Extension"> | string | null
+  export type InstalledAppScalarWhereWithAggregatesInput = {
+    AND?: InstalledAppScalarWhereWithAggregatesInput | InstalledAppScalarWhereWithAggregatesInput[]
+    OR?: InstalledAppScalarWhereWithAggregatesInput[]
+    NOT?: InstalledAppScalarWhereWithAggregatesInput | InstalledAppScalarWhereWithAggregatesInput[]
+    tenantId?: UuidWithAggregatesFilter<"InstalledApp"> | string
+    environmentName?: StringWithAggregatesFilter<"InstalledApp"> | string
+    id?: UuidWithAggregatesFilter<"InstalledApp"> | string
+    name?: StringWithAggregatesFilter<"InstalledApp"> | string
+    version?: StringWithAggregatesFilter<"InstalledApp"> | string
+    publisher?: StringWithAggregatesFilter<"InstalledApp"> | string
+    publishedAs?: StringWithAggregatesFilter<"InstalledApp"> | string
+    state?: StringNullableWithAggregatesFilter<"InstalledApp"> | string | null
   }
 
   export type UserCreateInput = {
@@ -8989,7 +8989,7 @@ export namespace Prisma {
     applicationVersion?: string | null
     platformVersion?: string | null
     tenant: TenantCreateNestedOneWithoutEnvironmentsInput
-    extensions?: ExtensionCreateNestedManyWithoutEnvironmentInput
+    installedApps?: InstalledAppCreateNestedManyWithoutEnvironmentInput
   }
 
   export type EnvironmentUncheckedCreateInput = {
@@ -9001,7 +9001,7 @@ export namespace Prisma {
     locationName?: string | null
     applicationVersion?: string | null
     platformVersion?: string | null
-    extensions?: ExtensionUncheckedCreateNestedManyWithoutEnvironmentInput
+    installedApps?: InstalledAppUncheckedCreateNestedManyWithoutEnvironmentInput
   }
 
   export type EnvironmentUpdateInput = {
@@ -9013,7 +9013,7 @@ export namespace Prisma {
     applicationVersion?: NullableStringFieldUpdateOperationsInput | string | null
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
     tenant?: TenantUpdateOneRequiredWithoutEnvironmentsNestedInput
-    extensions?: ExtensionUpdateManyWithoutEnvironmentNestedInput
+    installedApps?: InstalledAppUpdateManyWithoutEnvironmentNestedInput
   }
 
   export type EnvironmentUncheckedUpdateInput = {
@@ -9025,7 +9025,7 @@ export namespace Prisma {
     locationName?: NullableStringFieldUpdateOperationsInput | string | null
     applicationVersion?: NullableStringFieldUpdateOperationsInput | string | null
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    extensions?: ExtensionUncheckedUpdateManyWithoutEnvironmentNestedInput
+    installedApps?: InstalledAppUncheckedUpdateManyWithoutEnvironmentNestedInput
   }
 
   export type EnvironmentCreateManyInput = {
@@ -9060,17 +9060,17 @@ export namespace Prisma {
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ExtensionCreateInput = {
+  export type InstalledAppCreateInput = {
     id: string
     name: string
     version: string
     publisher: string
     publishedAs: string
     state?: string | null
-    environment: EnvironmentCreateNestedOneWithoutExtensionsInput
+    environment: EnvironmentCreateNestedOneWithoutInstalledAppsInput
   }
 
-  export type ExtensionUncheckedCreateInput = {
+  export type InstalledAppUncheckedCreateInput = {
     tenantId: string
     environmentName: string
     id: string
@@ -9081,17 +9081,17 @@ export namespace Prisma {
     state?: string | null
   }
 
-  export type ExtensionUpdateInput = {
+  export type InstalledAppUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     version?: StringFieldUpdateOperationsInput | string
     publisher?: StringFieldUpdateOperationsInput | string
     publishedAs?: StringFieldUpdateOperationsInput | string
     state?: NullableStringFieldUpdateOperationsInput | string | null
-    environment?: EnvironmentUpdateOneRequiredWithoutExtensionsNestedInput
+    environment?: EnvironmentUpdateOneRequiredWithoutInstalledAppsNestedInput
   }
 
-  export type ExtensionUncheckedUpdateInput = {
+  export type InstalledAppUncheckedUpdateInput = {
     tenantId?: StringFieldUpdateOperationsInput | string
     environmentName?: StringFieldUpdateOperationsInput | string
     id?: StringFieldUpdateOperationsInput | string
@@ -9102,7 +9102,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ExtensionCreateManyInput = {
+  export type InstalledAppCreateManyInput = {
     tenantId: string
     environmentName: string
     id: string
@@ -9113,7 +9113,7 @@ export namespace Prisma {
     state?: string | null
   }
 
-  export type ExtensionUpdateManyMutationInput = {
+  export type InstalledAppUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     version?: StringFieldUpdateOperationsInput | string
@@ -9122,7 +9122,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ExtensionUncheckedUpdateManyInput = {
+  export type InstalledAppUncheckedUpdateManyInput = {
     tenantId?: StringFieldUpdateOperationsInput | string
     environmentName?: StringFieldUpdateOperationsInput | string
     id?: StringFieldUpdateOperationsInput | string
@@ -9492,13 +9492,13 @@ export namespace Prisma {
     isNot?: TenantWhereInput
   }
 
-  export type ExtensionListRelationFilter = {
-    every?: ExtensionWhereInput
-    some?: ExtensionWhereInput
-    none?: ExtensionWhereInput
+  export type InstalledAppListRelationFilter = {
+    every?: InstalledAppWhereInput
+    some?: InstalledAppWhereInput
+    none?: InstalledAppWhereInput
   }
 
-  export type ExtensionOrderByRelationAggregateInput = {
+  export type InstalledAppOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9545,13 +9545,13 @@ export namespace Prisma {
     isNot?: EnvironmentWhereInput
   }
 
-  export type ExtensionTenantIdEnvironmentNameIdCompoundUniqueInput = {
+  export type InstalledAppTenantIdEnvironmentNameIdCompoundUniqueInput = {
     tenantId: string
     environmentName: string
     id: string
   }
 
-  export type ExtensionCountOrderByAggregateInput = {
+  export type InstalledAppCountOrderByAggregateInput = {
     tenantId?: SortOrder
     environmentName?: SortOrder
     id?: SortOrder
@@ -9562,7 +9562,7 @@ export namespace Prisma {
     state?: SortOrder
   }
 
-  export type ExtensionMaxOrderByAggregateInput = {
+  export type InstalledAppMaxOrderByAggregateInput = {
     tenantId?: SortOrder
     environmentName?: SortOrder
     id?: SortOrder
@@ -9573,7 +9573,7 @@ export namespace Prisma {
     state?: SortOrder
   }
 
-  export type ExtensionMinOrderByAggregateInput = {
+  export type InstalledAppMinOrderByAggregateInput = {
     tenantId?: SortOrder
     environmentName?: SortOrder
     id?: SortOrder
@@ -9820,18 +9820,18 @@ export namespace Prisma {
     connect?: TenantWhereUniqueInput
   }
 
-  export type ExtensionCreateNestedManyWithoutEnvironmentInput = {
-    create?: XOR<ExtensionCreateWithoutEnvironmentInput, ExtensionUncheckedCreateWithoutEnvironmentInput> | ExtensionCreateWithoutEnvironmentInput[] | ExtensionUncheckedCreateWithoutEnvironmentInput[]
-    connectOrCreate?: ExtensionCreateOrConnectWithoutEnvironmentInput | ExtensionCreateOrConnectWithoutEnvironmentInput[]
-    createMany?: ExtensionCreateManyEnvironmentInputEnvelope
-    connect?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
+  export type InstalledAppCreateNestedManyWithoutEnvironmentInput = {
+    create?: XOR<InstalledAppCreateWithoutEnvironmentInput, InstalledAppUncheckedCreateWithoutEnvironmentInput> | InstalledAppCreateWithoutEnvironmentInput[] | InstalledAppUncheckedCreateWithoutEnvironmentInput[]
+    connectOrCreate?: InstalledAppCreateOrConnectWithoutEnvironmentInput | InstalledAppCreateOrConnectWithoutEnvironmentInput[]
+    createMany?: InstalledAppCreateManyEnvironmentInputEnvelope
+    connect?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
   }
 
-  export type ExtensionUncheckedCreateNestedManyWithoutEnvironmentInput = {
-    create?: XOR<ExtensionCreateWithoutEnvironmentInput, ExtensionUncheckedCreateWithoutEnvironmentInput> | ExtensionCreateWithoutEnvironmentInput[] | ExtensionUncheckedCreateWithoutEnvironmentInput[]
-    connectOrCreate?: ExtensionCreateOrConnectWithoutEnvironmentInput | ExtensionCreateOrConnectWithoutEnvironmentInput[]
-    createMany?: ExtensionCreateManyEnvironmentInputEnvelope
-    connect?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
+  export type InstalledAppUncheckedCreateNestedManyWithoutEnvironmentInput = {
+    create?: XOR<InstalledAppCreateWithoutEnvironmentInput, InstalledAppUncheckedCreateWithoutEnvironmentInput> | InstalledAppCreateWithoutEnvironmentInput[] | InstalledAppUncheckedCreateWithoutEnvironmentInput[]
+    connectOrCreate?: InstalledAppCreateOrConnectWithoutEnvironmentInput | InstalledAppCreateOrConnectWithoutEnvironmentInput[]
+    createMany?: InstalledAppCreateManyEnvironmentInputEnvelope
+    connect?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
   }
 
   export type TenantUpdateOneRequiredWithoutEnvironmentsNestedInput = {
@@ -9842,46 +9842,46 @@ export namespace Prisma {
     update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutEnvironmentsInput, TenantUpdateWithoutEnvironmentsInput>, TenantUncheckedUpdateWithoutEnvironmentsInput>
   }
 
-  export type ExtensionUpdateManyWithoutEnvironmentNestedInput = {
-    create?: XOR<ExtensionCreateWithoutEnvironmentInput, ExtensionUncheckedCreateWithoutEnvironmentInput> | ExtensionCreateWithoutEnvironmentInput[] | ExtensionUncheckedCreateWithoutEnvironmentInput[]
-    connectOrCreate?: ExtensionCreateOrConnectWithoutEnvironmentInput | ExtensionCreateOrConnectWithoutEnvironmentInput[]
-    upsert?: ExtensionUpsertWithWhereUniqueWithoutEnvironmentInput | ExtensionUpsertWithWhereUniqueWithoutEnvironmentInput[]
-    createMany?: ExtensionCreateManyEnvironmentInputEnvelope
-    set?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
-    disconnect?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
-    delete?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
-    connect?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
-    update?: ExtensionUpdateWithWhereUniqueWithoutEnvironmentInput | ExtensionUpdateWithWhereUniqueWithoutEnvironmentInput[]
-    updateMany?: ExtensionUpdateManyWithWhereWithoutEnvironmentInput | ExtensionUpdateManyWithWhereWithoutEnvironmentInput[]
-    deleteMany?: ExtensionScalarWhereInput | ExtensionScalarWhereInput[]
+  export type InstalledAppUpdateManyWithoutEnvironmentNestedInput = {
+    create?: XOR<InstalledAppCreateWithoutEnvironmentInput, InstalledAppUncheckedCreateWithoutEnvironmentInput> | InstalledAppCreateWithoutEnvironmentInput[] | InstalledAppUncheckedCreateWithoutEnvironmentInput[]
+    connectOrCreate?: InstalledAppCreateOrConnectWithoutEnvironmentInput | InstalledAppCreateOrConnectWithoutEnvironmentInput[]
+    upsert?: InstalledAppUpsertWithWhereUniqueWithoutEnvironmentInput | InstalledAppUpsertWithWhereUniqueWithoutEnvironmentInput[]
+    createMany?: InstalledAppCreateManyEnvironmentInputEnvelope
+    set?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
+    disconnect?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
+    delete?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
+    connect?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
+    update?: InstalledAppUpdateWithWhereUniqueWithoutEnvironmentInput | InstalledAppUpdateWithWhereUniqueWithoutEnvironmentInput[]
+    updateMany?: InstalledAppUpdateManyWithWhereWithoutEnvironmentInput | InstalledAppUpdateManyWithWhereWithoutEnvironmentInput[]
+    deleteMany?: InstalledAppScalarWhereInput | InstalledAppScalarWhereInput[]
   }
 
-  export type ExtensionUncheckedUpdateManyWithoutEnvironmentNestedInput = {
-    create?: XOR<ExtensionCreateWithoutEnvironmentInput, ExtensionUncheckedCreateWithoutEnvironmentInput> | ExtensionCreateWithoutEnvironmentInput[] | ExtensionUncheckedCreateWithoutEnvironmentInput[]
-    connectOrCreate?: ExtensionCreateOrConnectWithoutEnvironmentInput | ExtensionCreateOrConnectWithoutEnvironmentInput[]
-    upsert?: ExtensionUpsertWithWhereUniqueWithoutEnvironmentInput | ExtensionUpsertWithWhereUniqueWithoutEnvironmentInput[]
-    createMany?: ExtensionCreateManyEnvironmentInputEnvelope
-    set?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
-    disconnect?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
-    delete?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
-    connect?: ExtensionWhereUniqueInput | ExtensionWhereUniqueInput[]
-    update?: ExtensionUpdateWithWhereUniqueWithoutEnvironmentInput | ExtensionUpdateWithWhereUniqueWithoutEnvironmentInput[]
-    updateMany?: ExtensionUpdateManyWithWhereWithoutEnvironmentInput | ExtensionUpdateManyWithWhereWithoutEnvironmentInput[]
-    deleteMany?: ExtensionScalarWhereInput | ExtensionScalarWhereInput[]
+  export type InstalledAppUncheckedUpdateManyWithoutEnvironmentNestedInput = {
+    create?: XOR<InstalledAppCreateWithoutEnvironmentInput, InstalledAppUncheckedCreateWithoutEnvironmentInput> | InstalledAppCreateWithoutEnvironmentInput[] | InstalledAppUncheckedCreateWithoutEnvironmentInput[]
+    connectOrCreate?: InstalledAppCreateOrConnectWithoutEnvironmentInput | InstalledAppCreateOrConnectWithoutEnvironmentInput[]
+    upsert?: InstalledAppUpsertWithWhereUniqueWithoutEnvironmentInput | InstalledAppUpsertWithWhereUniqueWithoutEnvironmentInput[]
+    createMany?: InstalledAppCreateManyEnvironmentInputEnvelope
+    set?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
+    disconnect?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
+    delete?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
+    connect?: InstalledAppWhereUniqueInput | InstalledAppWhereUniqueInput[]
+    update?: InstalledAppUpdateWithWhereUniqueWithoutEnvironmentInput | InstalledAppUpdateWithWhereUniqueWithoutEnvironmentInput[]
+    updateMany?: InstalledAppUpdateManyWithWhereWithoutEnvironmentInput | InstalledAppUpdateManyWithWhereWithoutEnvironmentInput[]
+    deleteMany?: InstalledAppScalarWhereInput | InstalledAppScalarWhereInput[]
   }
 
-  export type EnvironmentCreateNestedOneWithoutExtensionsInput = {
-    create?: XOR<EnvironmentCreateWithoutExtensionsInput, EnvironmentUncheckedCreateWithoutExtensionsInput>
-    connectOrCreate?: EnvironmentCreateOrConnectWithoutExtensionsInput
+  export type EnvironmentCreateNestedOneWithoutInstalledAppsInput = {
+    create?: XOR<EnvironmentCreateWithoutInstalledAppsInput, EnvironmentUncheckedCreateWithoutInstalledAppsInput>
+    connectOrCreate?: EnvironmentCreateOrConnectWithoutInstalledAppsInput
     connect?: EnvironmentWhereUniqueInput
   }
 
-  export type EnvironmentUpdateOneRequiredWithoutExtensionsNestedInput = {
-    create?: XOR<EnvironmentCreateWithoutExtensionsInput, EnvironmentUncheckedCreateWithoutExtensionsInput>
-    connectOrCreate?: EnvironmentCreateOrConnectWithoutExtensionsInput
-    upsert?: EnvironmentUpsertWithoutExtensionsInput
+  export type EnvironmentUpdateOneRequiredWithoutInstalledAppsNestedInput = {
+    create?: XOR<EnvironmentCreateWithoutInstalledAppsInput, EnvironmentUncheckedCreateWithoutInstalledAppsInput>
+    connectOrCreate?: EnvironmentCreateOrConnectWithoutInstalledAppsInput
+    upsert?: EnvironmentUpsertWithoutInstalledAppsInput
     connect?: EnvironmentWhereUniqueInput
-    update?: XOR<XOR<EnvironmentUpdateToOneWithWhereWithoutExtensionsInput, EnvironmentUpdateWithoutExtensionsInput>, EnvironmentUncheckedUpdateWithoutExtensionsInput>
+    update?: XOR<XOR<EnvironmentUpdateToOneWithWhereWithoutInstalledAppsInput, EnvironmentUpdateWithoutInstalledAppsInput>, EnvironmentUncheckedUpdateWithoutInstalledAppsInput>
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -10375,7 +10375,7 @@ export namespace Prisma {
     locationName?: string | null
     applicationVersion?: string | null
     platformVersion?: string | null
-    extensions?: ExtensionCreateNestedManyWithoutEnvironmentInput
+    installedApps?: InstalledAppCreateNestedManyWithoutEnvironmentInput
   }
 
   export type EnvironmentUncheckedCreateWithoutTenantInput = {
@@ -10386,7 +10386,7 @@ export namespace Prisma {
     locationName?: string | null
     applicationVersion?: string | null
     platformVersion?: string | null
-    extensions?: ExtensionUncheckedCreateNestedManyWithoutEnvironmentInput
+    installedApps?: InstalledAppUncheckedCreateNestedManyWithoutEnvironmentInput
   }
 
   export type EnvironmentCreateOrConnectWithoutTenantInput = {
@@ -10489,7 +10489,7 @@ export namespace Prisma {
     create: XOR<TenantCreateWithoutEnvironmentsInput, TenantUncheckedCreateWithoutEnvironmentsInput>
   }
 
-  export type ExtensionCreateWithoutEnvironmentInput = {
+  export type InstalledAppCreateWithoutEnvironmentInput = {
     id: string
     name: string
     version: string
@@ -10498,7 +10498,7 @@ export namespace Prisma {
     state?: string | null
   }
 
-  export type ExtensionUncheckedCreateWithoutEnvironmentInput = {
+  export type InstalledAppUncheckedCreateWithoutEnvironmentInput = {
     id: string
     name: string
     version: string
@@ -10507,13 +10507,13 @@ export namespace Prisma {
     state?: string | null
   }
 
-  export type ExtensionCreateOrConnectWithoutEnvironmentInput = {
-    where: ExtensionWhereUniqueInput
-    create: XOR<ExtensionCreateWithoutEnvironmentInput, ExtensionUncheckedCreateWithoutEnvironmentInput>
+  export type InstalledAppCreateOrConnectWithoutEnvironmentInput = {
+    where: InstalledAppWhereUniqueInput
+    create: XOR<InstalledAppCreateWithoutEnvironmentInput, InstalledAppUncheckedCreateWithoutEnvironmentInput>
   }
 
-  export type ExtensionCreateManyEnvironmentInputEnvelope = {
-    data: ExtensionCreateManyEnvironmentInput | ExtensionCreateManyEnvironmentInput[]
+  export type InstalledAppCreateManyEnvironmentInputEnvelope = {
+    data: InstalledAppCreateManyEnvironmentInput | InstalledAppCreateManyEnvironmentInput[]
     skipDuplicates?: boolean
   }
 
@@ -10558,37 +10558,37 @@ export namespace Prisma {
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type ExtensionUpsertWithWhereUniqueWithoutEnvironmentInput = {
-    where: ExtensionWhereUniqueInput
-    update: XOR<ExtensionUpdateWithoutEnvironmentInput, ExtensionUncheckedUpdateWithoutEnvironmentInput>
-    create: XOR<ExtensionCreateWithoutEnvironmentInput, ExtensionUncheckedCreateWithoutEnvironmentInput>
+  export type InstalledAppUpsertWithWhereUniqueWithoutEnvironmentInput = {
+    where: InstalledAppWhereUniqueInput
+    update: XOR<InstalledAppUpdateWithoutEnvironmentInput, InstalledAppUncheckedUpdateWithoutEnvironmentInput>
+    create: XOR<InstalledAppCreateWithoutEnvironmentInput, InstalledAppUncheckedCreateWithoutEnvironmentInput>
   }
 
-  export type ExtensionUpdateWithWhereUniqueWithoutEnvironmentInput = {
-    where: ExtensionWhereUniqueInput
-    data: XOR<ExtensionUpdateWithoutEnvironmentInput, ExtensionUncheckedUpdateWithoutEnvironmentInput>
+  export type InstalledAppUpdateWithWhereUniqueWithoutEnvironmentInput = {
+    where: InstalledAppWhereUniqueInput
+    data: XOR<InstalledAppUpdateWithoutEnvironmentInput, InstalledAppUncheckedUpdateWithoutEnvironmentInput>
   }
 
-  export type ExtensionUpdateManyWithWhereWithoutEnvironmentInput = {
-    where: ExtensionScalarWhereInput
-    data: XOR<ExtensionUpdateManyMutationInput, ExtensionUncheckedUpdateManyWithoutEnvironmentInput>
+  export type InstalledAppUpdateManyWithWhereWithoutEnvironmentInput = {
+    where: InstalledAppScalarWhereInput
+    data: XOR<InstalledAppUpdateManyMutationInput, InstalledAppUncheckedUpdateManyWithoutEnvironmentInput>
   }
 
-  export type ExtensionScalarWhereInput = {
-    AND?: ExtensionScalarWhereInput | ExtensionScalarWhereInput[]
-    OR?: ExtensionScalarWhereInput[]
-    NOT?: ExtensionScalarWhereInput | ExtensionScalarWhereInput[]
-    tenantId?: UuidFilter<"Extension"> | string
-    environmentName?: StringFilter<"Extension"> | string
-    id?: UuidFilter<"Extension"> | string
-    name?: StringFilter<"Extension"> | string
-    version?: StringFilter<"Extension"> | string
-    publisher?: StringFilter<"Extension"> | string
-    publishedAs?: StringFilter<"Extension"> | string
-    state?: StringNullableFilter<"Extension"> | string | null
+  export type InstalledAppScalarWhereInput = {
+    AND?: InstalledAppScalarWhereInput | InstalledAppScalarWhereInput[]
+    OR?: InstalledAppScalarWhereInput[]
+    NOT?: InstalledAppScalarWhereInput | InstalledAppScalarWhereInput[]
+    tenantId?: UuidFilter<"InstalledApp"> | string
+    environmentName?: StringFilter<"InstalledApp"> | string
+    id?: UuidFilter<"InstalledApp"> | string
+    name?: StringFilter<"InstalledApp"> | string
+    version?: StringFilter<"InstalledApp"> | string
+    publisher?: StringFilter<"InstalledApp"> | string
+    publishedAs?: StringFilter<"InstalledApp"> | string
+    state?: StringNullableFilter<"InstalledApp"> | string | null
   }
 
-  export type EnvironmentCreateWithoutExtensionsInput = {
+  export type EnvironmentCreateWithoutInstalledAppsInput = {
     name: string
     type?: string | null
     status?: string | null
@@ -10599,7 +10599,7 @@ export namespace Prisma {
     tenant: TenantCreateNestedOneWithoutEnvironmentsInput
   }
 
-  export type EnvironmentUncheckedCreateWithoutExtensionsInput = {
+  export type EnvironmentUncheckedCreateWithoutInstalledAppsInput = {
     tenantId: string
     name: string
     type?: string | null
@@ -10610,23 +10610,23 @@ export namespace Prisma {
     platformVersion?: string | null
   }
 
-  export type EnvironmentCreateOrConnectWithoutExtensionsInput = {
+  export type EnvironmentCreateOrConnectWithoutInstalledAppsInput = {
     where: EnvironmentWhereUniqueInput
-    create: XOR<EnvironmentCreateWithoutExtensionsInput, EnvironmentUncheckedCreateWithoutExtensionsInput>
+    create: XOR<EnvironmentCreateWithoutInstalledAppsInput, EnvironmentUncheckedCreateWithoutInstalledAppsInput>
   }
 
-  export type EnvironmentUpsertWithoutExtensionsInput = {
-    update: XOR<EnvironmentUpdateWithoutExtensionsInput, EnvironmentUncheckedUpdateWithoutExtensionsInput>
-    create: XOR<EnvironmentCreateWithoutExtensionsInput, EnvironmentUncheckedCreateWithoutExtensionsInput>
+  export type EnvironmentUpsertWithoutInstalledAppsInput = {
+    update: XOR<EnvironmentUpdateWithoutInstalledAppsInput, EnvironmentUncheckedUpdateWithoutInstalledAppsInput>
+    create: XOR<EnvironmentCreateWithoutInstalledAppsInput, EnvironmentUncheckedCreateWithoutInstalledAppsInput>
     where?: EnvironmentWhereInput
   }
 
-  export type EnvironmentUpdateToOneWithWhereWithoutExtensionsInput = {
+  export type EnvironmentUpdateToOneWithWhereWithoutInstalledAppsInput = {
     where?: EnvironmentWhereInput
-    data: XOR<EnvironmentUpdateWithoutExtensionsInput, EnvironmentUncheckedUpdateWithoutExtensionsInput>
+    data: XOR<EnvironmentUpdateWithoutInstalledAppsInput, EnvironmentUncheckedUpdateWithoutInstalledAppsInput>
   }
 
-  export type EnvironmentUpdateWithoutExtensionsInput = {
+  export type EnvironmentUpdateWithoutInstalledAppsInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10637,7 +10637,7 @@ export namespace Prisma {
     tenant?: TenantUpdateOneRequiredWithoutEnvironmentsNestedInput
   }
 
-  export type EnvironmentUncheckedUpdateWithoutExtensionsInput = {
+  export type EnvironmentUncheckedUpdateWithoutInstalledAppsInput = {
     tenantId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10764,7 +10764,7 @@ export namespace Prisma {
     locationName?: NullableStringFieldUpdateOperationsInput | string | null
     applicationVersion?: NullableStringFieldUpdateOperationsInput | string | null
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    extensions?: ExtensionUpdateManyWithoutEnvironmentNestedInput
+    installedApps?: InstalledAppUpdateManyWithoutEnvironmentNestedInput
   }
 
   export type EnvironmentUncheckedUpdateWithoutTenantInput = {
@@ -10775,7 +10775,7 @@ export namespace Prisma {
     locationName?: NullableStringFieldUpdateOperationsInput | string | null
     applicationVersion?: NullableStringFieldUpdateOperationsInput | string | null
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
-    extensions?: ExtensionUncheckedUpdateManyWithoutEnvironmentNestedInput
+    installedApps?: InstalledAppUncheckedUpdateManyWithoutEnvironmentNestedInput
   }
 
   export type EnvironmentUncheckedUpdateManyWithoutTenantInput = {
@@ -10788,7 +10788,7 @@ export namespace Prisma {
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ExtensionCreateManyEnvironmentInput = {
+  export type InstalledAppCreateManyEnvironmentInput = {
     id: string
     name: string
     version: string
@@ -10797,7 +10797,7 @@ export namespace Prisma {
     state?: string | null
   }
 
-  export type ExtensionUpdateWithoutEnvironmentInput = {
+  export type InstalledAppUpdateWithoutEnvironmentInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     version?: StringFieldUpdateOperationsInput | string
@@ -10806,7 +10806,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ExtensionUncheckedUpdateWithoutEnvironmentInput = {
+  export type InstalledAppUncheckedUpdateWithoutEnvironmentInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     version?: StringFieldUpdateOperationsInput | string
@@ -10815,7 +10815,7 @@ export namespace Prisma {
     state?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ExtensionUncheckedUpdateManyWithoutEnvironmentInput = {
+  export type InstalledAppUncheckedUpdateManyWithoutEnvironmentInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     version?: StringFieldUpdateOperationsInput | string

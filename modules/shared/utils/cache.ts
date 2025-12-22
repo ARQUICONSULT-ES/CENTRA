@@ -56,7 +56,7 @@ export const dataCache = new DataCache();
 export const CUSTOMERS_CACHE_KEYS = {
   CUSTOMERS: 'customers',
   ENVIRONMENTS: 'environments',
-  APPLICATIONS: 'applications',
+  INSTALLED_APPS: 'installed_apps',
   TENANTS: 'tenants',
 } as const;
 

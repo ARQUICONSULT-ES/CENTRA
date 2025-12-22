@@ -4,12 +4,12 @@ import { useState } from "react";
 import { ApplicationsList } from "@/modules/customers/components/ApplicationsList";
 import { ApplicationListSkeleton } from "@/modules/customers/components/ApplicationCardSkeleton";
 import { ApplicationFilterPanel } from "@/modules/customers/components/ApplicationFilterPanel";
-import { useAllApplications } from "@/modules/customers/hooks/useAllApplications";
-import { useApplicationFilter } from "@/modules/customers/hooks/useApplicationFilter";
-import { syncAllApplications } from "@/modules/customers/services/applicationService";
+import { useAllInstalledApps } from "@/modules/customers/hooks/useAllInstalledApps";
+import { useInstalledAppFilter } from "@/modules/customers/hooks/useInstalledAppFilter";
+import { syncAllInstalledApps } from "@/modules/customers/services/installedAppService";
 
 export function ApplicationsPage() {
-  const { applications, loading, isRefreshing, error, reload } = useAllApplications();
+  const { installedApps, loading, isRefreshing, error, reload } = useAllInstalledApps();
   const {
     filteredApps,
     searchQuery,
@@ -17,7 +17,7 @@ export function ApplicationsPage() {
     advancedFilters,
     updateAdvancedFilters,
     clearAdvancedFilters,
-  } = useApplicationFilter(applications);
+  } = useInstalledAppFilter(installedApps);
   const [isSyncingApps, setIsSyncingApps] = useState(false);
 
   const handleRefresh = async () => {
@@ -28,7 +28,7 @@ export function ApplicationsPage() {
     setIsSyncingApps(true);
     
     try {
-      const result = await syncAllApplications();
+      const result = await syncAllInstalledApps();
       
       // Recargar los datos después de la sincronización
       await reload();
@@ -41,7 +41,7 @@ export function ApplicationsPage() {
         alert(`⚠️ Sincronización completada con errores:\n✅ Exitosos: ${result.success}\n❌ Fallidos: ${result.failed}\n\nDetalles:\n${errorMessages}`);
       }
     } catch (error) {
-      console.error("Error syncing all applications:", error);
+      console.error("Error syncing all installed apps:", error);
       alert(`❌ Error al sincronizar las aplicaciones: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
       setIsSyncingApps(false);
@@ -107,7 +107,7 @@ export function ApplicationsPage() {
           </button>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          {applications.length} aplicaciones en total
+          {installedApps.length} aplicaciones en total
         </p>
       </div>
 
@@ -158,7 +158,7 @@ export function ApplicationsPage() {
 
       {/* Panel de filtros avanzados */}
       <ApplicationFilterPanel
-        applications={applications}
+        installedApps={installedApps}
         filters={advancedFilters}
         onFilterChange={updateAdvancedFilters}
         onClearFilters={clearAdvancedFilters}

@@ -91,14 +91,14 @@ model Environment {
   applicationVersion String?    @db.VarChar(50)
   platformVersion   String?     @db.VarChar(50)
   tenant            Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  extensions        Extension[]
+  installedApps     InstalledApp[]
 
   @@id([tenantId, name])
   @@map("environments")
 }
 
-// Tabla relacionada: Extensions
-model Extension {
+// Tabla relacionada: InstalledApps
+model InstalledApp {
   tenantId        String      @db.Uuid
   environmentName String      @db.VarChar(100)
   id              String      @db.Uuid
@@ -110,5 +110,5 @@ model Extension {
   environment     Environment @relation(fields: [tenantId, environmentName], references: [tenantId, name], onDelete: Cascade)
 
   @@id([tenantId, environmentName, id])
-  @@map("extensions")
+  @@map("installed_apps")
 }

@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        extensions: {
+        installedApps: {
           where: {
             publisher: {
               not: 'Microsoft',
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
       customerName: env.tenant.customer.customerName,
       customerImage: env.tenant.customer.imageBase64,
       tenantDescription: env.tenant.description,
-      appsCount: env.extensions.length,
+      appsCount: env.installedApps.length,
     }));
 
     return NextResponse.json(transformedEnvironments);

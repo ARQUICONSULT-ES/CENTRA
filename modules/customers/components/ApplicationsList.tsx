@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { ApplicationWithEnvironment } from "@/modules/customers/types";
+import type { InstalledAppWithEnvironment } from "@/modules/customers/types";
 import { ApplicationCard } from "./ApplicationCard";
 
 interface ApplicationsListProps {
-  applications: ApplicationWithEnvironment[];
+  applications: InstalledAppWithEnvironment[];
   isLoading?: boolean;
 }
 
@@ -27,7 +27,7 @@ export function ApplicationsList({
   }, {} as Record<string, { 
     customerId: string; 
     customerImage?: string | null; 
-    applications: ApplicationWithEnvironment[] 
+    applications: InstalledAppWithEnvironment[] 
   }>);
 
   // Inicializar todos los clientes como expandidos
@@ -143,7 +143,7 @@ export function ApplicationsList({
                     environmentName: string;
                     environmentType?: string | null;
                     environmentStatus?: string | null;
-                    applications: ApplicationWithEnvironment[] 
+                    applications: InstalledAppWithEnvironment[] 
                   }>);
 
                   // Función para obtener el color de la etiqueta de tipo

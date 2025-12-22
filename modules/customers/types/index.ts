@@ -89,9 +89,9 @@ export interface CustomerListHandle {
   isRefreshing: boolean;
 }
 
-// ==================== EXTENSION/APPLICATION TYPES ====================
+// ==================== INSTALLED APP TYPES ====================
 
-export interface Extension {
+export interface InstalledApp {
   tenantId: string;
   environmentName: string;
   id: string;
@@ -102,7 +102,7 @@ export interface Extension {
   state?: string | null; // "installed" | "updating" | etc.
 }
 
-export interface ApplicationWithEnvironment extends Extension {
+export interface InstalledAppWithEnvironment extends InstalledApp {
   customerId: string;
   customerName: string;
   customerImage?: string | null;
@@ -110,8 +110,8 @@ export interface ApplicationWithEnvironment extends Extension {
   environmentStatus?: string | null;
 }
 
-// Respuesta de la API de Business Central para aplicaciones
-export interface BCApplication {
+// Respuesta de la API de Business Central para aplicaciones instaladas
+export interface BCInstalledApp {
   id: string;
   name: string;
   publisher: string;
@@ -123,6 +123,6 @@ export interface BCApplication {
   canBeUninstalled?: boolean;
 }
 
-export interface BCApplicationsResponse {
-  value: BCApplication[];
+export interface BCInstalledAppsResponse {
+  value: BCInstalledApp[];
 }

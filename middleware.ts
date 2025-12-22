@@ -26,7 +26,7 @@ export const config = {
     "/applications/:path*",
     "/admin/:path*",
     "/api/customers/:path*",
-    "/api/applications/:path*",
+    "/api/installedapps/:path*",
     "/api/environments/:path*",
     "/api/github/:path*",
     "/api/users/:path*",

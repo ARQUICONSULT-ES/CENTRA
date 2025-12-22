@@ -170,7 +170,7 @@ exports.Prisma.EnvironmentScalarFieldEnum = {
   platformVersion: 'platformVersion'
 };
 
-exports.Prisma.ExtensionScalarFieldEnum = {
+exports.Prisma.InstalledAppScalarFieldEnum = {
   tenantId: 'tenantId',
   environmentName: 'environmentName',
   id: 'id',
@@ -206,7 +206,7 @@ exports.Prisma.ModelName = {
   UserCustomer: 'UserCustomer',
   Tenant: 'Tenant',
   Environment: 'Environment',
-  Extension: 'Extension'
+  InstalledApp: 'InstalledApp'
 };
 
 /**

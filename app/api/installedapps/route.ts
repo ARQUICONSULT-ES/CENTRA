@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { getUserPermissions } from "@/lib/auth-permissions";
 
 /**
- * GET /api/applications
+ * GET /api/installedapps
  * Obtiene todas las aplicaciones (installed apps) de la base de datos con información del cliente y entorno
  */
 export async function GET(request: NextRequest) {

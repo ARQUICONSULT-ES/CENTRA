@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import type { ApplicationWithEnvironment } from "@/modules/customers/types";
+import type { InstalledAppWithEnvironment } from "@/modules/customers/types";
 
-interface ApplicationFilters {
+interface InstalledAppFilters {
   publisher?: string;
   customerName?: string;
   environmentName?: string;
@@ -13,37 +13,37 @@ interface ApplicationFilters {
 }
 
 interface ApplicationFilterPanelProps {
-  applications: ApplicationWithEnvironment[];
-  filters: ApplicationFilters;
-  onFilterChange: (filters: ApplicationFilters) => void;
+  installedApps: InstalledAppWithEnvironment[];
+  filters: InstalledAppFilters;
+  onFilterChange: (filters: InstalledAppFilters) => void;
   onClearFilters: () => void;
 }
 
 export function ApplicationFilterPanel({
-  applications,
+  installedApps,
   filters,
   onFilterChange,
   onClearFilters,
 }: ApplicationFilterPanelProps) {
   // Extraer valores únicos para las opciones de filtro
   const uniquePublishers = Array.from(
-    new Set(applications.map((app) => app.publisher).filter((v): v is string => !!v))
+    new Set(installedApps.map((app) => app.publisher).filter((v): v is string => !!v))
   ).sort();
 
   const uniqueCustomers = Array.from(
-    new Set(applications.map((app) => app.customerName).filter((v): v is string => !!v))
+    new Set(installedApps.map((app) => app.customerName).filter((v): v is string => !!v))
   ).sort();
 
   const uniqueEnvironments = Array.from(
-    new Set(applications.map((app) => app.environmentName).filter((v): v is string => !!v))
+    new Set(installedApps.map((app) => app.environmentName).filter((v): v is string => !!v))
   ).sort();
 
   const uniqueEnvironmentTypes = Array.from(
-    new Set(applications.map((app) => app.environmentType).filter((v): v is string => !!v))
+    new Set(installedApps.map((app) => app.environmentType).filter((v): v is string => !!v))
   ).sort();
 
   const uniquePublishedAs = Array.from(
-    new Set(applications.map((app) => app.publishedAs).filter((v): v is string => !!v))
+    new Set(installedApps.map((app) => app.publishedAs).filter((v): v is string => !!v))
   ).sort();
 
   const hasActiveFilters =

@@ -130,7 +130,7 @@ async function syncEnvironmentApplications(
 
     const data = await response.json();
 
-    // Sincronizar con la base de datos usando transacción
+    // Sincronizar con la base de datos usando transacción con timeout extendido
     await prisma.$transaction(async (tx) => {
       // Obtener aplicaciones existentes para este entorno
       const existingApps = await tx.installedApp.findMany({
@@ -191,6 +191,9 @@ async function syncEnvironmentApplications(
           })
         )
       );
+    }, {
+      maxWait: 15000, // 15 segundos máximo de espera
+      timeout: 30000, // 30 segundos de timeout
     });
 
     return { success: true };
@@ -204,7 +207,7 @@ async function syncEnvironmentApplications(
 }
 
 /**
- * POST /api/applications/sync-all
+ * POST /api/installedapps/sync-all
  * Sincroniza las aplicaciones de todos los entornos de todos los tenants con Business Central
  */
 export async function POST() {
