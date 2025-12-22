@@ -7,7 +7,7 @@ interface ApplicationCardProps {
 }
 
 export function ApplicationCard({ application }: ApplicationCardProps) {
-  // Badge de tipo de aplicación (Global=Verde, Tenant=Azul)
+  // Badge de tipo de aplicación (Global=Verde, Tenant=Azul, Dev=Rojo)
   const getTypeBadgeColor = (publishedAs: string) => {
     const typeLower = publishedAs.toLowerCase();
     if (typeLower === "global") {
@@ -15,6 +15,9 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
     }
     if (typeLower === "tenant") {
       return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
+    }
+    if (typeLower === "dev") {
+      return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
     }
     return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
   };
