@@ -4,10 +4,9 @@ import { useRef, useState } from "react";
 import { CustomerList } from "@/modules/customers/components/CustomerList";
 import { CustomerListSkeleton } from "@/modules/customers/components/CustomerCardSkeleton";
 import CustomerFormModal from "@/modules/customers/components/CustomerFormModal";
-import { GenericFilterPanel } from "@/modules/customers/components/CustomerFilterPanel";
 import type { Customer, CustomerListHandle } from "@/modules/customers/types";
 import { useCustomers } from "@/modules/customers/hooks/useCustomers";
-import { useCustomerFilter, customerFilterConfig } from "@/modules/customers/hooks/useCustomerFilter";
+import { useCustomerFilter } from "@/modules/customers/hooks/useCustomerFilter";
 
 export function CustomersPage() {
   const { customers, isLoading, isRefreshing, error, refreshCustomers } = useCustomers();
@@ -15,18 +14,11 @@ export function CustomersPage() {
     filteredItems,
     searchQuery,
     setSearchQuery,
-    sortBy,
-    setSortBy,
-    filters,
-    updateFilter,
-    clearFilters,
-    hasActiveFilters,
   } = useCustomerFilter(customers);
   
   const customerListRef = useRef<CustomerListHandle>(null);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>(undefined);
-  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
   const handleRefresh = async () => {
     await refreshCustomers();
@@ -87,14 +79,31 @@ export function CustomersPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
+        <div className="flex items-center gap-3">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Clientes
           </h1>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {customers.length} clientes registrados
-          </p>
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-wait rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            title="Actualizar"
+          >
+            {isRefreshing ? (
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            )}
+          </button>
         </div>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {customers.length} clientes registrados
+        </p>
       </div>
 
       {/* Barra de herramientas */}
@@ -122,77 +131,17 @@ export function CustomersPage() {
           />
         </div>
 
-        <div className="flex items-center gap-3 ml-auto">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-              Ordenar:
-            </span>
-            <div className="inline-flex rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden">
-              <button
-                onClick={() => setSortBy("customerName")}
-                className={`px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
-                  sortBy === "customerName"
-                    ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                    : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-                }`}
-              >
-                Nombre
-              </button>
-              <button
-                onClick={() => setSortBy("id")}
-                className={`px-3 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors cursor-pointer ${
-                  sortBy === "id"
-                    ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                    : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-                }`}
-              >
-                ID
-              </button>
-            </div>
-          </div>
-
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-wait rounded-lg transition-colors whitespace-nowrap"
-            title="Actualizar"
-          >
-            {isRefreshing ? (
-              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            ) : (
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            )}
-            Actualizar
-          </button>
-
-          <button
-            onClick={handleCreateCustomer}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-green-600 hover:bg-green-500 rounded-lg transition-colors whitespace-nowrap"
-            title="Crear nuevo cliente"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Añadir cliente
-          </button>
-        </div>
+        <button
+          onClick={handleCreateCustomer}
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-green-600 hover:bg-green-500 rounded-lg transition-colors whitespace-nowrap"
+          title="Crear nuevo cliente"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Añadir cliente
+        </button>
       </div>
-
-      {/* Panel de filtros avanzados */}
-      <GenericFilterPanel
-        config={customerFilterConfig}
-        filters={filters}
-        onFilterChange={updateFilter}
-        onClearFilters={clearFilters}
-        hasActiveFilters={hasActiveFilters}
-        isOpen={isFilterPanelOpen}
-        onToggle={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-      />
 
       {/* Modal */}
       <CustomerFormModal
