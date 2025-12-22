@@ -105,6 +105,19 @@ export default function DashboardLayout({
                   )}
                 </Link>
                 <Link
+                  href="/installed-apps"
+                  className={`text-sm font-medium transition-colors relative ${
+                    isActive('/installed-apps')
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
+                  }`}
+                >
+                  Instalaciones
+                  {isActive('/installed-apps') && (
+                    <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400"></span>
+                  )}
+                </Link>
+                                <Link
                   href="/applications"
                   className={`text-sm font-medium transition-colors relative ${
                     isActive('/applications')
@@ -112,7 +125,7 @@ export default function DashboardLayout({
                       : 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
                   }`}
                 >
-                  Instalaciones
+                  Aplicaciones
                   {isActive('/applications') && (
                     <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400"></span>
                   )}
@@ -211,7 +224,18 @@ export default function DashboardLayout({
                     : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
                 }`}
               >
-                Instalaciones
+                Aplicaciones
+              </Link>
+              <Link
+                href="/installed-apps"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive('/installed-apps')
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
+              >
+                Apps Instaladas
               </Link>
               {session?.user?.role === "ADMIN" && (
                 <Link
