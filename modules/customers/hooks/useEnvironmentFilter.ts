@@ -106,17 +106,16 @@ export function useEnvironmentFilter(environments: EnvironmentWithCustomer[]) {
     }
   }, [advancedFilters, router]);
 
-  // Filtrar entornos eliminados antes de pasar al hook genérico
-  const filteredByStatus = useMemo(() => {
-    return environments.filter(env => env.status?.toLowerCase() !== 'softdeleted');
-  }, [environments]);
-
   // Aplicar filtros avanzados
   const filteredByAdvancedFilters = useMemo(() => {
-    let result = filteredByStatus;
+    let result = [...environments];
 
+    // Si hay un filtro de estado específico, aplicarlo
     if (advancedFilters.status) {
       result = result.filter(env => env.status === advancedFilters.status);
+    } else {
+      // Si no hay filtro de estado, excluir softdeleted por defecto
+      result = result.filter(env => env.status?.toLowerCase() !== 'softdeleted');
     }
 
     if (advancedFilters.type) {
@@ -136,7 +135,7 @@ export function useEnvironmentFilter(environments: EnvironmentWithCustomer[]) {
     }
 
     return result;
-  }, [filteredByStatus, advancedFilters]);
+  }, [environments, advancedFilters]);
 
   // Ordenar: Production primero, luego el resto
   const sortedByType = useMemo(() => {
