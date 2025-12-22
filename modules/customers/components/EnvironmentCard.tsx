@@ -25,6 +25,7 @@ export default function EnvironmentCard({ environment }: EnvironmentCardProps) {
   const handleApplicationsClick = () => {
     const params = new URLSearchParams();
     params.set('filterCustomer', environment.customerName);
+    params.set('filterEnvironment', environment.name);
     if (environment.type) {
       params.set('filterEnvType', environment.type);
     }

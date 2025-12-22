@@ -8,6 +8,7 @@ import { useGenericFilter } from './useGenericFilter';
 export interface ApplicationAdvancedFilters {
   publisher?: string;
   customerName?: string;
+  environmentName?: string;
   environmentType?: string;
   publishedAs?: string;
   hideMicrosoftApps?: boolean;
@@ -61,6 +62,7 @@ export function useApplicationFilter(applications: ApplicationWithEnvironment[])
     return {
       publisher: searchParams.get('filterPublisher') || undefined,
       customerName: searchParams.get('filterCustomer') || undefined,
+      environmentName: searchParams.get('filterEnvironment') || undefined,
       environmentType: searchParams.get('filterEnvType') || undefined,
       publishedAs: searchParams.get('filterPublishedAs') || undefined,
       hideMicrosoftApps: hideMicrosoft === null ? true : hideMicrosoft === 'true', // true por defecto
@@ -84,6 +86,12 @@ export function useApplicationFilter(applications: ApplicationWithEnvironment[])
       newParams.set('filterCustomer', advancedFilters.customerName);
     } else {
       newParams.delete('filterCustomer');
+    }
+
+    if (advancedFilters.environmentName) {
+      newParams.set('filterEnvironment', advancedFilters.environmentName);
+    } else {
+      newParams.delete('filterEnvironment');
     }
 
     if (advancedFilters.environmentType) {
@@ -125,6 +133,10 @@ export function useApplicationFilter(applications: ApplicationWithEnvironment[])
 
     if (advancedFilters.customerName) {
       result = result.filter(app => app.customerName === advancedFilters.customerName);
+    }
+
+    if (advancedFilters.environmentName) {
+      result = result.filter(app => app.environmentName === advancedFilters.environmentName);
     }
 
     if (advancedFilters.environmentType) {

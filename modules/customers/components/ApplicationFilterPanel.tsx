@@ -6,6 +6,7 @@ import type { ApplicationWithEnvironment } from "@/modules/customers/types";
 interface ApplicationFilters {
   publisher?: string;
   customerName?: string;
+  environmentName?: string;
   environmentType?: string;
   publishedAs?: string;
   hideMicrosoftApps?: boolean;
@@ -33,6 +34,10 @@ export function ApplicationFilterPanel({
     new Set(applications.map((app) => app.customerName).filter((v): v is string => !!v))
   ).sort();
 
+  const uniqueEnvironments = Array.from(
+    new Set(applications.map((app) => app.environmentName).filter((v): v is string => !!v))
+  ).sort();
+
   const uniqueEnvironmentTypes = Array.from(
     new Set(applications.map((app) => app.environmentType).filter((v): v is string => !!v))
   ).sort();
@@ -44,20 +49,29 @@ export function ApplicationFilterPanel({
   const hasActiveFilters =
     filters.publisher ||
     filters.customerName ||
+    filters.environmentName ||
     filters.environmentType ||
     filters.publishedAs;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
       {/* Toggle para ocultar/mostrar apps de Microsoft */}
-      <label className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-900 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+      <label className={`flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border cursor-pointer transition-colors ${
+        filters.hideMicrosoftApps
+          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-600"
+          : "border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
+      }`}>
         <input
           type="checkbox"
           checked={filters.hideMicrosoftApps ?? true}
           onChange={(e) => onFilterChange({ ...filters, hideMicrosoftApps: e.target.checked })}
-          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          className="w-4 h-4 text-blue-600 bg-white border-blue-500 rounded focus:ring-blue-500 focus:ring-2 checked:bg-blue-600 checked:border-blue-600 dark:bg-gray-700 dark:border-blue-500 dark:checked:bg-blue-600 dark:checked:border-blue-600"
         />
-        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+        <span className={`text-xs font-medium ${
+          filters.hideMicrosoftApps
+            ? "text-blue-700 dark:text-blue-300"
+            : "text-gray-700 dark:text-gray-300"
+        }`}>
           Ocultar apps Microsoft
         </span>
       </label>
@@ -95,6 +109,15 @@ export function ApplicationFilterPanel({
         value={filters.publishedAs || ""}
         onChange={(value) => onFilterChange({ ...filters, publishedAs: value || undefined })}
         options={uniquePublishedAs}
+        placeholder="Todos"
+      />
+
+      {/* Filtro de Entorno */}
+      <FilterDropdown
+        label="Entorno"
+        value={filters.environmentName || ""}
+        onChange={(value) => onFilterChange({ ...filters, environmentName: value || undefined })}
+        options={uniqueEnvironments}
         placeholder="Todos"
       />
 
