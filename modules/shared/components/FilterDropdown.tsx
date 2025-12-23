@@ -118,83 +118,126 @@ export function FilterDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
-          {/* Buscador */}
-          <div className="p-2 border-b border-gray-200 dark:border-gray-700">
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar..."
-              className="w-full px-3 py-1.5 text-xs bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-
-          {/* Lista de opciones con scrollbar oscuro */}
-          <div className="max-h-60 overflow-auto scrollbar-thin scrollbar-thumb-gray-700 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800">
-            {/* Opción "Todos" */}
-            <button
-              onClick={() => {
-                selectAll();
-              }}
-              className={`w-full px-3 py-2 text-left text-xs transition-colors flex items-center gap-2 ${
-                !hasValue
-                  ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
-              }`}
-            >
-              <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                !hasValue
-                  ? "bg-blue-600 border-blue-600"
-                  : "border-gray-300 dark:border-gray-600"
-              }`}>
-                {!hasValue && (
-                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-              {placeholder}
-            </button>
+        <>
+          {/* Overlay para móvil */}
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={() => {
+              setIsOpen(false);
+              setSearchQuery("");
+            }}
+          />
+          
+          {/* Dropdown - Pantalla completa en móvil, normal en desktop */}
+          <div className="fixed md:absolute inset-x-0 bottom-0 md:inset-auto md:z-50 md:mt-1 md:w-80 z-50 bg-white dark:bg-gray-800 border-t md:border border-gray-200 dark:border-gray-700 md:rounded-md shadow-lg rounded-t-2xl md:rounded-t-md max-h-[80vh] md:max-h-none flex flex-col">
+            {/* Header para móvil */}
+            <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                {label}
+              </span>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setSearchQuery("");
+                }}
+                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
             
-            {/* Opciones individuales filtradas */}
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((option) => {
-                const isSelected = selectedValues.includes(option);
-                return (
-                  <button
-                    key={option}
-                    onClick={() => toggleValue(option)}
-                    className={`w-full px-3 py-2 text-left text-xs transition-colors flex items-center gap-2 ${
-                      isSelected
-                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    }`}
-                  >
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                      isSelected
-                        ? "bg-blue-600 border-blue-600"
-                        : "border-gray-300 dark:border-gray-600"
-                    }`}>
-                      {isSelected && (
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </div>
-                    <span className="break-words">{option}</span>
-                  </button>
-                );
-              })
-            ) : (
-              <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400 text-center">
-                No se encontraron resultados
-              </div>
-            )}
+            {/* Buscador */}
+            <div className="p-3 md:p-2 border-b border-gray-200 dark:border-gray-700">
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar..."
+                className="w-full px-3 py-2 md:py-1.5 text-sm md:text-xs bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+
+            {/* Lista de opciones con scrollbar oscuro */}
+            <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-gray-700 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800 md:max-h-60">
+              {/* Opción "Todos" */}
+              <button
+                onClick={() => {
+                  selectAll();
+                }}
+                className={`w-full px-3 py-2.5 md:py-2 text-left text-sm md:text-xs transition-colors flex items-center gap-2 ${
+                  !hasValue
+                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                }`}
+              >
+                <div className={`w-5 h-5 md:w-4 md:h-4 rounded border flex items-center justify-center ${
+                  !hasValue
+                    ? "bg-blue-600 border-blue-600"
+                    : "border-gray-300 dark:border-gray-600"
+                }`}>
+                  {!hasValue && (
+                    <svg className="w-3.5 h-3.5 md:w-3 md:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+                {placeholder}
+              </button>
+              
+              {/* Opciones individuales filtradas */}
+              {filteredOptions.length > 0 ? (
+                filteredOptions.map((option) => {
+                  const isSelected = selectedValues.includes(option);
+                  return (
+                    <button
+                      key={option}
+                      onClick={() => toggleValue(option)}
+                      className={`w-full px-3 py-2.5 md:py-2 text-left text-sm md:text-xs transition-colors flex items-center gap-2 ${
+                        isSelected
+                          ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      }`}
+                    >
+                      <div className={`w-5 h-5 md:w-4 md:h-4 rounded border flex items-center justify-center flex-shrink-0 ${
+                        isSelected
+                          ? "bg-blue-600 border-blue-600"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}>
+                        {isSelected && (
+                          <svg className="w-3.5 h-3.5 md:w-3 md:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="break-words">{option}</span>
+                    </button>
+                  );
+                })
+              ) : (
+                <div className="px-3 py-2.5 md:py-2 text-sm md:text-xs text-gray-500 dark:text-gray-400 text-center">
+                  No se encontraron resultados
+                </div>
+              )}
+            </div>
+            
+            {/* Botón de aplicar/cerrar para móvil */}
+            <div className="md:hidden border-t border-gray-200 dark:border-gray-700 p-3">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setSearchQuery("");
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors"
+              >
+                Aplicar {hasValue && `(${selectedValues.length})`}
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
