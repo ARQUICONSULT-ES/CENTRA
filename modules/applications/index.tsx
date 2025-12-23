@@ -6,7 +6,6 @@ import { useApplicationFilter } from "@/modules/applications/hooks/useApplicatio
 import { useSyncFromGitHub } from "@/modules/applications/hooks/useSyncFromGitHub";
 import ApplicationList from "@/modules/applications/components/ApplicationList";
 import ApplicationDetailModal from "@/modules/applications/components/ApplicationDetailModal";
-import ApplicationFormModal from "@/modules/applications/components/ApplicationFormModal";
 import type { Application } from "@/modules/applications/types";
 
 export function ApplicationsPage() {
@@ -22,7 +21,6 @@ export function ApplicationsPage() {
   const { syncFromGitHub, isSyncing, syncResults, error: syncError } = useSyncFromGitHub(refreshApplications);
   const [selectedApplication, setSelectedApplication] = useState<Application | undefined>(undefined);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [showSyncResults, setShowSyncResults] = useState(false);
 
   const handleApplicationClick = (application: Application) => {
@@ -30,23 +28,9 @@ export function ApplicationsPage() {
     setIsDetailModalOpen(true);
   };
 
-  const handleCreateApplication = () => {
-    setSelectedApplication(undefined);
-    setIsApplicationModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsApplicationModalOpen(false);
-    setSelectedApplication(undefined);
-  };
-
   const handleCloseDetailModal = () => {
     setIsDetailModalOpen(false);
     setSelectedApplication(undefined);
-  };
-
-  const handleSave = async () => {
-    await refreshApplications();
   };
 
   const handleRefresh = async () => {
@@ -154,17 +138,6 @@ export function ApplicationsPage() {
             </>
           )}
         </button>
-
-        <button
-          onClick={handleCreateApplication}
-          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-green-600 hover:bg-green-500 rounded-lg transition-colors whitespace-nowrap"
-          title="Crear nueva aplicación"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Añadir aplicación
-        </button>
       </div>
 
       {/* Resultados de sincronización */}
@@ -246,14 +219,6 @@ export function ApplicationsPage() {
         isOpen={isDetailModalOpen}
         onClose={handleCloseDetailModal}
         application={selectedApplication}
-      />
-
-      {/* Application Form Modal (Para crear nuevas) */}
-      <ApplicationFormModal
-        isOpen={isApplicationModalOpen}
-        onClose={handleCloseModal}
-        application={undefined}
-        onSave={handleSave}
       />
 
       {/* Contenido */}
