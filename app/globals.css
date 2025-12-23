@@ -30,6 +30,21 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Asegurar que los inputs hereden el color correcto */
+input, textarea, select {
+  color: #111827; /* gray-900 */
+}
+
+.dark input, .dark textarea, .dark select {
+  color: #ffffff; /* white */
+}
+
+@media (prefers-color-scheme: dark) {
+  input, textarea, select {
+    color: #ffffff;
+  }
+}
+
 /* Scrollbar personalizada - Light mode */
 ::-webkit-scrollbar {
   width: 8px;
@@ -49,7 +64,22 @@ body {
   background-color: #6b7280;
 }
 
-/* Scrollbar personalizada - Dark mode */
+/* Scrollbar personalizada - Dark mode con media query */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background-color: #1f2937;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+  }
+}
+
+/* Scrollbar personalizada - Dark mode con clase */
 .dark ::-webkit-scrollbar-track {
   background-color: #1f2937;
 }

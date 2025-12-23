@@ -429,7 +429,7 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
                       onChange={(e) =>
                         setFormData({ ...formData, customerName: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
                       placeholder="Ingresa el nombre del cliente"
                     />
                   </div>

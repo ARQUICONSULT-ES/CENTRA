@@ -841,11 +841,11 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 w-[90vw] max-w-6xl max-h-[85vh] flex flex-col">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 w-[90vw] max-w-6xl max-h-[85vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-            <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <svg className="w-5 h-5 text-purple-500 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
             </svg>
             Dependencias CI/CD - {repo}
@@ -853,7 +853,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
           <button
             onClick={handleClose}
             disabled={isSaving}
-            className="text-gray-400 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title={isSaving ? "Procesando cambios..." : "Cerrar"}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -863,17 +863,17 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
         </div>
 
         {/* Content - Split view */}
-        <div className="flex-1 overflow-hidden grid grid-cols-2 divide-x divide-gray-700">
+        <div className="flex-1 overflow-hidden grid grid-cols-2 divide-x divide-gray-200 dark:divide-gray-700">
           {/* Left side - AL-Go/settings.json */}
           <div className="flex flex-col overflow-hidden">
-            <div className="p-3 bg-gray-900/50 border-b border-gray-700">
-              <h3 className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <svg className="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+            <div className="p-3 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <svg className="w-4 h-4 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
                 </svg>
-                <code className="text-xs bg-gray-700 px-2 py-0.5 rounded">.AL-Go/settings.json</code>
+                <code className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded">.AL-Go/settings.json</code>
               </h3>
-              <p className="text-xs text-gray-500 mt-1">appDependencyProbingPaths</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">appDependencyProbingPaths</p>
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
@@ -899,30 +899,30 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                     return (
                       <div 
                         key={`repo-${index}`}
-                        className={`bg-gray-900 border rounded-lg p-3 hover:border-gray-600 transition-colors ${
-                          hasMissing ? 'border-yellow-500/50' : 'border-gray-700'
+                        className={`bg-white dark:bg-gray-900 border rounded-lg p-3 hover:border-gray-400 dark:hover:border-gray-600 transition-colors ${
+                          hasMissing ? 'border-yellow-500/50' : 'border-gray-300 dark:border-gray-700'
                         }`}
                         style={{ marginLeft: `${indentPx}px` }}
                       >
                         {/* Indicador de dependencia padre */}
                         {depth > 0 && (
                           <div className="flex items-center gap-1.5 mb-2 -mt-1">
-                            <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
-                            <span className="text-[10px] text-gray-500">
-                              Requerido por <span className="text-gray-400 font-medium">{parentName}</span>
+                            <span className="text-[10px] text-gray-500 dark:text-gray-500">
+                              Requerido por <span className="text-gray-600 dark:text-gray-400 font-medium">{parentName}</span>
                             </span>
                           </div>
                         )}
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-start gap-2 flex-1 min-w-0">
-                            <svg className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-4 h-4 text-blue-500 dark:text-blue-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
-                                <h4 className="text-sm font-medium text-blue-400 truncate">
+                                <h4 className="text-sm font-medium text-blue-600 dark:text-blue-400 truncate">
                                   {getRepoName(dep.repo)}
                                 </h4>
                                 {hasMissing && (
@@ -936,17 +936,17 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                                     </svg>
                                     {/* Tooltip */}
                                     <div className="fixed hidden group-hover/tooltip:block" style={{ zIndex: 9999 }}>
-                                      <div className="absolute left-6 top-0 w-64 p-3 bg-gray-900 border border-yellow-500/30 rounded-lg shadow-2xl">
-                                        <p className="text-xs font-medium text-yellow-500 mb-2">
+                                      <div className="absolute left-6 top-0 w-64 p-3 bg-white dark:bg-gray-900 border border-yellow-500/30 rounded-lg shadow-2xl">
+                                        <p className="text-xs font-medium text-yellow-600 dark:text-yellow-500 mb-2">
                                           Dependencias faltantes:
                                         </p>
                                         {missingInfo!.missingRepos.length > 0 && (
                                           <div className="mb-2">
-                                            <p className="text-xs text-gray-400 mb-1">Repositorios:</p>
-                                            <ul className="text-xs text-gray-300 space-y-1">
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Repositorios:</p>
+                                            <ul className="text-xs text-gray-700 dark:text-gray-300 space-y-1">
                                               {missingInfo!.missingRepos.map((repo, i) => (
                                                 <li key={i} className="truncate flex items-center gap-1">
-                                                  <svg className="w-3 h-3 text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                  <svg className="w-3 h-3 text-blue-500 dark:text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633z" clipRule="evenodd" />
                                                   </svg>
                                                   {getRepoName(repo)}
@@ -957,11 +957,11 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                                         )}
                                         {missingInfo!.missingFiles.length > 0 && (
                                           <div>
-                                            <p className="text-xs text-gray-400 mb-1">Archivos .app:</p>
-                                            <ul className="text-xs text-gray-300 space-y-1">
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Archivos .app:</p>
+                                            <ul className="text-xs text-gray-700 dark:text-gray-300 space-y-1">
                                               {missingInfo!.missingFiles.map((file, i) => (
                                                 <li key={i} className="truncate flex items-center gap-1">
-                                                  <svg className="w-3 h-3 text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                  <svg className="w-3 h-3 text-gray-500 dark:text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                                                   </svg>
                                                   {file}
@@ -975,18 +975,18 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                                   </div>
                                 )}
                               </div>
-                              <p className="text-xs text-gray-500 truncate mt-0.5" title={dep.repo}>
+                              <p className="text-xs text-gray-400 dark:text-gray-500 truncate mt-0.5" title={dep.repo}>
                                 {dep.repo}
                               </p>
                               <div className="mt-2 flex flex-wrap gap-2">
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-700 text-gray-300">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                                   </svg>
                                   {dep.release_status}
                                 </span>
                                 {dep.projects && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-700 text-gray-300">
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                       <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
                                     </svg>
@@ -1025,18 +1025,18 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                     return (
                       <div 
                         key={`file-${index}`}
-                        className={`bg-gray-900 border rounded-lg p-3 hover:border-gray-600 transition-colors ${
-                          hasMissing ? 'border-yellow-500/50' : 'border-gray-700'
+                        className={`bg-white dark:bg-gray-900 border rounded-lg p-3 hover:border-gray-400 dark:hover:border-gray-600 transition-colors ${
+                          hasMissing ? 'border-yellow-500/50' : 'border-gray-300 dark:border-gray-700'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-start gap-2 flex-1 min-w-0">
-                            <svg className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                             </svg>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
-                                <h4 className="text-sm font-medium text-white truncate">
+                                <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
                                   {file.name}
                                 </h4>
                                 {hasMissing && (
@@ -1050,20 +1050,20 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                                     </svg>
                                     {/* Tooltip */}
                                     <div className="fixed hidden group-hover/filetooltip:block" style={{ zIndex: 9999 }}>
-                                      <div className="absolute left-6 top-0 w-72 p-3 bg-gray-900 border border-yellow-500/30 rounded-lg shadow-2xl">
-                                        <p className="text-xs font-medium text-yellow-500 mb-2">
+                                      <div className="absolute left-6 top-0 w-72 p-3 bg-white dark:bg-gray-900 border border-yellow-500/30 rounded-lg shadow-2xl">
+                                        <p className="text-xs font-medium text-yellow-600 dark:text-yellow-500 mb-2">
                                           Dependencias faltantes:
                                         </p>
-                                        <ul className="text-xs text-gray-300 space-y-2">
+                                        <ul className="text-xs text-gray-700 dark:text-gray-300 space-y-2">
                                           {missingInfo!.missingDependencies.map((dep, i) => (
-                                            <li key={i} className="flex flex-col gap-0.5 pb-2 border-b border-gray-700 last:border-0 last:pb-0">
+                                            <li key={i} className="flex flex-col gap-0.5 pb-2 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
                                               <div className="flex items-center gap-1">
-                                                <svg className="w-3 h-3 text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg className="w-3 h-3 text-gray-500 dark:text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                                   <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                                                 </svg>
-                                                <span className="font-medium text-white">{dep.name}</span>
+                                                <span className="font-medium text-gray-900 dark:text-white">{dep.name}</span>
                                               </div>
-                                              <span className="text-gray-400 text-[10px]">{dep.publisher} • v{dep.minVersion}+</span>
+                                              <span className="text-gray-500 dark:text-gray-400 text-[10px]">{dep.publisher} • v{dep.minVersion}+</span>
                                             </li>
                                           ))}
                                         </ul>
@@ -1073,11 +1073,11 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                                 )}
                               </div>
                               {appFileInfo?.manifest && (
-                                <p className="text-xs text-gray-500 mt-0.5">
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                                   {appFileInfo.manifest.publisher} • v{appFileInfo.manifest.version}
                                 </p>
                               )}
-                              <p className="text-xs text-gray-600 mt-0.5">
+                              <p className="text-xs text-gray-500 dark:text-gray-600 mt-0.5">
                                 {formatFileSize(file.size)}
                               </p>
                             </div>
@@ -1101,7 +1101,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                 <EmptyState 
                   message="Sin dependencias CI/CD configuradas"
                   icon={
-                    <svg className="w-12 h-12 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                     </svg>
                   }
@@ -1110,8 +1110,8 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
             </div>
 
             {/* Counter and Add buttons */}
-            <div className="p-2 border-t border-gray-700 bg-gray-900/30 flex items-center justify-between">
-              <p className="text-xs text-gray-500">
+            <div className="p-2 border-t border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900/30 flex items-center justify-between">
+              <p className="text-xs text-gray-500 dark:text-gray-500">
                 {editedDependencies.length + fileDependencies.length} dependencia(s)
               </p>
               <div className="flex gap-2">
@@ -1143,14 +1143,14 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
 
           {/* Right side - app.json */}
           <div className="flex flex-col overflow-hidden">
-            <div className="p-3 bg-gray-900/50 border-b border-gray-700">
-              <h3 className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <svg className="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+            <div className="p-3 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <svg className="w-4 h-4 text-purple-600 dark:text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
-                <code className="text-xs bg-gray-700 px-2 py-0.5 rounded">app.json</code>
+                <code className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded">app.json</code>
               </h3>
-              <p className="text-xs text-gray-500 mt-1">dependencies</p>
+              <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">dependencies</p>
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
@@ -1160,7 +1160,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                 <EmptyState 
                   message={appJsonError}
                   icon={
-                    <svg className="w-12 h-12 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   }
@@ -1170,23 +1170,23 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                   {appJsonData.dependencies.map((dep, index) => (
                     <div 
                       key={index}
-                      className="bg-gray-900 border border-gray-700 rounded-lg p-3 hover:border-gray-600 transition-colors"
+                      className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-3 hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-purple-400">
+                          <h4 className="text-sm font-medium text-purple-600 dark:text-purple-400">
                             {dep.name}
                           </h4>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                             {dep.publisher}
                           </p>
                         </div>
-                        <span className="shrink-0 px-2 py-0.5 text-xs font-medium rounded bg-purple-500/20 text-purple-400">
+                        <span className="shrink-0 px-2 py-0.5 text-xs font-medium rounded bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-400">
                           v{dep.version}
                         </span>
                       </div>
                       <div className="mt-2">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-700 text-gray-400 font-mono">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 font-mono">
                           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                           </svg>
@@ -1200,7 +1200,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                 <EmptyState 
                   message="Sin dependencias de app"
                   icon={
-                    <svg className="w-12 h-12 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                     </svg>
                   }
@@ -1209,8 +1209,8 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
             </div>
 
             {/* Counter */}
-            <div className="p-2 border-t border-gray-700 bg-gray-900/30">
-              <p className="text-xs text-gray-500 text-center">
+            <div className="p-2 border-t border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900/30">
+              <p className="text-xs text-gray-500 dark:text-gray-500 text-center">
                 {appJsonData?.dependencies?.length || 0} dependencia(s)
               </p>
             </div>
@@ -1218,26 +1218,26 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-700 flex flex-col gap-3">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-3">
           {/* Barra de progreso */}
           {isSaving && (
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-3">
+            <div className="bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-3">
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 animate-spin text-blue-400" fill="none" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 animate-spin text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
                     {saveStep.status === 'updating-settings' && saveStep.message}
                     {saveStep.status === 'uploading-files' && `${saveStep.message} (${saveStep.current}/${saveStep.total})`}
                     {saveStep.status === 'deleting-files' && `${saveStep.message} (${saveStep.current}/${saveStep.total})`}
                     {saveStep.status === 'creating-pr' && saveStep.message}
                   </p>
                   {(saveStep.status === 'uploading-files' || saveStep.status === 'deleting-files') && (
-                    <div className="mt-2 w-full bg-gray-700 rounded-full h-1.5">
+                    <div className="mt-2 w-full bg-gray-300 dark:bg-gray-700 rounded-full h-1.5">
                       <div 
-                        className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
+                        className="bg-blue-500 dark:bg-blue-500 h-1.5 rounded-full transition-all duration-300"
                         style={{ width: `${(saveStep.current / saveStep.total) * 100}%` }}
                       />
                     </div>
@@ -1250,12 +1250,12 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
           <div className="flex items-center justify-between gap-3">
             {/* Selector de rama */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">PR a rama:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">PR a rama:</span>
               <select
                 value={selectedBranch}
                 onChange={(e) => setSelectedBranch(e.target.value)}
                 disabled={isLoadingBranches || isSaving}
-                className="px-3 py-2 text-sm bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoadingBranches ? (
                   <option>Cargando...</option>
@@ -1275,7 +1275,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
               <button
                 onClick={handleClose}
                 disabled={isSaving}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancelar
               </button>
@@ -1372,13 +1372,13 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
-      <div className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 w-[90vw] max-w-2xl max-h-[80vh] flex flex-col">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 w-[90vw] max-w-2xl max-h-[80vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h3 className="text-lg font-semibold text-white">Añadir dependencia</h3>
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Añadir dependencia</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1387,10 +1387,10 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
         </div>
 
         {/* Search */}
-        <div className="p-4 border-b border-gray-700">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="relative">
             <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -1402,7 +1402,7 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar repositorio..."
-              className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-600 bg-gray-900 text-white text-sm placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             />
           </div>
         </div>
@@ -1410,7 +1410,7 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
         {/* Repo list */}
         <div className="flex-1 overflow-y-auto p-4">
           {filteredRepos.length === 0 ? (
-            <div className="text-center py-8 text-gray-400">
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               <p className="text-sm">
                 {availableRepos.length === 0 
                   ? "Todos los repositorios ya están agregados" 
@@ -1427,23 +1427,23 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
                     onClick={() => toggleRepoSelection(repo.id)}
                     className={`w-full text-left p-3 rounded-lg border transition-colors cursor-pointer ${
                       isSelected
-                        ? "border-blue-500 bg-blue-500/10"
-                        : "border-gray-700 bg-gray-900 hover:border-gray-600"
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-500/10"
+                        : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-400 dark:hover:border-gray-600"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-white truncate">
+                        <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
                           {repo.name}
                         </h4>
-                        <p className="text-xs text-gray-400 truncate">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                           {repo.full_name}
                         </p>
                       </div>
                       <div className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
                         isSelected
                           ? "border-blue-500 bg-blue-500"
-                          : "border-gray-500"
+                          : "border-gray-400 dark:border-gray-500"
                       }`}>
                         {isSelected && (
                           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1461,9 +1461,9 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
 
         {/* Selected repos indicator */}
         {selectedRepos.size > 0 && (
-          <div className="px-4 py-2 border-t border-gray-700 bg-gray-900/30">
-            <p className="text-xs text-gray-400">
-              <span className="font-medium text-blue-400">Seleccionados:</span>{" "}
+          <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900/30">
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              <span className="font-medium text-blue-600 dark:text-blue-400">Seleccionados:</span>{" "}
               {getSelectedRepoNames().join(", ")}
             </p>
           </div>
@@ -1471,30 +1471,30 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
 
         {/* Config */}
         {selectedRepos.size > 0 && (
-          <div className="p-4 border-t border-gray-700 bg-gray-900/50">
-            <p className="text-xs text-gray-400 mb-3">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
               Configuración aplicada a todos los repositorios seleccionados
             </p>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1">
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                   Versión
                 </label>
                 <input
                   type="text"
                   value={version}
                   onChange={(e) => setVersion(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-900 text-white text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1">
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                   Release Status
                 </label>
                 <select
                   value={releaseStatus}
                   onChange={(e) => setReleaseStatus(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-900 text-white text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
                   <option value="release">release</option>
                   <option value="prerelease">prerelease</option>
@@ -1506,10 +1506,10 @@ function AddRepoModal({ onClose, repos, currentRepoFullName, existingDeps, onAdd
         )}
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-700 flex justify-end gap-3">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition-colors"
           >
             Cancelar
           </button>
@@ -1569,18 +1569,18 @@ function AddFileModal({ onClose, onAdd }: AddFileModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
-      <div className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 w-[90vw] max-w-2xl max-h-[80vh] flex flex-col">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 w-[90vw] max-w-2xl max-h-[80vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-            <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
             </svg>
             Añadir archivos .app
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1593,22 +1593,22 @@ function AddFileModal({ onClose, onAdd }: AddFileModalProps) {
           <div
             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
               dragActive
-                ? "border-gray-400 bg-gray-500/10"
-                : "border-gray-600 hover:border-gray-500"
+                ? "border-gray-500 dark:border-gray-400 bg-gray-100 dark:bg-gray-500/10"
+                : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-gray-400 dark:text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            <p className="text-gray-300 mb-2">
+            <p className="text-gray-700 dark:text-gray-300 mb-2">
               Arrastra archivos .app aquí
             </p>
-            <p className="text-gray-500 text-sm mb-4">o</p>
-            <label className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-600 hover:bg-gray-500 rounded-md transition-colors cursor-pointer">
+            <p className="text-gray-500 dark:text-gray-500 text-sm mb-4">o</p>
+            <label className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-600 dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-500 rounded-md transition-colors cursor-pointer">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
@@ -1626,30 +1626,30 @@ function AddFileModal({ onClose, onAdd }: AddFileModalProps) {
           {/* Selected files list */}
           {selectedFiles.length > 0 && (
             <div className="mt-4 space-y-2">
-              <h4 className="text-sm font-medium text-gray-300 mb-2">
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Archivos seleccionados ({selectedFiles.length})
               </h4>
               {selectedFiles.map((file, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 bg-gray-900 border border-gray-700 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg"
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <svg className="w-5 h-5 text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-gray-500 dark:text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                     </svg>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                         {file.name}
                       </p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         {formatFileSize(file.size)}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => removeFile(index)}
-                    className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors cursor-pointer"
+                    className="shrink-0 p-1 text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-500/10 rounded transition-colors cursor-pointer"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1662,17 +1662,17 @@ function AddFileModal({ onClose, onAdd }: AddFileModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-700 flex justify-end gap-3">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition-colors"
           >
             Cancelar
           </button>
           <button
             onClick={handleAdd}
             disabled={selectedFiles.length === 0}
-            className="px-4 py-2 text-sm font-medium text-white bg-gray-600 hover:bg-gray-500 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium text-white bg-gray-600 dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-500 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Añadir {selectedFiles.length > 0 && `(${selectedFiles.length})`}
           </button>
