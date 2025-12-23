@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { InstalledAppWithEnvironment } from "@/modules/customers/types";
-import { isSameMajorMinor } from "@/modules/applications/utils/versionComparison";
+import { isVersionOutdated } from "@/modules/applications/utils/versionComparison";
 
 interface ApplicationCardProps {
   application: InstalledAppWithEnvironment;
@@ -25,9 +25,8 @@ export function ApplicationCard({ application, latestVersion }: ApplicationCardP
     return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
   };
 
-  // Verificar si la instalación está desactualizada
-  const isOutdated = latestVersion && application.version && 
-    !isSameMajorMinor(application.version, latestVersion);
+  // Verificar si la instalación está desactualizada (versión instalada < versión más reciente)
+  const isOutdated = isVersionOutdated(application.version, latestVersion);
 
   return (
     <Link 
