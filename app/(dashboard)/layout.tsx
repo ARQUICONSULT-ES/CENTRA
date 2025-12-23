@@ -65,7 +65,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 overflow-x-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
         <div className="mx-auto px-4 max-w-7xl">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-4 md:gap-8 min-w-0">
@@ -171,27 +171,29 @@ export default function DashboardLayout({
                 <UserMenu />
               </div>
               
-              {/* Botón menú móvil */}
+              {/* Botón menú móvil con animación hamburguesa → X */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors cursor-pointer z-50 relative"
-                aria-label="Toggle menu"
+                aria-label={isMobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  {isMobileMenuOpen ? (
-                    <path d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
+                <div className="w-6 h-6 relative flex flex-col justify-center items-center">
+                  <span 
+                    className={`block absolute h-0.5 w-5 bg-current transform transition-all duration-300 ease-in-out ${
+                      isMobileMenuOpen ? 'rotate-45' : '-translate-y-1.5'
+                    }`}
+                  />
+                  <span 
+                    className={`block absolute h-0.5 w-5 bg-current transform transition-all duration-300 ease-in-out ${
+                      isMobileMenuOpen ? 'opacity-0 scale-0' : 'opacity-100'
+                    }`}
+                  />
+                  <span 
+                    className={`block absolute h-0.5 w-5 bg-current transform transition-all duration-300 ease-in-out ${
+                      isMobileMenuOpen ? '-rotate-45' : 'translate-y-1.5'
+                    }`}
+                  />
+                </div>
               </button>
             </div>
           </div>
