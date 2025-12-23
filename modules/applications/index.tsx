@@ -6,6 +6,7 @@ import { useApplications } from "@/modules/applications/hooks/useApplications";
 import { useApplicationFilter } from "@/modules/applications/hooks/useApplicationFilter";
 import { useSyncFromGitHub } from "@/modules/applications/hooks/useSyncFromGitHub";
 import ApplicationList from "@/modules/applications/components/ApplicationList";
+import { ApplicationFilterPanel } from "@/modules/applications/components/ApplicationFilterPanel";
 import type { Application } from "@/modules/applications/types";
 
 export function ApplicationsPage() {
@@ -15,9 +16,9 @@ export function ApplicationsPage() {
     filteredApplications,
     searchQuery,
     setSearchQuery,
-    publisherFilter,
-    setPublisherFilter,
-    publishers,
+    advancedFilters,
+    updateAdvancedFilters,
+    clearAdvancedFilters,
   } = useApplicationFilter(applications);
   const { syncFromGitHub, isSyncing, syncResults, error: syncError } = useSyncFromGitHub(refreshApplications);
   const [showSyncResults, setShowSyncResults] = useState(false);
@@ -66,7 +67,7 @@ export function ApplicationsPage() {
         </p>
       </div>
 
-      {/* Barra de herramientas */}
+      {/* Barra de búsqueda y botón de sincronización */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <svg
@@ -86,32 +87,16 @@ export function ApplicationsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar aplicaciones..."
+            placeholder="Buscar aplicaciones por nombre, publisher o repositorio..."
             autoComplete="off"
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
           />
         </div>
 
-        {/* Publisher Filter */}
-        {publishers.length > 0 && (
-          <select
-            value={publisherFilter}
-            onChange={(e) => setPublisherFilter(e.target.value)}
-            className="px-3 py-2.5 rounded-lg border border-gray-300 bg-white text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
-          >
-            <option value="all">Todos los publishers</option>
-            {publishers.map((publisher) => (
-              <option key={publisher} value={publisher}>
-                {publisher}
-              </option>
-            ))}
-          </select>
-        )}
-
         <button
           onClick={handleSyncFromGitHub}
           disabled={isSyncing}
-          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-wait"
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-purple-600 hover:bg-purple-500 disabled:bg-purple-800 disabled:cursor-wait rounded-lg transition-colors whitespace-nowrap"
           title="Sincronizar desde GitHub"
         >
           {isSyncing ? (
@@ -132,6 +117,14 @@ export function ApplicationsPage() {
           )}
         </button>
       </div>
+
+      {/* Panel de filtros avanzados */}
+      <ApplicationFilterPanel
+        applications={applications}
+        filters={advancedFilters}
+        onFilterChange={updateAdvancedFilters}
+        onClearFilters={clearAdvancedFilters}
+      />
 
       {/* Resultados de sincronización */}
       {showSyncResults && syncResults && (
@@ -218,7 +211,7 @@ export function ApplicationsPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
           <p className="text-gray-600 dark:text-gray-400">
-            {searchQuery || publisherFilter !== "all"
+            {searchQuery || advancedFilters.name || advancedFilters.publisher
               ? "No se encontraron aplicaciones con los filtros aplicados"
               : "No hay aplicaciones en el catálogo"}
           </p>
