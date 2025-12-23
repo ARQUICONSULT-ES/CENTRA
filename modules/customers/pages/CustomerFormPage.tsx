@@ -64,6 +64,9 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
   // Estado para filtro de aplicaciones de Microsoft
   const [hideMicrosoftApps, setHideMicrosoftApps] = useState(true);
 
+  // Estado para filtro de entornos Sandbox en aplicaciones instaladas
+  const [hideSandboxApps, setHideSandboxApps] = useState(true);
+
   // Estado para almacenar las versiones más recientes de las aplicaciones
   const [latestVersions, setLatestVersions] = useState<Record<string, string>>({});
 
@@ -103,12 +106,24 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
       return a.name.localeCompare(b.name);
     });
 
-  // Filtrar aplicaciones de Microsoft
+  // Filtrar aplicaciones de Microsoft y entornos Sandbox
   const filteredInstalledApps = installedApps.filter(app => {
+    // Filtro de Microsoft
     if (hideMicrosoftApps) {
       // Ocultar apps de Microsoft (case insensitive)
-      return !app.publisher.toLowerCase().includes('microsoft');
+      if (app.publisher.toLowerCase().includes('microsoft')) {
+        return false;
+      }
     }
+    
+    // Filtro de Sandbox
+    if (hideSandboxApps) {
+      // Ocultar apps de entornos Sandbox
+      if (app.environmentType === 'Sandbox') {
+        return false;
+      }
+    }
+    
     return true;
   });
 
@@ -661,6 +676,19 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
                   Ocultar Microsoft
                 </span>
               </label>
+              
+              {/* Checkbox para ocultar apps de entornos Sandbox */}
+              <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={hideSandboxApps}
+                  onChange={(e) => setHideSandboxApps(e.target.checked)}
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                />
+                <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">
+                  Ocultar Sandbox
+                </span>
+              </label>
             </div>
             
             <button
@@ -712,7 +740,13 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
                 </svg>
                 <p className="text-sm text-gray-500 dark:text-gray-400">No hay aplicaciones que mostrar</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Desactiva el filtro para ver las aplicaciones de Microsoft</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                  {hideMicrosoftApps && hideSandboxApps 
+                    ? "Desactiva los filtros para ver las aplicaciones de Microsoft y Sandbox"
+                    : hideMicrosoftApps 
+                    ? "Desactiva el filtro para ver las aplicaciones de Microsoft"
+                    : "Desactiva el filtro para ver las aplicaciones de Sandbox"}
+                </p>
               </div>
             ) : (
               <ApplicationsList 
