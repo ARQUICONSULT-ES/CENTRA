@@ -9,15 +9,15 @@ import { useRepoFilter } from "@/modules/repos/hooks/useRepoFilter";
 
 function SkeletonCard() {
   return (
-    <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col gap-3 animate-pulse">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-3 animate-pulse">
       <div className="flex items-start justify-between gap-2">
-        <div className="h-4 bg-gray-700 rounded w-3/4"></div>
-        <div className="w-5 h-5 bg-gray-700 rounded-full"></div>
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+        <div className="w-5 h-5 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
       </div>
-      <div className="h-5 bg-gray-700 rounded w-20"></div>
+      <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
       <div className="flex items-center gap-2 mt-auto">
-        <div className="flex-1 h-9 bg-gray-700 rounded-md"></div>
-        <div className="w-9 h-9 bg-gray-700 rounded-md"></div>
+        <div className="flex-1 h-9 bg-gray-200 dark:bg-gray-700 rounded-md"></div>
+        <div className="w-9 h-9 bg-gray-200 dark:bg-gray-700 rounded-md"></div>
       </div>
     </div>
   );
@@ -137,14 +137,14 @@ export function ReposPage() {
       <div className="space-y-6">
         {/* Header skeleton */}
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-700 rounded w-48 mb-2"></div>
-          <div className="h-4 bg-gray-700 rounded w-32"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-2"></div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
         </div>
 
         {/* Search and sort skeleton */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 h-10 bg-gray-700 rounded-lg animate-pulse"></div>
-          <div className="h-10 bg-gray-700 rounded-lg w-48 animate-pulse"></div>
+          <div className="flex-1 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-48 animate-pulse"></div>
         </div>
 
         {/* Grid skeleton */}
@@ -205,7 +205,7 @@ export function ReposPage() {
       </div>
 
       {/* Buscador y ordenacion */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3">
         <div className="relative flex-1">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -229,15 +229,15 @@ export function ReposPage() {
           />
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">Ordenar:</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap hidden sm:inline">Ordenar:</span>
             <div className="inline-flex rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden">
               <button
                 onClick={() => setSortBy("updated")}
-                className={`px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
+                className={`px-3 py-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
                   sortBy === "updated"
-                    ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                    ? "bg-blue-600 text-white dark:bg-blue-500"
                     : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
                 }`}
               >
@@ -245,9 +245,9 @@ export function ReposPage() {
               </button>
               <button
                 onClick={() => setSortBy("name")}
-                className={`px-3 py-2 text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors cursor-pointer ${
+                className={`px-3 py-2 text-xs sm:text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors cursor-pointer ${
                   sortBy === "name"
-                    ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                    ? "bg-blue-600 text-white dark:bg-blue-500"
                     : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
                 }`}
               >

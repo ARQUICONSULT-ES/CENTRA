@@ -26,6 +26,23 @@ export default function DashboardLayout({
     }
   }, [status, router]);
 
+  // Bloquear scroll del body cuando el menú móvil está abierto
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
+  // Cerrar menú móvil cuando cambia la ruta
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   // Mostrar loading mientras se verifica la sesión
   if (status === "loading") {
     return (
@@ -46,21 +63,21 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 overflow-x-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+      <header className="sticky top-0 z-30 border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+        <div className="mx-auto px-4 max-w-7xl">
           <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-4 md:gap-8">
+            <div className="flex items-center gap-4 md:gap-8 min-w-0">
               <Link
                 href="/"
-                className="flex items-center text-xl font-bold text-gray-900 dark:text-white"
+                className="flex items-center text-xl font-bold text-gray-900 dark:text-white shrink-0"
               >
                 <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg mr-2">
                   <span className="text-sm font-bold text-white">CEM</span>
                 </div>
                 {/* Mostrar en móvil y desktop, ocultar en tablet */}
-                <span className="md:hidden lg:inline">Customer Environment Manager</span>
+                <span className="hidden sm:inline md:hidden lg:inline truncate">Customer Environment Manager</span>
               </Link>
               
               {/* Navegación desktop */}
@@ -157,7 +174,7 @@ export default function DashboardLayout({
               {/* Botón menú móvil */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+                className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors cursor-pointer z-50 relative"
                 aria-label="Toggle menu"
               >
                 <svg
@@ -178,90 +195,114 @@ export default function DashboardLayout({
               </button>
             </div>
           </div>
-          
-          {/* Menú móvil desplegable */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-gray-200 dark:border-gray-800 py-4 space-y-3">
-              <Link
-                href="/repos"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/repos')
-                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
-                }`}
-              >
-                Repositorios
-              </Link>
-              <Link
-                href="/customers"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/customers')
-                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
-                }`}
-              >
-                Clientes
-              </Link>
-              <Link
-                href="/environments"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/environments')
-                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
-                }`}
-              >
-                Entornos
-              </Link>
-              <Link
-                href="/applications"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/applications')
-                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
-                }`}
-              >
-                Aplicaciones
-              </Link>
-              <Link
-                href="/installed-apps"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/installed-apps')
-                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
-                }`}
-              >
-                Apps Instaladas
-              </Link>
-              {session?.user?.role === "ADMIN" && (
-                <Link
-                  href="/admin"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    isActive('/admin')
-                      ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                      : 'text-purple-700 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-gray-800'
-                  }`}
-                >
-                  Administración
-                </Link>
-              )}
-              
-              {/* UserMenu móvil */}
-              <div className="px-4 pt-4 border-t border-gray-200 dark:border-gray-800">
-                <UserMenu />
-              </div>
-            </div>
-          )}
         </div>
       </header>
 
+      {/* Menú móvil fullscreen overlay */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-white dark:bg-gray-900 pt-16 overflow-y-auto">
+          <div className="px-4 py-6 space-y-2">
+            <Link
+              href="/repos"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-4 text-base font-medium rounded-xl transition-colors ${
+                isActive('/repos')
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                  : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+              }`}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
+              Repositorios
+            </Link>
+            <Link
+              href="/customers"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-4 text-base font-medium rounded-xl transition-colors ${
+                isActive('/customers')
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                  : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+              }`}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Clientes
+            </Link>
+            <Link
+              href="/environments"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-4 text-base font-medium rounded-xl transition-colors ${
+                isActive('/environments')
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                  : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+              }`}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Entornos
+            </Link>
+            <Link
+              href="/installed-apps"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-4 text-base font-medium rounded-xl transition-colors ${
+                isActive('/installed-apps')
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                  : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+              }`}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+              Instalaciones
+            </Link>
+            <Link
+              href="/applications"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-4 text-base font-medium rounded-xl transition-colors ${
+                isActive('/applications')
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                  : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+              }`}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+              Aplicaciones
+            </Link>
+            {session?.user?.role === "ADMIN" && (
+              <Link
+                href="/admin"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-4 text-base font-medium rounded-xl transition-colors ${
+                  isActive('/admin')
+                    ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                    : 'text-purple-700 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-gray-800'
+                }`}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Administración
+              </Link>
+            )}
+            
+            {/* Separador */}
+            <div className="my-4 border-t border-gray-200 dark:border-gray-800"></div>
+            
+            {/* UserMenu móvil */}
+            <div className="px-4">
+              <UserMenu />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">{children}</main>
+      <main className="mx-auto px-4 py-6 max-w-7xl sm:py-8">{children}</main>
     </div>
   );
 }

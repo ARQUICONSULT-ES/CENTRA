@@ -290,21 +290,21 @@ export function RepoCard({
     <>
       {/* Modal de confirmación */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl border border-gray-700">
-            <h3 className="text-lg font-semibold text-white mb-2">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full shadow-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Confirmar actualización
             </h3>
-            <p className="text-gray-300 mb-4">
-              ¿Estás seguro de que deseas actualizar los archivos AL-Go del repositorio <span className="font-semibold text-blue-400">{repo.name}</span>?
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              ¿Estás seguro de que deseas actualizar los archivos AL-Go del repositorio <span className="font-semibold text-blue-600 dark:text-blue-400">{repo.name}</span>?
             </p>
-            <p className="text-sm text-gray-400 mb-6">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
               Esto ejecutará el workflow UpdateGitHubGoSystemFiles.yaml con la configuración por defecto.
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
               >
                 Cancelar
               </button>
@@ -321,15 +321,15 @@ export function RepoCard({
 
       {/* Modal de crear release */}
       {showReleaseModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-lg w-full mx-4 shadow-xl border border-gray-700 max-h-[80vh] flex flex-col">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg w-full shadow-xl border border-gray-200 dark:border-gray-700 max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Nueva release v{getNextMinorVersion(latestRelease?.tag_name ?? null)}
               </h3>
               <button
                 onClick={() => setShowReleaseModal(false)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -337,7 +337,7 @@ export function RepoCard({
               </button>
             </div>
             
-            <p className="text-sm text-gray-400 mb-3">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
               {latestRelease 
                 ? `Cambios desde ${latestRelease.tag_name}:`
                 : "Commits a incluir en la primera release:"}
@@ -359,11 +359,11 @@ export function RepoCard({
                 <ul className="space-y-3">
                   {releaseCommits.map((commit) => (
                     <li key={commit.sha} className="flex items-start gap-2 text-sm">
-                      <span className="text-gray-500 font-mono shrink-0">
+                      <span className="text-gray-400 dark:text-gray-500 font-mono shrink-0">
                         {commit.sha.substring(0, 7)}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-gray-300 break-words">{commit.message}</p>
+                        <p className="text-gray-700 dark:text-gray-300 break-words">{commit.message}</p>
                         <p className="text-xs text-gray-500 mt-0.5">by {commit.author}</p>
                       </div>
                     </li>
@@ -385,11 +385,11 @@ export function RepoCard({
               ) : null;
             })()}
 
-            <div className="flex gap-3 justify-end pt-4 border-t border-gray-700">
+            <div className="flex gap-3 justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => setShowReleaseModal(false)}
                 disabled={isCreatingRelease}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancelar
               </button>
@@ -443,14 +443,14 @@ export function RepoCard({
         allRepos={allRepos}
       />
 
-      <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col gap-2">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-2">
         {/* Header: Nombre y estado */}
         <div className="flex items-start justify-between gap-2">
           <Link
             href={repo.html_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-400 hover:text-blue-300 font-semibold text-sm truncate"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-semibold text-sm truncate"
           >
             {repo.name}
           </Link>
@@ -465,7 +465,7 @@ export function RepoCard({
         <div className="flex items-center gap-2 flex-wrap">
           {/* Lenguaje */}
           {repo.language && (
-            <span className="inline-flex items-center gap-1.5 text-xs text-gray-400">
+            <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
               <span 
                 className="w-3 h-3 rounded-full" 
                 style={{ backgroundColor: languageColor || "#6e7681" }}
@@ -476,12 +476,12 @@ export function RepoCard({
           
           {/* Separador */}
           {repo.language && (externalIsLoadingRelease || latestRelease) && (
-            <span className="text-gray-600">•</span>
+            <span className="text-gray-400 dark:text-gray-600">•</span>
           )}
           
           {/* Release badge */}
           {externalIsLoadingRelease ? (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-gray-400 bg-gray-700/50">
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700/50">
               <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -493,7 +493,7 @@ export function RepoCard({
               href={latestRelease.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 transition-colors"
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 border border-blue-200 dark:border-blue-500/30 transition-colors"
               title={`Release: ${latestRelease.name || latestRelease.tag_name}`}
             >
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
@@ -502,14 +502,14 @@ export function RepoCard({
               {latestRelease.tag_name}
             </a>
           ) : (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-800 text-gray-500 border border-gray-700">
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 border border-gray-200 dark:border-gray-700">
               Sin release
             </span>
           )}
         </div>
 
         {/* Tiempo desde última modificación */}
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-gray-500 dark:text-gray-500">
           Actualizado {getRelativeTime(repo.updated_at)}
         </div>
 
@@ -519,12 +519,12 @@ export function RepoCard({
             onClick={openReleaseModal}
             disabled={!canCreateRelease().canCreate}
             title={!canCreateRelease().canCreate ? canCreateRelease().reason : ""}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-md text-sm text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-800"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-800"
           >
             <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
             </svg>
-            Crear release v{getNextMinorVersion(latestRelease?.tag_name ?? null)}
+            <span className="truncate">Crear release v{getNextMinorVersion(latestRelease?.tag_name ?? null)}</span>
           </button>
           
           {/* Menu de tres puntos */}
@@ -532,7 +532,7 @@ export function RepoCard({
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               disabled={isUpdatingAlGo}
-              className="p-2 text-gray-400 hover:text-gray-300 hover:bg-gray-800 rounded-md transition-colors disabled:opacity-50 cursor-pointer"
+              className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isUpdatingAlGo ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -547,13 +547,13 @@ export function RepoCard({
             </button>
             
             {isMenuOpen && (
-              <div className="absolute right-0 bottom-full mb-1 w-56 rounded-md bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+              <div className="absolute right-0 bottom-full mb-1 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 z-50 border border-gray-200 dark:border-gray-700">
                 <div className="py-1">
                   <button
                     onClick={openConfirmModal}
-                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                   >
-                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                     Actualizar archivos AL-Go
@@ -563,9 +563,9 @@ export function RepoCard({
                       setIsMenuOpen(false);
                       setShowDependenciesModal(true);
                     }}
-                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                   >
-                    <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-purple-500 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
                     </svg>
                     Dependencias CI/CD
