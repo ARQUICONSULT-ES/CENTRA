@@ -199,7 +199,7 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
         throw new Error(errorData.error || "Error al guardar el cliente");
       }
 
-      router.push("/customers");
+      router.back();
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
@@ -222,7 +222,7 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
         throw new Error(errorData.error || "Error al eliminar el cliente");
       }
 
-      router.push("/customers");
+      router.back();
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
@@ -233,7 +233,7 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
   };
 
   const handleCancel = () => {
-    router.push("/customers");
+    router.back();
   };
 
   // Funciones para manejar tenants

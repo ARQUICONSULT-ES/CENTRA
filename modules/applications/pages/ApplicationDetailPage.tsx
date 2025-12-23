@@ -50,7 +50,7 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
   }, [applicationId]);
 
   const handleBack = () => {
-    router.push("/applications");
+    router.back();
   };
 
   if (loading) {
