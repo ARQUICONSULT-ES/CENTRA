@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import type { Tenant, Customer } from "@/modules/customers/types";
 import ConfirmationModal from "./ConfirmationModal";
 import { fetchCustomers } from "@/modules/customers/services/customerService";
-import { refreshTenantToken } from "@/modules/customers/services/tenantService";
+import { refreshTenantToken, fetchTenantById } from "@/modules/customers/services/tenantService";
 
 interface TenantFormModalProps {
   isOpen: boolean;
@@ -171,16 +171,32 @@ export default function TenantFormModal({
     try {
       const result = await refreshTenantToken(tenant.id);
       
-      // Actualizar el formData con el nuevo token y expiración
-      setFormData({
-        ...formData,
-        token: result.token || "Token actualizado ✓",
-        tokenExpiresAt: result.tokenExpiresAt instanceof Date 
-          ? result.tokenExpiresAt.toISOString() 
-          : result.tokenExpiresAt,
-      });
+      // Recargar los datos del tenant desde la base de datos para obtener el token actualizado
+      const updatedTenant = await fetchTenantById(tenant.id);
+      
+      if (updatedTenant) {
+        // Actualizar el formData con los datos frescos del servidor
+        setFormData({
+          ...formData,
+          token: updatedTenant.token || "Token actualizado ✓",
+          tokenExpiresAt: updatedTenant.tokenExpiresAt
+            ? typeof updatedTenant.tokenExpiresAt === "string"
+              ? updatedTenant.tokenExpiresAt
+              : updatedTenant.tokenExpiresAt.toISOString()
+            : "",
+        });
+      } else {
+        // Fallback a usar la respuesta del refresh si no se pudo recargar
+        setFormData({
+          ...formData,
+          token: result.token || "Token actualizado ✓",
+          tokenExpiresAt: result.tokenExpiresAt instanceof Date 
+            ? result.tokenExpiresAt.toISOString() 
+            : result.tokenExpiresAt,
+        });
+      }
 
-      setTokenRefreshSuccess("Token refrescado exitosamente");
+      setTokenRefreshSuccess("Token refrescado exitosamente y guardado en la base de datos");
       
       // Limpiar mensaje de éxito después de 5 segundos
       setTimeout(() => {

@@ -529,10 +529,11 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
                   {tenants.map((tenant) => (
                     <div
                       key={tenant.id}
-                      className="p-2 sm:p-2.5 md:p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors flex items-center justify-between gap-2 sm:gap-3"
+                      onClick={() => handleEditTenant(tenant)}
+                      className="p-2 sm:p-2.5 md:p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors flex items-center justify-between gap-2 sm:gap-3 cursor-pointer group"
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white truncate">
+                        <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {tenant.id}
                         </p>
                         {tenant.description && (
@@ -541,16 +542,14 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
                           </p>
                         )}
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleEditTenant(tenant)}
-                        className="flex-shrink-0 p-1 sm:p-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors cursor-pointer"
+                      <div
+                        className="flex-shrink-0 p-1 sm:p-1.5 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
                         title="Editar tenant"
                       >
                         <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                      </button>
+                      </div>
                     </div>
                   ))}
                 </div>
