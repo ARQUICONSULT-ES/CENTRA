@@ -19,9 +19,10 @@ function LoginForm() {
   // Redirigir automáticamente si ya hay sesión activa
   useEffect(() => {
     if (status === "authenticated") {
-      router.push(callbackUrl);
+      // Usar window.location para forzar la redirección
+      window.location.href = callbackUrl;
     }
-  }, [status, router, callbackUrl]);
+  }, [status, callbackUrl]);
 
   // Mostrar loading mientras se verifica la sesión
   if (status === "loading") {
@@ -67,8 +68,8 @@ function LoginForm() {
         // Mostrar el error específico que viene de NextAuth
         setError(result.error);
       } else if (result?.ok) {
-        // Redirigir al callbackUrl o a /customers por defecto
-        router.push(callbackUrl);
+        // Usar window.location para forzar la redirección
+        window.location.href = callbackUrl;
       }
     } catch (err) {
       console.error("Error inesperado:", err);
