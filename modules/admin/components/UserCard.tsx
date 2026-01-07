@@ -8,21 +8,41 @@ interface UserCardProps {
 }
 
 export default function UserCard({ user, onClick }: UserCardProps) {
-  const isAdmin = user.role === 'ADMIN';
+  // Contar permisos activos
+  const permissionsCount = [
+    user.canAccessRepos,
+    user.canAccessCustomers,
+    user.canAccessAdmin,
+  ].filter(Boolean).length;
   
   return (
     <div
       onClick={() => onClick(user)}
-      className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
+      className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600 cursor-pointer"
     >
-      {/* Indicador de rol admin */}
-      {isAdmin && (
-        <div className="absolute top-3 right-3">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+      {/* Badges de permisos */}
+      <div className="absolute top-3 right-3 flex flex-wrap gap-1 justify-end max-w-[60%]">
+        {user.canAccessAdmin && (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
             Admin
           </span>
-        </div>
-      )}
+        )}
+        {user.canAccessRepos && (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+            Repos
+          </span>
+        )}
+        {user.canAccessCustomers && (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+            {user.allCustomers ? 'Todos' : 'Clientes'}
+          </span>
+        )}
+        {permissionsCount === 0 && (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+            Sin permisos
+          </span>
+        )}
+      </div>
 
       <div className="flex items-start gap-4">
         {/* Avatar */}

@@ -17,6 +17,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Verificar permiso de acceso a clientes (instalaciones son parte del módulo clientes)
+    if (!permissions.canAccessCustomers) {
+      return NextResponse.json(
+        { error: "No tienes permiso para acceder a instalaciones" },
+        { status: 403 }
+      );
+    }
+
     // Obtener el parámetro customerId de la URL si existe
     const { searchParams } = new URL(request.url);
     const customerId = searchParams.get('customerId');
@@ -26,9 +34,9 @@ export async function GET(request: NextRequest) {
     
     if (customerId) {
       // Si se especifica un customerId, filtrar por ese cliente
-      // Verificar que el usuario tenga permiso para ver ese cliente (solo si no es admin)
+      // Verificar que el usuario tenga permiso para ver ese cliente (solo si no tiene allCustomers)
       const allowedIds: string[] = permissions.allowedCustomerIds;
-      if (!permissions.isAdmin && allowedIds.length > 0 && !allowedIds.includes(customerId)) {
+      if (!permissions.allCustomers && allowedIds.length > 0 && !allowedIds.includes(customerId)) {
         return NextResponse.json(
           { error: "No autorizado para ver este cliente" },
           { status: 403 }
@@ -43,15 +51,15 @@ export async function GET(request: NextRequest) {
       };
     } else {
       // Sin customerId, aplicar permisos generales
-      whereClause = permissions.isAdmin
-        ? {} // Admin ve todas las aplicaciones
+      whereClause = permissions.allCustomers
+        ? {} // Ve todas las aplicaciones
         : {
             environment: {
               tenant: {
                 customerId: { in: permissions.allowedCustomerIds },
               },
             },
-          }; // USER ve solo aplicaciones de sus clientes permitidos
+          }; // Ve solo aplicaciones de sus clientes permitidos
     }
 
     const applications = await prisma.installedApp.findMany({

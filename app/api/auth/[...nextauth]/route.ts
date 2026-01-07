@@ -39,13 +39,16 @@ const authOptions: NextAuthOptions = {
                         throw new Error("Contraseña incorrecta");
                     }
 
-                    // Si todo es correcto, retornar el usuario
+                    // Si todo es correcto, retornar el usuario con los permisos
                     return {
                         id: user.id,
                         email: user.email,
                         name: user.name,
-                        role: user.role,
                         image: user.githubAvatar || undefined,
+                        canAccessRepos: user.canAccessRepos,
+                        canAccessCustomers: user.canAccessCustomers,
+                        allCustomers: user.allCustomers,
+                        canAccessAdmin: user.canAccessAdmin,
                     };
                 } catch (error) {
                     console.error("Error en authorize:", error);
@@ -62,16 +65,22 @@ const authOptions: NextAuthOptions = {
         async jwt({ token, user }: any) {
             if (user) {
                 token.id = user.id;
-                token.role = user.role;
                 token.image = user.image;
+                token.canAccessRepos = user.canAccessRepos;
+                token.canAccessCustomers = user.canAccessCustomers;
+                token.allCustomers = user.allCustomers;
+                token.canAccessAdmin = user.canAccessAdmin;
             }
             return token;
         },
         async session({ session, token }: any) {
             if (session.user) {
                 session.user.id = token.id as string;
-                session.user.role = token.role as string;
                 session.user.image = token.image as string;
+                session.user.canAccessRepos = token.canAccessRepos as boolean;
+                session.user.canAccessCustomers = token.canAccessCustomers as boolean;
+                session.user.allCustomers = token.allCustomers as boolean;
+                session.user.canAccessAdmin = token.canAccessAdmin as boolean;
             }
             return session;
         }

@@ -125,11 +125,14 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
-  role: 'role',
   githubToken: 'githubToken',
   githubAvatar: 'githubAvatar',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  canAccessRepos: 'canAccessRepos',
+  canAccessCustomers: 'canAccessCustomers',
+  allCustomers: 'allCustomers',
+  canAccessAdmin: 'canAccessAdmin'
 };
 
 exports.Prisma.CustomerScalarFieldEnum = {
@@ -208,10 +211,7 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.Role = exports.$Enums.Role = {
-  ADMIN: 'ADMIN',
-  USER: 'USER'
-};
+
 
 exports.Prisma.ModelName = {
   User: 'User',

@@ -13,24 +13,23 @@ datasource db {
   provider = "postgresql"
 }
 
-// Enum para roles
-enum Role {
-  ADMIN
-  USER
-}
-
 model User {
   id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name          String
   email         String    @unique
   password      String    
-  role          Role      @default(USER)
   githubToken   String?   @map("github_token")
   githubAvatar  String?   @map("github_avatar")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Relación: Un usuario puede tener acceso a muchos customers
+  // Permisos de acceso a módulos
+  canAccessRepos        Boolean  @default(false) @map("can_access_repos")
+  canAccessCustomers    Boolean  @default(false) @map("can_access_customers")
+  allCustomers          Boolean  @default(false) @map("all_customers")
+  canAccessAdmin        Boolean  @default(false) @map("can_access_admin")
+
+  // Relación: Un usuario puede tener acceso a muchos customers (solo aplica si canAccessCustomers=true y allCustomers=false)
   allowedCustomers  UserCustomer[]
 }
 

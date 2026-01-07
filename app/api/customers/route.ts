@@ -14,10 +14,19 @@ export async function GET() {
       );
     }
 
+    // Verificar permiso de acceso a clientes
+    if (!permissions.canAccessCustomers) {
+      return NextResponse.json(
+        { error: "No tienes permiso para acceder a clientes" },
+        { status: 403 }
+      );
+    }
+
     // Construir el where según los permisos
-    const whereClause = permissions.isAdmin
-      ? {} // Admin ve todos los clientes
-      : { id: { in: permissions.allowedCustomerIds } }; // USER ve solo sus clientes permitidos
+    // Si allCustomers es true, array vacío significa "sin restricciones"
+    const whereClause = permissions.allCustomers
+      ? {} // Ve todos los clientes
+      : { id: { in: permissions.allowedCustomerIds } }; // Ve solo sus clientes permitidos
 
     const customers = await prisma.customer.findMany({
       where: whereClause,

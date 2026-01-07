@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { syncMultipleTenants } from "@/lib/environment-sync";
+import { getUserPermissions } from "@/lib/auth-permissions";
 
 /**
  * POST /api/environments/sync-customer/[customerId]
@@ -12,6 +13,30 @@ export async function POST(
 ) {
   try {
     const { customerId } = await context.params;
+    const permissions = await getUserPermissions();
+
+    if (!permissions.isAuthenticated) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      );
+    }
+
+    // Verificar permiso de acceso a clientes
+    if (!permissions.canAccessCustomers) {
+      return NextResponse.json(
+        { error: "No tienes permiso para sincronizar entornos" },
+        { status: 403 }
+      );
+    }
+
+    // Verificar que el usuario tenga acceso a este cliente específico
+    if (!permissions.allCustomers && !permissions.allowedCustomerIds.includes(customerId)) {
+      return NextResponse.json(
+        { error: "No tienes permiso para sincronizar este cliente" },
+        { status: 403 }
+      );
+    }
 
     // Verificar que el cliente existe
     const customer = await prisma.customer.findUnique({

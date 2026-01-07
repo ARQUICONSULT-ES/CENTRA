@@ -20,12 +20,12 @@ export async function PUT(
       );
     }
 
-    // Verificar que el usuario sea admin
+    // Verificar que el usuario tenga permiso de administración
     const currentUser = await prisma.user.findUnique({
       where: { email: session.user.email! },
     });
 
-    if (!currentUser || currentUser.role !== "ADMIN") {
+    if (!currentUser || !currentUser.canAccessAdmin) {
       return NextResponse.json(
         { error: "No tienes permisos para realizar esta acción" },
         { status: 403 }
@@ -33,12 +33,22 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { name, email, password, role, githubToken, allowedCustomerIds } = body;
+    const { 
+      name, 
+      email, 
+      password, 
+      githubToken, 
+      allowedCustomerIds,
+      canAccessRepos,
+      canAccessCustomers,
+      allCustomers,
+      canAccessAdmin,
+    } = body;
 
     // Validar campos requeridos
-    if (!name || !email || !role) {
+    if (!name || !email) {
       return NextResponse.json(
-        { error: "Nombre, email y rol son requeridos" },
+        { error: "Nombre y email son requeridos" },
         { status: 400 }
       );
     }
@@ -73,9 +83,14 @@ export async function PUT(
     const updateData: any = {
       name,
       email,
-      role,
       githubToken: githubToken || null,
     };
+
+    // Actualizar permisos si se proporcionan
+    if (canAccessRepos !== undefined) updateData.canAccessRepos = canAccessRepos;
+    if (canAccessCustomers !== undefined) updateData.canAccessCustomers = canAccessCustomers;
+    if (allCustomers !== undefined) updateData.allCustomers = allCustomers;
+    if (canAccessAdmin !== undefined) updateData.canAccessAdmin = canAccessAdmin;
 
     // Si se proporciona una nueva contraseña, encriptarla
     if (password && password.trim() !== "") {
@@ -109,7 +124,10 @@ export async function PUT(
         id: true,
         name: true,
         email: true,
-        role: true,
+        canAccessRepos: true,
+        canAccessCustomers: true,
+        allCustomers: true,
+        canAccessAdmin: true,
         githubToken: true,
         githubAvatar: true,
         createdAt: true,
@@ -165,19 +183,19 @@ export async function DELETE(
       );
     }
 
-    // Verificar que el usuario sea admin
+    // Verificar que el usuario tenga permiso de administración
     const currentUser = await prisma.user.findUnique({
       where: { email: session.user.email! },
     });
 
-    if (!currentUser || currentUser.role !== "ADMIN") {
+    if (!currentUser || !currentUser.canAccessAdmin) {
       return NextResponse.json(
         { error: "No tienes permisos para realizar esta acción" },
         { status: 403 }
       );
     }
 
-    // Evitar que el admin se elimine a sí mismo
+    // Evitar que el usuario se elimine a sí mismo
     if (currentUser.id === id) {
       return NextResponse.json(
         { error: "No puedes eliminar tu propio usuario" },

@@ -22,7 +22,10 @@ export async function GET() {
         id: true,
         name: true,
         email: true,
-        role: true,
+        canAccessRepos: true,
+        canAccessCustomers: true,
+        allCustomers: true,
+        canAccessAdmin: true,
         githubToken: true,
         githubAvatar: true,
         createdAt: true,
@@ -132,7 +135,7 @@ export async function PUT(request: Request) {
     }
 
     // Actualizar el usuario
-    // IMPORTANTE: No permitir cambiar rol ni permisos de clientes desde este endpoint
+    // IMPORTANTE: No permitir cambiar permisos desde este endpoint
     const updatedUser = await prisma.user.update({
       where: { id: currentUser.id },
       data: updateData,
@@ -140,7 +143,10 @@ export async function PUT(request: Request) {
         id: true,
         name: true,
         email: true,
-        role: true,
+        canAccessRepos: true,
+        canAccessCustomers: true,
+        allCustomers: true,
+        canAccessAdmin: true,
         githubToken: true,
         githubAvatar: true,
         createdAt: true,

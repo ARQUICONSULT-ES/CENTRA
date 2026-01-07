@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CustomerList } from "@/modules/customers/components/CustomerList";
 import { CustomerListSkeleton } from "@/modules/customers/components/CustomerCardSkeleton";
@@ -18,6 +18,25 @@ export function CustomersPage() {
   } = useCustomerFilter(customers);
   
   const customerListRef = useRef<CustomerListHandle>(null);
+  const [canCreateCustomer, setCanCreateCustomer] = useState(false);
+
+  // Obtener permisos del usuario
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      try {
+        const response = await fetch('/api/users/me');
+        if (response.ok) {
+          const { user } = await response.json();
+          // Solo puede crear clientes si tiene acceso a todos los clientes
+          setCanCreateCustomer(user.allCustomers === true);
+        }
+      } catch (error) {
+        console.error('Error al obtener permisos:', error);
+      }
+    };
+    
+    fetchPermissions();
+  }, []);
 
   const handleRefresh = async () => {
     await refreshCustomers();
@@ -119,16 +138,18 @@ export function CustomersPage() {
           />
         </div>
 
-        <button
-          onClick={handleCreateCustomer}
-          className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-2 text-[10px] sm:text-xs font-medium text-white bg-green-600 hover:bg-green-500 rounded-lg transition-colors whitespace-nowrap justify-center"
-          title="Crear nuevo cliente"
-        >
-          <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Añadir cliente
-        </button>
+        {canCreateCustomer && (
+          <button
+            onClick={handleCreateCustomer}
+            className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-2 text-[10px] sm:text-xs font-medium text-white bg-green-600 hover:bg-green-500 rounded-lg transition-colors whitespace-nowrap justify-center"
+            title="Crear nuevo cliente"
+          >
+            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Añadir cliente
+          </button>
+        )}
       </div>
 
       {/* Contenido */}

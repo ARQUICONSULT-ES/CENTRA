@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { GitHubRepository } from "@/types/github";
 import { dataCache, CACHE_KEYS } from "../../shared/utils/cache";
 
@@ -17,9 +16,18 @@ interface UseReposReturn {
  * Hook para gestionar la carga de repositorios desde la API de GitHub
  */
 export function useRepos(): UseReposReturn {
-  const { data: session, update: updateSession } = useSession();
-  // Guardamos el avatar actual de la sesión para comparar y evitar bucles
-  const currentSessionImage = session?.user?.image;
+  const router = useRouter();
+  
+  // Usar ref para rastrear si ya hicimos el fetch inicial
+  const hasFetchedRef = useRef(false);
+  // Ref para el router para evitar re-renders
+  const routerRef = useRef(router);
+  
+  // Mantener la ref actualizada
+  useEffect(() => {
+    routerRef.current = router;
+  }, [router]);
+  
   const [repos, setRepos] = useState<GitHubRepository[]>(() => {
     // Intentar cargar desde cache al inicializar
     return dataCache.get<GitHubRepository[]>(CACHE_KEYS.REPOS) || [];
@@ -30,9 +38,8 @@ export function useRepos(): UseReposReturn {
   });
   const [error, setError] = useState<string | null>(null);
   const [needsToken, setNeedsToken] = useState(false);
-  const router = useRouter();
 
-  const fetchRepos = async () => {
+  const fetchRepos = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     setNeedsToken(false);
@@ -47,7 +54,7 @@ export function useRepos(): UseReposReturn {
           setError("Se requiere un token de GitHub para acceder a los repositorios");
           return;
         }
-        router.push("/");
+        routerRef.current.push("/");
         return;
       }
 
@@ -58,15 +65,9 @@ export function useRepos(): UseReposReturn {
 
       const data = await res.json();
       
-      // Solo actualizar la sesión si el avatar ha cambiado realmente
-      // Esto evita el bucle infinito de re-render
-      if (data.githubAvatar !== undefined && data.githubAvatar !== currentSessionImage) {
-        await updateSession({ 
-          image: data.githubAvatar 
-        });
-      }
-      
       // La respuesta ahora incluye { repos, githubAvatar }
+      // El avatar se actualiza en el servidor, no necesitamos actualizar la sesión aquí
+      // ya que causa bucles infinitos de re-renders
       const repositories = data.repos || data;
       setRepos(repositories);
       // Guardar en cache
@@ -76,13 +77,16 @@ export function useRepos(): UseReposReturn {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []); // Sin dependencias porque usamos refs
 
   useEffect(() => {
+    // Evitar múltiples llamadas en modo desarrollo (React strict mode)
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
+    
     // Siempre cargar los repos al montar el componente para verificar el token
     fetchRepos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchRepos]);
 
   return {
     repos,

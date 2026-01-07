@@ -16,12 +16,12 @@ export async function GET() {
       );
     }
 
-    // Verificar que el usuario sea admin
+    // Verificar que el usuario tenga permiso de administración
     const currentUser = await prisma.user.findUnique({
       where: { email: session.user.email! },
     });
 
-    if (!currentUser || currentUser.role !== "ADMIN") {
+    if (!currentUser || !currentUser.canAccessAdmin) {
       return NextResponse.json(
         { error: "No tienes permisos para acceder a esta funcionalidad" },
         { status: 403 }
@@ -36,12 +36,15 @@ export async function GET() {
         id: true,
         name: true,
         email: true,
-        role: true,
         githubToken: true,
         githubAvatar: true,
         createdAt: true,
         updatedAt: true,
         password: false, // No devolver password
+        canAccessRepos: true,
+        canAccessCustomers: true,
+        allCustomers: true,
+        canAccessAdmin: true,
         allowedCustomers: {
           select: {
             customer: {
@@ -88,12 +91,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verificar que el usuario sea admin
+    // Verificar que el usuario tenga permiso de administración
     const currentUser = await prisma.user.findUnique({
       where: { email: session.user.email! },
     });
 
-    if (!currentUser || currentUser.role !== "ADMIN") {
+    if (!currentUser || !currentUser.canAccessAdmin) {
       return NextResponse.json(
         { error: "No tienes permisos para realizar esta acción" },
         { status: 403 }
@@ -101,12 +104,22 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, email, password, role, githubToken, allowedCustomerIds } = body;
+    const { 
+      name, 
+      email, 
+      password, 
+      githubToken, 
+      allowedCustomerIds,
+      canAccessRepos,
+      canAccessCustomers,
+      allCustomers,
+      canAccessAdmin,
+    } = body;
 
     // Validar campos requeridos
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password) {
       return NextResponse.json(
-        { error: "Nombre, email, contraseña y rol son requeridos" },
+        { error: "Nombre, email y contraseña son requeridos" },
         { status: 400 }
       );
     }
@@ -132,8 +145,11 @@ export async function POST(request: Request) {
         name,
         email,
         password: hashedPassword,
-        role,
         githubToken: githubToken || null,
+        canAccessRepos: canAccessRepos ?? false,
+        canAccessCustomers: canAccessCustomers ?? false,
+        allCustomers: allCustomers ?? false,
+        canAccessAdmin: canAccessAdmin ?? false,
         allowedCustomers: allowedCustomerIds && allowedCustomerIds.length > 0 ? {
           create: allowedCustomerIds.map((customerId: string) => ({
             customer: {
@@ -146,7 +162,10 @@ export async function POST(request: Request) {
         id: true,
         name: true,
         email: true,
-        role: true,
+        canAccessRepos: true,
+        canAccessCustomers: true,
+        allCustomers: true,
+        canAccessAdmin: true,
         githubToken: true,
         githubAvatar: true,
         createdAt: true,

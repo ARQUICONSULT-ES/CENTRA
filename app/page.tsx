@@ -14,7 +14,7 @@ function LoginForm() {
   const { data: session, status } = useSession();
 
   // Obtener el callbackUrl de los parámetros de la URL
-  const callbackUrl = searchParams.get("callbackUrl") || "/customers";
+  const callbackUrl = searchParams.get("callbackUrl") || "/applications";
 
   // Redirigir automáticamente si ya hay sesión activa
   useEffect(() => {

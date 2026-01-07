@@ -9,21 +9,29 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  role: 'ADMIN' | 'USER';
   githubToken?: string | null;
   githubAvatar?: string | null;
   allowedCustomers?: AllowedCustomer[];
   createdAt: string;
   updatedAt: string;
+  // Permisos de acceso
+  canAccessRepos: boolean;
+  canAccessCustomers: boolean;
+  allCustomers: boolean;
+  canAccessAdmin: boolean;
 }
 
 export interface UserFormData {
   name: string;
   email: string;
   password?: string;
-  role: 'ADMIN' | 'USER';
   githubToken?: string;
   allowedCustomerIds?: string[];
+  // Permisos de acceso
+  canAccessRepos?: boolean;
+  canAccessCustomers?: boolean;
+  allCustomers?: boolean;
+  canAccessAdmin?: boolean;
 }
 
 export interface UsersResponse {

@@ -27,11 +27,13 @@ export function CustomerSelector({ selectedCustomers, onChange }: CustomerSelect
   const fetchCustomers = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/customers");
+      // Usar el endpoint /all que devuelve todos los clientes sin restricciones
+      // Este endpoint solo es accesible por administradores
+      const response = await fetch("/api/customers/all");
       if (!response.ok) throw new Error("Error al cargar clientes");
       
       const data = await response.json();
-      // El endpoint retorna un array directamente, no un objeto con .customers
+      // El endpoint retorna un array directamente
       setAllCustomers(Array.isArray(data) ? data : []);
       setError(null);
     } catch (err) {

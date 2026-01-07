@@ -38,8 +38,8 @@ export function AdminPage() {
     );
   }
 
-  // Redirigir si no es admin
-  if (session?.user?.role !== "ADMIN") {
+  // Redirigir si no tiene permiso de admin
+  if (!session?.user?.canAccessAdmin) {
     router.push("/customers");
     return null;
   }

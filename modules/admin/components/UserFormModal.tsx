@@ -27,9 +27,12 @@ export default function UserFormModal({
     name: "",
     email: "",
     password: "",
-    role: "USER",
     githubToken: "",
     allowedCustomerIds: [],
+    canAccessRepos: false,
+    canAccessCustomers: false,
+    allCustomers: false,
+    canAccessAdmin: false,
   });
   const [selectedCustomers, setSelectedCustomers] = useState<AllowedCustomer[]>([]);
 
@@ -63,9 +66,12 @@ export default function UserFormModal({
               name: userData.name,
               email: userData.email,
               password: "",
-              role: userData.role,
               githubToken: userData.githubToken || "",
               allowedCustomerIds: userData.allowedCustomers?.map((c: any) => c.id) || [],
+              canAccessRepos: userData.canAccessRepos ?? false,
+              canAccessCustomers: userData.canAccessCustomers ?? false,
+              allCustomers: userData.allCustomers ?? false,
+              canAccessAdmin: userData.canAccessAdmin ?? false,
             });
             setSelectedCustomers(userData.allowedCustomers || []);
           }
@@ -84,9 +90,12 @@ export default function UserFormModal({
         name: user.name,
         email: user.email,
         password: "",
-        role: user.role,
         githubToken: user.githubToken || "",
         allowedCustomerIds: user.allowedCustomers?.map(c => c.id) || [],
+        canAccessRepos: user.canAccessRepos ?? false,
+        canAccessCustomers: user.canAccessCustomers ?? false,
+        allCustomers: user.allCustomers ?? false,
+        canAccessAdmin: user.canAccessAdmin ?? false,
       });
       setSelectedCustomers(user.allowedCustomers || []);
       setShowPassword(false);
@@ -99,9 +108,12 @@ export default function UserFormModal({
         name: "",
         email: "",
         password: "",
-        role: "USER",
         githubToken: "",
         allowedCustomerIds: [],
+        canAccessRepos: false,
+        canAccessCustomers: false,
+        allCustomers: false,
+        canAccessAdmin: false,
       });
       setSelectedCustomers([]);
       setShowPassword(false);
@@ -123,9 +135,12 @@ export default function UserFormModal({
         const dataToSend: UserFormData = {
           name: formData.name,
           email: formData.email,
-          role: formData.role,
           githubToken: formData.githubToken,
           allowedCustomerIds: selectedCustomers.map(c => c.id),
+          canAccessRepos: formData.canAccessRepos,
+          canAccessCustomers: formData.canAccessCustomers,
+          allCustomers: formData.allCustomers,
+          canAccessAdmin: formData.canAccessAdmin,
         };
 
         await updateUser(user.id, dataToSend);
@@ -180,7 +195,6 @@ export default function UserFormModal({
       const dataToSend: UserFormData = {
         name: user.name,
         email: user.email,
-        role: user.role,
         password: newPassword,
       };
 
@@ -249,12 +263,18 @@ export default function UserFormModal({
                         Creado: {new Date(user.createdAt).toLocaleDateString('es-ES')}
                       </p>
                     </div>
-                    {user.githubAvatar && (
+                    {user.githubAvatar ? (
                       <img 
                         src={user.githubAvatar} 
                         alt={user.name}
                         className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500 dark:ring-blue-400"
                       />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center ring-2 ring-blue-500 dark:ring-blue-400">
+                        <span className="text-white text-lg font-semibold">
+                          {user.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
                     )}
                   </div>
                 )}
@@ -345,42 +365,7 @@ export default function UserFormModal({
               </div>
             )}
 
-            {/* Role */}
-            {protectedMode ? (
-              // Modo protegido: mostrar rol como información solo lectura
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
-                      Tu rol: <span className="font-semibold">{formData.role === 'ADMIN' ? 'Administrador' : 'Usuario'}</span>
-                    </p>
-                    <p className="text-xs text-blue-700 dark:text-blue-300">
-                      No puedes modificar tu rol. Contacta con un administrador si necesitas cambios.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              // Modo normal: permitir editar rol
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Rol <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value as 'ADMIN' | 'USER' })}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="USER">Usuario</option>
-                  <option value="ADMIN">Administrador</option>
-                </select>
-              </div>
-            )}
-
-            {/* Reset Password Button (solo en modo edición) */}
+              {/* Reset Password Button (solo en modo edición) */}
             {isEditMode && (
               <div className="pt-2">
                 <button
@@ -398,19 +383,125 @@ export default function UserFormModal({
               </div>
             )}
 
-            {/* Customer Permissions (solo para usuarios no admin y no en modo protegido) */}
-            {!protectedMode && formData.role === 'USER' && (
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Permisos de Clientes
+            {/* Permissions */}
+            {protectedMode ? (
+              // Modo protegido: mostrar permisos como información solo lectura
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                      Tus permisos actuales:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {formData.canAccessRepos && (
+                        <span className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded">Repositorios</span>
+                      )}
+                      {formData.canAccessCustomers && (
+                        <span className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded">
+                          Clientes {formData.allCustomers ? "(Todos)" : "(Específicos)"}
+                        </span>
+                      )}
+                      {formData.canAccessAdmin && (
+                        <span className="px-2 py-1 text-xs bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded">Administración</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-blue-700 dark:text-blue-300 mt-2">
+                      No puedes modificar tus permisos. Contacta con un administrador si necesitas cambios.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Modo normal: permitir editar permisos
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Permisos de acceso
                 </label>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                  Selecciona los clientes que este usuario podrá ver. También podrá ver sus tenants, entornos y aplicaciones.
-                </p>
-                <CustomerSelector
-                  selectedCustomers={selectedCustomers}
-                  onChange={setSelectedCustomers}
-                />
+                
+                {/* Repositorios */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <input
+                    type="checkbox"
+                    id="canAccessRepos"
+                    checked={formData.canAccessRepos}
+                    onChange={(e) => setFormData({ ...formData, canAccessRepos: e.target.checked })}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label htmlFor="canAccessRepos" className="flex-1">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">Repositorios</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Acceso al módulo de repositorios de GitHub</p>
+                  </label>
+                </div>
+
+                {/* Clientes */}
+                <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg space-y-3">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      id="canAccessCustomers"
+                      checked={formData.canAccessCustomers}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        canAccessCustomers: e.target.checked,
+                        allCustomers: e.target.checked ? formData.allCustomers : false,
+                      })}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <label htmlFor="canAccessCustomers" className="flex-1">
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">Clientes</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Acceso a Clientes, Entornos e Instalaciones</p>
+                    </label>
+                  </div>
+                  
+                  {formData.canAccessCustomers && (
+                    <div className="ml-7 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id="allCustomers"
+                          checked={formData.allCustomers}
+                          onChange={(e) => setFormData({ ...formData, allCustomers: e.target.checked })}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <label htmlFor="allCustomers" className="flex-1">
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">Todos los clientes</span>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Si está desactivado, deberás seleccionar clientes específicos</p>
+                        </label>
+                      </div>
+                      
+                      {/* Customer Selector - justo debajo del checkbox */}
+                      {!formData.allCustomers && (
+                        <div className="pt-2">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                            Selecciona los clientes específicos que este usuario podrá ver:
+                          </p>
+                          <CustomerSelector
+                            selectedCustomers={selectedCustomers}
+                            onChange={setSelectedCustomers}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Administración */}
+                <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                  <input
+                    type="checkbox"
+                    id="canAccessAdmin"
+                    checked={formData.canAccessAdmin}
+                    onChange={(e) => setFormData({ ...formData, canAccessAdmin: e.target.checked })}
+                    className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label htmlFor="canAccessAdmin" className="flex-1">
+                    <span className="text-sm font-medium text-purple-900 dark:text-purple-100">Administración</span>
+                    <p className="text-xs text-purple-700 dark:text-purple-300">Gestionar usuarios y permisos del sistema</p>
+                  </label>
+                </div>
               </div>
             )}
             </>

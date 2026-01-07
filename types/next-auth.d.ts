@@ -5,10 +5,14 @@ declare module "next-auth" {
     id: string;
     email: string;
     name: string;
-    role: string;
     image?: string;
     githubToken?: string;
     createdAt?: string;
+    // Permisos de acceso
+    canAccessRepos: boolean;
+    canAccessCustomers: boolean;
+    allCustomers: boolean;
+    canAccessAdmin: boolean;
   }
 
   interface Session {
@@ -16,10 +20,14 @@ declare module "next-auth" {
       id: string;
       email: string;
       name: string;
-      role: string;
       image?: string;
       githubToken?: string;
       createdAt?: string;
+      // Permisos de acceso
+      canAccessRepos: boolean;
+      canAccessCustomers: boolean;
+      allCustomers: boolean;
+      canAccessAdmin: boolean;
     };
   }
 }
@@ -27,8 +35,12 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id: string;
-    role: string;
     githubToken?: string;
     createdAt?: string;
+    // Permisos de acceso
+    canAccessRepos: boolean;
+    canAccessCustomers: boolean;
+    allCustomers: boolean;
+    canAccessAdmin: boolean;
   }
 }

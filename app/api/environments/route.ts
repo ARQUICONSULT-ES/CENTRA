@@ -18,6 +18,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Verificar permiso de acceso a clientes (entornos son parte del módulo clientes)
+    if (!permissions.canAccessCustomers) {
+      return NextResponse.json(
+        { error: "No tienes permiso para acceder a entornos" },
+        { status: 403 }
+      );
+    }
+
     // Obtener el parámetro customerId de la URL si existe
     const { searchParams } = new URL(request.url);
     const customerId = searchParams.get('customerId');
@@ -27,9 +35,9 @@ export async function GET(request: NextRequest) {
     
     if (customerId) {
       // Si se especifica un customerId, filtrar por ese cliente
-      // Verificar que el usuario tenga permiso para ver ese cliente (solo si no es admin)
+      // Verificar que el usuario tenga permiso para ver ese cliente (solo si no tiene allCustomers)
       const allowedIds: string[] = permissions.allowedCustomerIds;
-      if (!permissions.isAdmin && allowedIds.length > 0 && !allowedIds.includes(customerId)) {
+      if (!permissions.allCustomers && allowedIds.length > 0 && !allowedIds.includes(customerId)) {
         return NextResponse.json(
           { error: "No autorizado para ver este cliente" },
           { status: 403 }
@@ -42,13 +50,13 @@ export async function GET(request: NextRequest) {
       };
     } else {
       // Sin customerId, aplicar permisos generales
-      whereClause = permissions.isAdmin
-        ? {} // Admin ve todos los environments
+      whereClause = permissions.allCustomers
+        ? {} // Ve todos los environments
         : {
             tenant: {
               customerId: { in: permissions.allowedCustomerIds },
             },
-          }; // USER ve solo environments de sus clientes permitidos
+          }; // Ve solo environments de sus clientes permitidos
     }
 
     const environments = await prisma.environment.findMany({

@@ -2,13 +2,28 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 
-export async function getUserPermissions() {
+export interface UserPermissions {
+  isAuthenticated: boolean;
+  userId?: string;
+  // Permisos de módulos
+  canAccessRepos: boolean;
+  canAccessCustomers: boolean;
+  allCustomers: boolean;
+  canAccessAdmin: boolean;
+  // Clientes permitidos (vacío = todos si allCustomers es true)
+  allowedCustomerIds: string[];
+}
+
+export async function getUserPermissions(): Promise<UserPermissions> {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
     return {
       isAuthenticated: false,
-      isAdmin: false,
+      canAccessRepos: false,
+      canAccessCustomers: false,
+      allCustomers: false,
+      canAccessAdmin: false,
       allowedCustomerIds: [],
     };
   }
@@ -17,7 +32,10 @@ export async function getUserPermissions() {
     where: { email: session.user.email },
     select: {
       id: true,
-      role: true,
+      canAccessRepos: true,
+      canAccessCustomers: true,
+      allCustomers: true,
+      canAccessAdmin: true,
       allowedCustomers: {
         select: {
           customerId: true,
@@ -29,19 +47,25 @@ export async function getUserPermissions() {
   if (!user) {
     return {
       isAuthenticated: false,
-      isAdmin: false,
+      canAccessRepos: false,
+      canAccessCustomers: false,
+      allCustomers: false,
+      canAccessAdmin: false,
       allowedCustomerIds: [],
     };
   }
 
-  const isAdmin = user.role === "ADMIN";
-
   return {
     isAuthenticated: true,
-    isAdmin,
     userId: user.id,
-    allowedCustomerIds: isAdmin 
-      ? [] // Admin ve todo, array vacío significa "sin restricciones"
+    canAccessRepos: user.canAccessRepos,
+    canAccessCustomers: user.canAccessCustomers,
+    allCustomers: user.allCustomers,
+    canAccessAdmin: user.canAccessAdmin,
+    // Si tiene acceso a clientes y allCustomers es true, array vacío significa "sin restricciones"
+    // Si allCustomers es false, devolver solo los clientes permitidos
+    allowedCustomerIds: user.allCustomers 
+      ? [] 
       : user.allowedCustomers.map((ac) => ac.customerId),
   };
 }

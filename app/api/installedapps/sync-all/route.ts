@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { syncMultipleEnvironments } from "@/lib/installedapp-sync";
+import { getUserPermissions } from "@/lib/auth-permissions";
 
 /**
  * POST /api/installedapps/sync-all
@@ -8,13 +9,42 @@ import { syncMultipleEnvironments } from "@/lib/installedapp-sync";
  */
 export async function POST() {
   try {
-    // Obtener todos los entornos activos (no SoftDeleted)
+    const permissions = await getUserPermissions();
+
+    if (!permissions.isAuthenticated) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      );
+    }
+
+    // Verificar permiso de acceso a clientes
+    if (!permissions.canAccessCustomers) {
+      return NextResponse.json(
+        { error: "No tienes permiso para sincronizar instalaciones" },
+        { status: 403 }
+      );
+    }
+
+    // Construir filtro según permisos
+    const whereClause = permissions.allCustomers
+      ? {
+          NOT: {
+            status: "SoftDeleted",
+          },
+        }
+      : {
+          tenant: {
+            customerId: { in: permissions.allowedCustomerIds },
+          },
+          NOT: {
+            status: "SoftDeleted",
+          },
+        };
+
+    // Obtener los entornos activos que el usuario puede ver
     const environments = await prisma.environment.findMany({
-      where: {
-        NOT: {
-          status: "SoftDeleted",
-        },
-      },
+      where: whereClause,
       select: {
         tenantId: true,
         name: true,

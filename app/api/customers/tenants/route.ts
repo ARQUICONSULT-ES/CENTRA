@@ -13,10 +13,18 @@ export async function GET() {
       );
     }
 
+    // Verificar permiso de acceso a clientes
+    if (!permissions.canAccessCustomers) {
+      return NextResponse.json(
+        { error: "No tienes permiso para acceder a tenants" },
+        { status: 403 }
+      );
+    }
+
     // Construir el where según los permisos
-    const whereClause = permissions.isAdmin
-      ? {} // Admin ve todos los tenants
-      : { customerId: { in: permissions.allowedCustomerIds } }; // USER ve solo tenants de sus clientes permitidos
+    const whereClause = permissions.allCustomers
+      ? {} // Ve todos los tenants
+      : { customerId: { in: permissions.allowedCustomerIds } }; // Ve solo tenants de sus clientes permitidos
 
     const tenants = await prisma.tenant.findMany({
       where: whereClause,

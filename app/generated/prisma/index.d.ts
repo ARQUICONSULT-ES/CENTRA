@@ -50,23 +50,6 @@ export type InstalledApp = $Result.DefaultSelection<Prisma.$InstalledAppPayload>
 export type Application = $Result.DefaultSelection<Prisma.$ApplicationPayload>
 
 /**
- * Enums
- */
-export namespace $Enums {
-  export const Role: {
-  ADMIN: 'ADMIN',
-  USER: 'USER'
-};
-
-export type Role = (typeof Role)[keyof typeof Role]
-
-}
-
-export type Role = $Enums.Role
-
-export const Role: typeof $Enums.Role
-
-/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -1572,11 +1555,14 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    role: $Enums.Role | null
     githubToken: string | null
     githubAvatar: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    canAccessRepos: boolean | null
+    canAccessCustomers: boolean | null
+    allCustomers: boolean | null
+    canAccessAdmin: boolean | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1584,11 +1570,14 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    role: $Enums.Role | null
     githubToken: string | null
     githubAvatar: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    canAccessRepos: boolean | null
+    canAccessCustomers: boolean | null
+    allCustomers: boolean | null
+    canAccessAdmin: boolean | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1596,11 +1585,14 @@ export namespace Prisma {
     name: number
     email: number
     password: number
-    role: number
     githubToken: number
     githubAvatar: number
     createdAt: number
     updatedAt: number
+    canAccessRepos: number
+    canAccessCustomers: number
+    allCustomers: number
+    canAccessAdmin: number
     _all: number
   }
 
@@ -1610,11 +1602,14 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    role?: true
     githubToken?: true
     githubAvatar?: true
     createdAt?: true
     updatedAt?: true
+    canAccessRepos?: true
+    canAccessCustomers?: true
+    allCustomers?: true
+    canAccessAdmin?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1622,11 +1617,14 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    role?: true
     githubToken?: true
     githubAvatar?: true
     createdAt?: true
     updatedAt?: true
+    canAccessRepos?: true
+    canAccessCustomers?: true
+    allCustomers?: true
+    canAccessAdmin?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1634,11 +1632,14 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    role?: true
     githubToken?: true
     githubAvatar?: true
     createdAt?: true
     updatedAt?: true
+    canAccessRepos?: true
+    canAccessCustomers?: true
+    allCustomers?: true
+    canAccessAdmin?: true
     _all?: true
   }
 
@@ -1719,11 +1720,14 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role: $Enums.Role
     githubToken: string | null
     githubAvatar: string | null
     createdAt: Date
     updatedAt: Date
+    canAccessRepos: boolean
+    canAccessCustomers: boolean
+    allCustomers: boolean
+    canAccessAdmin: boolean
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -1748,11 +1752,14 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    role?: boolean
     githubToken?: boolean
     githubAvatar?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
     allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -1762,11 +1769,14 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    role?: boolean
     githubToken?: boolean
     githubAvatar?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1774,11 +1784,14 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    role?: boolean
     githubToken?: boolean
     githubAvatar?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -1786,14 +1799,17 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    role?: boolean
     githubToken?: boolean
     githubAvatar?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "githubToken" | "githubAvatar" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "githubToken" | "githubAvatar" | "createdAt" | "updatedAt" | "canAccessRepos" | "canAccessCustomers" | "allCustomers" | "canAccessAdmin", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1811,11 +1827,14 @@ export namespace Prisma {
       name: string
       email: string
       password: string
-      role: $Enums.Role
       githubToken: string | null
       githubAvatar: string | null
       createdAt: Date
       updatedAt: Date
+      canAccessRepos: boolean
+      canAccessCustomers: boolean
+      allCustomers: boolean
+      canAccessAdmin: boolean
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2244,11 +2263,14 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
-    readonly role: FieldRef<"User", 'Role'>
     readonly githubToken: FieldRef<"User", 'String'>
     readonly githubAvatar: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly canAccessRepos: FieldRef<"User", 'Boolean'>
+    readonly canAccessCustomers: FieldRef<"User", 'Boolean'>
+    readonly allCustomers: FieldRef<"User", 'Boolean'>
+    readonly canAccessAdmin: FieldRef<"User", 'Boolean'>
   }
     
 
@@ -9273,11 +9295,14 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
-    role: 'role',
     githubToken: 'githubToken',
     githubAvatar: 'githubAvatar',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    canAccessRepos: 'canAccessRepos',
+    canAccessCustomers: 'canAccessCustomers',
+    allCustomers: 'allCustomers',
+    canAccessAdmin: 'canAccessAdmin'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -9407,20 +9432,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Role'
-   */
-  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
-    
-
-
-  /**
-   * Reference to a field of type 'Role[]'
-   */
-  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -9431,6 +9442,13 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -9459,11 +9477,14 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    role?: EnumRoleFilter<"User"> | $Enums.Role
     githubToken?: StringNullableFilter<"User"> | string | null
     githubAvatar?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    canAccessRepos?: BoolFilter<"User"> | boolean
+    canAccessCustomers?: BoolFilter<"User"> | boolean
+    allCustomers?: BoolFilter<"User"> | boolean
+    canAccessAdmin?: BoolFilter<"User"> | boolean
     allowedCustomers?: UserCustomerListRelationFilter
   }
 
@@ -9472,11 +9493,14 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     githubToken?: SortOrderInput | SortOrder
     githubAvatar?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    canAccessRepos?: SortOrder
+    canAccessCustomers?: SortOrder
+    allCustomers?: SortOrder
+    canAccessAdmin?: SortOrder
     allowedCustomers?: UserCustomerOrderByRelationAggregateInput
   }
 
@@ -9488,11 +9512,14 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    role?: EnumRoleFilter<"User"> | $Enums.Role
     githubToken?: StringNullableFilter<"User"> | string | null
     githubAvatar?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    canAccessRepos?: BoolFilter<"User"> | boolean
+    canAccessCustomers?: BoolFilter<"User"> | boolean
+    allCustomers?: BoolFilter<"User"> | boolean
+    canAccessAdmin?: BoolFilter<"User"> | boolean
     allowedCustomers?: UserCustomerListRelationFilter
   }, "id" | "email">
 
@@ -9501,11 +9528,14 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     githubToken?: SortOrderInput | SortOrder
     githubAvatar?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    canAccessRepos?: SortOrder
+    canAccessCustomers?: SortOrder
+    allCustomers?: SortOrder
+    canAccessAdmin?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -9519,11 +9549,14 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
-    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     githubToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     githubAvatar?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    canAccessRepos?: BoolWithAggregatesFilter<"User"> | boolean
+    canAccessCustomers?: BoolWithAggregatesFilter<"User"> | boolean
+    allCustomers?: BoolWithAggregatesFilter<"User"> | boolean
+    canAccessAdmin?: BoolWithAggregatesFilter<"User"> | boolean
   }
 
   export type CustomerWhereInput = {
@@ -9943,11 +9976,14 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role?: $Enums.Role
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
     allowedCustomers?: UserCustomerCreateNestedManyWithoutUserInput
   }
 
@@ -9956,11 +9992,14 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role?: $Enums.Role
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
     allowedCustomers?: UserCustomerUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -9969,11 +10008,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
     allowedCustomers?: UserCustomerUpdateManyWithoutUserNestedInput
   }
 
@@ -9982,11 +10024,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
     allowedCustomers?: UserCustomerUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -9995,11 +10040,14 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role?: $Enums.Role
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
   }
 
   export type UserUpdateManyMutationInput = {
@@ -10007,11 +10055,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -10019,11 +10070,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CustomerCreateInput = {
@@ -10495,13 +10549,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type EnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -10528,6 +10575,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type UserCustomerListRelationFilter = {
     every?: UserCustomerWhereInput
     some?: UserCustomerWhereInput
@@ -10548,11 +10600,14 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     githubToken?: SortOrder
     githubAvatar?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    canAccessRepos?: SortOrder
+    canAccessCustomers?: SortOrder
+    allCustomers?: SortOrder
+    canAccessAdmin?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -10560,11 +10615,14 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     githubToken?: SortOrder
     githubAvatar?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    canAccessRepos?: SortOrder
+    canAccessCustomers?: SortOrder
+    allCustomers?: SortOrder
+    canAccessAdmin?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -10572,11 +10630,14 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     githubToken?: SortOrder
     githubAvatar?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    canAccessRepos?: SortOrder
+    canAccessCustomers?: SortOrder
+    allCustomers?: SortOrder
+    canAccessAdmin?: SortOrder
   }
 
   export type UuidWithAggregatesFilter<$PrismaModel = never> = {
@@ -10612,16 +10673,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
-  }
-
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -10652,6 +10703,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type TenantListRelationFilter = {
@@ -10976,16 +11035,16 @@ export namespace Prisma {
     set?: string
   }
 
-  export type EnumRoleFieldUpdateOperationsInput = {
-    set?: $Enums.Role
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type UserCustomerUpdateManyWithoutUserNestedInput = {
@@ -11283,13 +11342,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedEnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -11313,6 +11365,11 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
@@ -11357,16 +11414,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -11407,6 +11454,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedUuidNullableFilter<$PrismaModel = never> = {
@@ -11619,11 +11674,14 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role?: $Enums.Role
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
   }
 
   export type UserUncheckedCreateWithoutAllowedCustomersInput = {
@@ -11631,11 +11689,14 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role?: $Enums.Role
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
   }
 
   export type UserCreateOrConnectWithoutAllowedCustomersInput = {
@@ -11678,11 +11739,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUncheckedUpdateWithoutAllowedCustomersInput = {
@@ -11690,11 +11754,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CustomerUpsertWithoutAllowedUsersInput = {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { syncMultipleTenants } from "@/lib/environment-sync";
+import { getUserPermissions } from "@/lib/auth-permissions";
 
 /**
  * POST /api/environments/sync-all
@@ -8,8 +9,31 @@ import { syncMultipleTenants } from "@/lib/environment-sync";
  */
 export async function POST() {
   try {
-    // Obtener todos los tenants activos
+    const permissions = await getUserPermissions();
+
+    if (!permissions.isAuthenticated) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      );
+    }
+
+    // Verificar permiso de acceso a clientes
+    if (!permissions.canAccessCustomers) {
+      return NextResponse.json(
+        { error: "No tienes permiso para sincronizar entornos" },
+        { status: 403 }
+      );
+    }
+
+    // Construir filtro según permisos
+    const whereClause = permissions.allCustomers
+      ? {}
+      : { customerId: { in: permissions.allowedCustomerIds } };
+
+    // Obtener todos los tenants que el usuario puede ver
     const tenants = await prisma.tenant.findMany({
+      where: whereClause,
       select: {
         id: true,
         customerId: true,

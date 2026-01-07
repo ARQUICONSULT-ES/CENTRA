@@ -33,10 +33,10 @@ export async function GET(
       },
     });
 
-    // Filtrar por permisos si no es admin
+    // Filtrar por permisos si no tiene acceso a todos los clientes
     let filteredInstallations = installations;
     
-    if (!permissions.isAdmin && permissions.allowedCustomerIds.length > 0) {
+    if (!permissions.allCustomers && permissions.allowedCustomerIds.length > 0) {
       const allowedIds = permissions.allowedCustomerIds as string[];
       filteredInstallations = installations.filter((installation) => {
         const customerId = installation.environment.tenant.customerId;

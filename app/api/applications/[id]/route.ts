@@ -51,10 +51,10 @@ export async function PUT(
   try {
     const permissions = await getUserPermissions();
 
-    if (!permissions.isAuthenticated || !permissions.isAdmin) {
+    if (!permissions.isAuthenticated) {
       return NextResponse.json(
-        { error: "No autorizado. Solo administradores pueden actualizar aplicaciones." },
-        { status: 403 }
+        { error: "No autorizado" },
+        { status: 401 }
       );
     }
 
@@ -112,10 +112,10 @@ export async function DELETE(
   try {
     const permissions = await getUserPermissions();
 
-    if (!permissions.isAuthenticated || !permissions.isAdmin) {
+    if (!permissions.isAuthenticated) {
       return NextResponse.json(
-        { error: "No autorizado. Solo administradores pueden eliminar aplicaciones." },
-        { status: 403 }
+        { error: "No autorizado" },
+        { status: 401 }
       );
     }
 

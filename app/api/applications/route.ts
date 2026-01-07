@@ -68,10 +68,10 @@ export async function POST(request: NextRequest) {
   try {
     const permissions = await getUserPermissions();
 
-    if (!permissions.isAuthenticated || !permissions.isAdmin) {
+    if (!permissions.isAuthenticated) {
       return NextResponse.json(
-        { error: "No autorizado. Solo administradores pueden crear aplicaciones." },
-        { status: 403 }
+        { error: "No autorizado" },
+        { status: 401 }
       );
     }
 
