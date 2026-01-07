@@ -35,9 +35,9 @@ export function UserMenu() {
     setShowSettingsModal(true);
   };
 
-  const handleSaveSettings = async () => {
-    // Actualizar la sesión para reflejar los cambios
-    await updateSession();
+  const handleSaveSettings = () => {
+    // Los datos se recargan automáticamente al abrir el modal
+    setShowSettingsModal(false);
   };
 
   if (status === "loading") {

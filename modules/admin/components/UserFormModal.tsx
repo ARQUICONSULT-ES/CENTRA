@@ -39,6 +39,7 @@ export default function UserFormModal({
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
   const { createUser, updateUser, deleteUser, isLoading, error } = useUserForm({
     onSuccess: () => {
       onSave();
@@ -49,8 +50,36 @@ export default function UserFormModal({
 
   const isEditMode = !!user;
 
+  // Cargar datos del usuario desde la base de datos en modo protegido
   useEffect(() => {
-    if (user && isOpen) {
+    const loadUserData = async () => {
+      if (protectedMode && isOpen) {
+        setIsLoadingUser(true);
+        try {
+          const response = await fetch('/api/users/me');
+          if (response.ok) {
+            const { user: userData } = await response.json();
+            setFormData({
+              name: userData.name,
+              email: userData.email,
+              password: "",
+              role: userData.role,
+              githubToken: userData.githubToken || "",
+              allowedCustomerIds: userData.allowedCustomers?.map((c: any) => c.id) || [],
+            });
+            setSelectedCustomers(userData.allowedCustomers || []);
+          }
+        } catch (error) {
+          console.error("Error al cargar datos del usuario:", error);
+        } finally {
+          setIsLoadingUser(false);
+        }
+      }
+    };
+
+    if (protectedMode && isOpen) {
+      loadUserData();
+    } else if (user && isOpen) {
       setFormData({
         name: user.name,
         email: user.email,
@@ -81,7 +110,7 @@ export default function UserFormModal({
       setConfirmPassword("");
       setPasswordError("");
     }
-  }, [user, isOpen]);
+  }, [user, isOpen, protectedMode]);
 
   if (!isOpen) return null;
 
@@ -187,32 +216,48 @@ export default function UserFormModal({
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            {/* Loading indicator */}
+            {isLoadingUser && (
+              <div className="flex items-center justify-center py-8">
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Cargando datos del usuario...</span>
+                </div>
+              </div>
+            )}
+
             {/* Error message */}
-            {error && (
+            {error && !isLoadingUser && (
               <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
                 <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
               </div>
             )}
 
-            {/* User info header (solo en modo edición) */}
-            {isEditMode && (
-              <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">ID de Usuario</p>
-                  <p className="font-mono text-xs text-gray-700 dark:text-gray-300">{user.id}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Creado: {new Date(user.createdAt).toLocaleDateString('es-ES')}
-                  </p>
-                </div>
-                {user.githubAvatar && (
-                  <img 
-                    src={user.githubAvatar} 
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500 dark:ring-blue-400"
-                  />
+            {/* Contenido del formulario - solo mostrar cuando no está cargando */}
+            {!isLoadingUser && (
+              <>
+                {/* User info header (solo en modo edición) */}
+                {isEditMode && (
+                  <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">ID de Usuario</p>
+                      <p className="font-mono text-xs text-gray-700 dark:text-gray-300">{user.id}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Creado: {new Date(user.createdAt).toLocaleDateString('es-ES')}
+                      </p>
+                    </div>
+                    {user.githubAvatar && (
+                      <img 
+                        src={user.githubAvatar} 
+                        alt={user.name}
+                        className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500 dark:ring-blue-400"
+                      />
+                    )}
+                  </div>
                 )}
-              </div>
-            )}
 
             {/* Name */}
             <div>
@@ -313,7 +358,7 @@ export default function UserFormModal({
                       Tu rol: <span className="font-semibold">{formData.role === 'ADMIN' ? 'Administrador' : 'Usuario'}</span>
                     </p>
                     <p className="text-xs text-blue-700 dark:text-blue-300">
-                      No puedes modificar tu rol ni tus permisos de clientes. Contacta con un administrador si necesitas cambios.
+                      No puedes modificar tu rol. Contacta con un administrador si necesitas cambios.
                     </p>
                   </div>
                 </div>
@@ -368,6 +413,8 @@ export default function UserFormModal({
                 />
               </div>
             )}
+            </>
+            )}
 
             {/* Actions */}
             <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -393,7 +440,7 @@ export default function UserFormModal({
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || isLoadingUser}
                   className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (isEditMode ? "Guardando..." : "Creando...") : (isEditMode ? "Guardar Cambios" : "Crear Usuario")}
