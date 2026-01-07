@@ -13,7 +13,7 @@ const authOptions: NextAuthOptions = {
             },
             async authorize(credentials, req){
                 if (!credentials?.email || !credentials?.password) {
-                    return null;
+                    throw new Error("Por favor ingrese email y contraseña");
                 }
 
                 try {
@@ -26,7 +26,7 @@ const authOptions: NextAuthOptions = {
 
                     // Si no existe el usuario
                     if (!user) {
-                        return null;
+                        throw new Error("No existe un usuario con ese email");
                     }
 
                     // Comparar la contraseña con el hash
@@ -36,7 +36,7 @@ const authOptions: NextAuthOptions = {
                     );
 
                     if (!isPasswordValid) {
-                        return null;
+                        throw new Error("Contraseña incorrecta");
                     }
 
                     // Si todo es correcto, retornar el usuario
@@ -49,7 +49,11 @@ const authOptions: NextAuthOptions = {
                     };
                 } catch (error) {
                     console.error("Error en authorize:", error);
-                    return null;
+                    // Re-lanzar el error para que sea capturado por NextAuth
+                    if (error instanceof Error) {
+                        throw error;
+                    }
+                    throw new Error("Error al conectar con la base de datos. Por favor, intente más tarde.");
                 }
             }
         })

@@ -51,12 +51,14 @@ export default function Home() {
       });
 
       if (result?.error) {
-        setError("Credenciales incorrectas");
+        // Mostrar el error específico que viene de NextAuth
+        setError(result.error);
       } else if (result?.ok) {
         router.push("/customers");
       }
     } catch (err) {
-      setError("Error al iniciar sesión");
+      console.error("Error inesperado:", err);
+      setError(err instanceof Error ? err.message : "Error inesperado al iniciar sesión");
     } finally {
       setIsLoading(false);
     }
