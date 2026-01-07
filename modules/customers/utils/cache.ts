@@ -1,6 +1,6 @@
 import type { Customer } from "@/modules/customers/types";
 import type { EnvironmentWithCustomer } from "@/modules/customers/types";
-import type { ApplicationWithEnvironment } from "@/modules/customers/types";
+import type { InstalledAppWithEnvironment } from "@/modules/customers/types";
 
 interface CacheEntry<T> {
   data: T;

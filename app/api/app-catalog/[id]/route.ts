@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 // PUT - Actualizar aplicación
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -18,6 +18,7 @@ export async function PUT(
       );
     }
 
+    const { id } = await params;
     const body = await request.json();
     const { name, publisher, githubRepoName } = body;
 
@@ -31,7 +32,7 @@ export async function PUT(
 
     // Verificar que existe
     const existingApp = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingApp) {
@@ -43,7 +44,7 @@ export async function PUT(
 
     // Actualizar la aplicación
     const application = await prisma.application.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         publisher,
@@ -67,7 +68,7 @@ export async function PUT(
 // DELETE - Eliminar aplicación
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -79,9 +80,11 @@ export async function DELETE(
       );
     }
 
+    const { id } = await params;
+
     // Verificar que existe
     const existingApp = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingApp) {
@@ -93,7 +96,7 @@ export async function DELETE(
 
     // Eliminar la aplicación
     await prisma.application.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({

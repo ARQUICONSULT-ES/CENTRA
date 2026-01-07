@@ -44,12 +44,12 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, publisher, githubRepoName } = body;
+    const { id, name, publisher, githubRepoName } = body;
 
     // Validaciones
-    if (!name || !publisher || !githubRepoName) {
+    if (!id || !name || !publisher || !githubRepoName) {
       return NextResponse.json(
-        { error: "Todos los campos son requeridos" },
+        { error: "Todos los campos son requeridos (id, name, publisher, githubRepoName)" },
         { status: 400 }
       );
     }
@@ -57,6 +57,7 @@ export async function POST(request: Request) {
     // Crear la aplicación
     const application = await prisma.application.create({
       data: {
+        id,
         name,
         publisher,
         githubRepoName,

@@ -1,10 +1,10 @@
-import type { ApplicationWithEnvironment } from "@/modules/customers/types";
+import type { InstalledAppWithEnvironment } from "@/modules/customers/types";
 import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 /**
  * Obtiene todas las aplicaciones de todos los entornos desde la base de datos
  */
-export async function fetchAllApplications(): Promise<ApplicationWithEnvironment[]> {
+export async function fetchAllApplications(): Promise<InstalledAppWithEnvironment[]> {
   try {
     const response = await fetch("/api/installedapps");
     
