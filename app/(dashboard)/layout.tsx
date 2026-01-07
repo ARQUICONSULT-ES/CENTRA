@@ -17,7 +17,12 @@ export default function DashboardLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Función para determinar si una ruta está activa
-  const isActive = (path: string) => pathname === path;
+  // También considera activas las rutas hijas (ej: /customers/123 activa /customers)
+  const isActive = (path: string) => {
+    if (pathname === path) return true;
+    // Si estamos en una ruta hija, también marcar como activa
+    return pathname.startsWith(path + '/');
+  };
 
   // Redirigir a login si no hay sesión
   useEffect(() => {
