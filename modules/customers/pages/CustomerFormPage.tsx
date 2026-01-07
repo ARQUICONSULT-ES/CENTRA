@@ -214,7 +214,15 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
         throw new Error(errorData.error || "Error al guardar el cliente");
       }
 
-      router.back();
+      const savedCustomer = await response.json();
+      
+      // Si es creación, redirigir al modo edición del nuevo cliente
+      if (!isEditMode && savedCustomer.id) {
+        router.push(`/customers/${savedCustomer.id}/edit`);
+      } else {
+        // Si es edición, volver atrás
+        router.back();
+      }
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
@@ -400,9 +408,9 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
       )}
 
       <form id="customer-form" onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+        <div className={`grid grid-cols-1 ${isEditMode ? 'lg:grid-cols-2' : ''} gap-3 sm:gap-4 md:gap-6`}>
           {/* Columna 1: Información del Cliente */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden h-fit">
+          <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden h-full">
             <div className="px-3 sm:px-5 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
               <h2 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white flex items-center gap-1.5 sm:gap-2">
                 <svg className="w-4 h-4 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -484,20 +492,21 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
             </div>
           </div>
 
-          {/* Columna 2: Tenants */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden h-fit">
-            <div className="px-3 sm:px-5 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between gap-2">
-              <h2 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white flex items-center gap-1.5 sm:gap-2">
-                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                <span className="truncate">Tenants asociados</span>
-                <span className="ml-0.5 sm:ml-1 px-1.5 py-0.5 text-[10px] sm:text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full flex-shrink-0">
-                  {tenants.length}
-                </span>
-              </h2>
-              <button
-                type="button"
+          {/* Columna 2: Tenants - Solo en modo edición */}
+          {isEditMode && (
+            <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden h-full flex flex-col">
+              <div className="px-3 sm:px-5 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between gap-2">
+                <h2 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white flex items-center gap-1.5 sm:gap-2">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  <span className="truncate">Tenants asociados</span>
+                  <span className="ml-0.5 sm:ml-1 px-1.5 py-0.5 text-[10px] sm:text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full flex-shrink-0">
+                    {tenants.length}
+                  </span>
+                </h2>
+                <button
+                  type="button"
                 onClick={handleAddTenant}
                 className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1 sm:gap-1.5 flex-shrink-0"
               >
@@ -507,7 +516,7 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
                 <span className="hidden sm:inline">Añadir</span>
               </button>
             </div>
-            <div className="p-3 sm:p-4 md:p-5">
+            <div className="p-3 sm:p-4 md:p-5 flex-1 overflow-y-auto">
               {tenantsLoading ? (
                 <div className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                   <svg className="w-5 h-5 animate-spin mx-auto mb-2" fill="none" viewBox="0 0 24 24">
@@ -556,6 +565,7 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
               )}
             </div>
           </div>
+          )}
         </div>
       </form>
 
