@@ -23,10 +23,10 @@ export default function TenantFormModal({
     id: "",
     customerId: "",
     description: "",
-    grantType: "",
+    grantType: "client_credentials",
     clientId: "",
     clientSecret: "",
-    scope: "",
+    scope: "https://api.businesscentral.dynamics.com/.default",
     token: "",
     tokenExpiresAt: "",
   });
@@ -68,10 +68,10 @@ export default function TenantFormModal({
           id: tenant.id || "",
           customerId: tenant.customerId || "",
           description: tenant.description || "",
-          grantType: tenant.grantType || "",
+          grantType: tenant.grantType || "client_credentials",
           clientId: tenant.clientId || "",
           clientSecret: tenant.clientSecret || "",
-          scope: tenant.scope || "",
+          scope: tenant.scope || "https://api.businesscentral.dynamics.com/.default",
           token: tenant.token || "",
           tokenExpiresAt: tenant.tokenExpiresAt
             ? typeof tenant.tokenExpiresAt === "string"
@@ -84,10 +84,10 @@ export default function TenantFormModal({
           id: "",
           customerId: "",
           description: "",
-          grantType: "",
+          grantType: "client_credentials",
           clientId: "",
           clientSecret: "",
-          scope: "",
+          scope: "https://api.businesscentral.dynamics.com/.default",
           token: "",
           tokenExpiresAt: "",
         });
@@ -259,35 +259,28 @@ export default function TenantFormModal({
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    ID del Tenant (UUID) *
+                    ID del Tenant (UUID) <span className="text-red-500 dark:text-red-400">*</span>
                   </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      required
-                      disabled={isExistingTenant}
-                      value={formData.id}
-                      onChange={(e) =>
-                        setFormData({ ...formData, id: e.target.value })
-                      }
-                      className={`flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                        isExistingTenant
-                          ? "border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                          : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-blue-500"
-                      }`}
-                      placeholder="00000000-0000-0000-0000-000000000000"
-                    />
-                  </div>
-                  {!isExistingTenant && (
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      Puedes escribir un UUID manualmente o generar uno automáticamente
-                    </p>
-                  )}
+                  <input
+                    type="text"
+                    required
+                    disabled={isExistingTenant}
+                    value={formData.id}
+                    onChange={(e) =>
+                      setFormData({ ...formData, id: e.target.value })
+                    }
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                      isExistingTenant
+                        ? "border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                        : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-blue-500"
+                    }`}
+                    placeholder="00000000-0000-0000-0000-000000000000"
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Cliente *
+                    Cliente <span className="text-red-500 dark:text-red-400">*</span>
                   </label>
                   <select
                     required
@@ -295,12 +288,8 @@ export default function TenantFormModal({
                     onChange={(e) =>
                       setFormData({ ...formData, customerId: e.target.value })
                     }
-                    disabled={isExistingTenant}
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                      isExistingTenant
-                        ? "border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                        : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-blue-500"
-                    }`}
+                    disabled
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed rounded-md focus:outline-none focus:ring-2"
                   >
                     <option value="">Selecciona un cliente</option>
                     {customers.map((customer) => (
@@ -309,11 +298,6 @@ export default function TenantFormModal({
                       </option>
                     ))}
                   </select>
-                  {!isExistingTenant && (
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      El cliente no puede cambiarse después de crear el tenant
-                    </p>
-                  )}
                 </div>
 
                 <div>
@@ -395,7 +379,7 @@ export default function TenantFormModal({
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Grant Type *
+                        Grant Type <span className="text-red-500 dark:text-red-400">*</span>
                       </label>
                       <input
                         type="text"
@@ -413,7 +397,7 @@ export default function TenantFormModal({
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Scope *
+                        Scope <span className="text-red-500 dark:text-red-400">*</span>
                       </label>
                       <input
                         type="text"
@@ -432,7 +416,7 @@ export default function TenantFormModal({
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Client ID (Application ID) *
+                      Client ID (Application ID) <span className="text-red-500 dark:text-red-400">*</span>
                     </label>
                     <input
                       type="text"
@@ -444,13 +428,14 @@ export default function TenantFormModal({
                         })
                       }
                       placeholder="00000000-0000-0000-0000-000000000000"
+                      autoComplete="off"
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Client Secret *
+                      Client Secret <span className="text-red-500 dark:text-red-400">*</span>
                     </label>
                     <input
                       type="password"
@@ -462,6 +447,7 @@ export default function TenantFormModal({
                         })
                       }
                       placeholder="Secreto del cliente"
+                      autoComplete="new-password"
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>

@@ -219,11 +219,12 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
       // Si es creación, redirigir al modo edición del nuevo cliente
       if (!isEditMode && savedCustomer.id) {
         router.push(`/customers/${savedCustomer.id}/edit`);
+        router.refresh();
       } else {
-        // Si es edición, volver atrás
-        router.back();
+        // Si es edición, volver a la lista y refrescar
+        router.push('/customers');
+        router.refresh();
       }
-      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
@@ -245,7 +246,7 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
         throw new Error(errorData.error || "Error al eliminar el cliente");
       }
 
-      router.back();
+      router.push('/customers');
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
