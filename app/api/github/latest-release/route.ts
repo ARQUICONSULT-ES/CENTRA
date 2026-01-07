@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { getAuthenticatedUserGitHubToken } from "@/lib/auth-github";
 
 const GITHUB_API_URL = "https://api.github.com";
 
 export async function GET(request: NextRequest) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("github_token")?.value;
+  try {
+    const token = await getAuthenticatedUserGitHubToken();
 
-  if (!token) {
-    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  }
+    if (!token) {
+      return NextResponse.json({ error: "Token de GitHub no configurado" }, { status: 401 });
+    }
 
-  const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(request.url);
   const owner = searchParams.get("owner");
   const repo = searchParams.get("repo");
 
@@ -22,7 +22,6 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  try {
     const res = await fetch(
       `${GITHUB_API_URL}/repos/${owner}/${repo}/releases/latest`,
       {
@@ -53,6 +52,9 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
+    if (error instanceof Error && error.message === "Usuario no autenticado") {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
     console.error("Error fetching latest release:", error);
     return NextResponse.json(
       { error: "Error al obtener la última release" },

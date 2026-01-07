@@ -41,6 +41,8 @@ export function useRepoExtraInfo(repos: GitHubRepository[]): UseRepoExtraInfoRet
         });
 
         const releasesData = await fetchBatchReleases(repoRequests);
+        console.log('[useRepoExtraInfo] Batch releases response:', releasesData);
+        
         const updated: Record<string, RepoExtraInfo> = {};
         
         for (const [key, value] of Object.entries(releasesData)) {
@@ -48,8 +50,10 @@ export function useRepoExtraInfo(repos: GitHubRepository[]): UseRepoExtraInfoRet
             release: value.release,
             workflow: null,
           };
+          console.log(`[useRepoExtraInfo] ${key}:`, value.release ? value.release.tag_name : 'No release');
         }
         
+        console.log('[useRepoExtraInfo] Total repos with data:', Object.keys(updated).length);
         setExtraInfo(updated);
         // Guardar en cache
         dataCache.set(CACHE_KEYS.REPO_EXTRA_INFO, updated);

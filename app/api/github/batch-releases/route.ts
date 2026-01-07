@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { getAuthenticatedUserGitHubToken } from "@/lib/auth-github";
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 
@@ -63,12 +63,15 @@ async function fetchReleasesGraphQL(
     const { data, errors } = await res.json();
 
     if (errors) {
-      console.error("GraphQL errors:", errors);
+      console.error("GraphQL errors:", JSON.stringify(errors, null, 2));
     }
 
     if (!data) {
+      console.log("[batch-releases] No data returned from GraphQL");
       return {};
     }
+
+    console.log(`[batch-releases] Processing ${Object.keys(data).length} repositories`);
 
     const results: Record<string, { release: ReleaseInfo | null }> = {};
 
@@ -77,19 +80,29 @@ async function fetchReleasesGraphQL(
       const repoData = data[alias];
       if (repoData && repoData.nameWithOwner) {
         const latestRelease = repoData.latestRelease;
+        const releaseData = latestRelease
+          ? {
+              tag_name: latestRelease.tagName,
+              name: latestRelease.name || latestRelease.tagName,
+              html_url: latestRelease.url,
+              published_at: latestRelease.publishedAt,
+            }
+          : null;
+        
         results[repoData.nameWithOwner] = {
-          release: latestRelease
-            ? {
-                tag_name: latestRelease.tagName,
-                name: latestRelease.name || latestRelease.tagName,
-                html_url: latestRelease.url,
-                published_at: latestRelease.publishedAt,
-              }
-            : null,
+          release: releaseData,
         };
+        
+        // Log para depuración
+        if (latestRelease) {
+          console.log(`[batch-releases] ${repoData.nameWithOwner}: ${latestRelease.tagName}`);
+        } else {
+          console.log(`[batch-releases] ${repoData.nameWithOwner}: No release`);
+        }
       }
     });
 
+    console.log(`[batch-releases] Returning ${Object.keys(results).length} results`);
     return results;
   } catch (error) {
     console.error("Error fetching GraphQL releases:", error);
@@ -98,14 +111,13 @@ async function fetchReleasesGraphQL(
 }
 
 export async function POST(request: NextRequest) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("github_token")?.value;
-
-  if (!token) {
-    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  }
-
   try {
+    const token = await getAuthenticatedUserGitHubToken();
+
+    if (!token) {
+      return NextResponse.json({ error: "Token de GitHub no configurado" }, { status: 401 });
+    }
+
     const body = await request.json();
     const repos: RepoRequest[] = body.repos;
 
@@ -137,6 +149,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ data: allResults });
   } catch (error) {
+    if (error instanceof Error && error.message === "Usuario no autenticado") {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
     console.error("Error fetching batch releases:", error);
     return NextResponse.json(
       { error: "Error al obtener releases" },
