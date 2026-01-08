@@ -16,6 +16,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CENTRA",
   description: "Gestiona tus clientes de Business Central y repositorios de Github",
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/icon.png" },
+      { url: "/logo.png", sizes: "any" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png" },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "CENTRA",
+  },
 };
 
 export default function RootLayout({
