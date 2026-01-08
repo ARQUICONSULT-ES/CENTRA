@@ -17,22 +17,11 @@ interface AppJsonContent {
 
 /**
  * GET /api/cron/sync-all
- * Health check endpoint para Vercel
- */
-export async function GET() {
-  return NextResponse.json({
-    status: "ok",
-    message: "Cron job endpoint is ready",
-    timestamp: new Date().toISOString(),
-  });
-}
-
-/**
- * POST /api/cron/sync-all
  * Endpoint para Vercel Cron Job que ejecuta la sincronización completa del sistema.
  * 
- * Este endpoint está protegido por un token secreto (CRON_SECRET) y ejecuta
- * directamente la lógica de sincronización sin necesidad de peticiones HTTP internas.
+ * Vercel ejecuta los cron jobs usando el método GET.
+ * Este endpoint está protegido por un token secreto (CRON_SECRET) enviado en el
+ * header Authorization por Vercel.
  * 
  * Configuración en vercel.json:
  * {
@@ -48,7 +37,7 @@ export async function GET() {
  *   ]
  * }
  */
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     // 1. Verificar autorización con token secreto
     const authHeader = request.headers.get("authorization");
