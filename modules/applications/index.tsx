@@ -63,7 +63,7 @@ export function ApplicationsPage() {
           </button>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          {applications.length} aplicaciones en catálogo
+          {applications.length} aplicaciones
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export function ApplicationsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar aplicaciones por nombre, publisher o repositorio..."
+            placeholder="Buscar aplicaciones..."
             autoComplete="off"
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
           />

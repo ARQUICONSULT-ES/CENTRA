@@ -12,6 +12,7 @@ export interface Application {
   // Campos adicionales opcionales para vistas enriquecidas
   totalInstallations?: number;
   outdatedInstallations?: number;
+  totalCustomers?: number;
 }
 
 export interface ApplicationFormData {

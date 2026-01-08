@@ -33,7 +33,18 @@ export async function GET(request: NextRequest) {
         // Obtener todas las instalaciones de esta aplicación
         const installations = await prisma.installedApp.findMany({
           where: { id: app.id },
-          select: { version: true },
+          select: { 
+            version: true,
+            environment: {
+              select: {
+                tenant: {
+                  select: {
+                    customerId: true
+                  }
+                }
+              }
+            }
+          },
         });
 
         const totalInstallations = installations.length;
@@ -42,10 +53,17 @@ export async function GET(request: NextRequest) {
           installations
         );
 
+        // Contar clientes únicos
+        const uniqueCustomerIds = new Set(
+          installations.map(inst => inst.environment.tenant.customerId)
+        );
+        const totalCustomers = uniqueCustomerIds.size;
+
         return {
           ...app,
           totalInstallations,
           outdatedInstallations,
+          totalCustomers,
         };
       })
     );

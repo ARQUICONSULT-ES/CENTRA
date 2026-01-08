@@ -50,7 +50,7 @@ export function ApplicationCard({ application, latestVersion }: ApplicationCardP
       <div className="flex flex-col gap-1 min-w-0 flex-1">
         {/* Header: Nombre (izquierda) + PublishedAs (derecha) */}
         <div className="flex items-start justify-between gap-2">
-          <span className="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
+          <span className="text-sm font-medium text-gray-900 dark:text-white break-words flex-1">
             {application.name}
           </span>
           <span className={`text-[10px] px-2 py-0.5 rounded font-medium whitespace-nowrap flex-shrink-0 ${getTypeBadgeColor(application.publishedAs)}`}>

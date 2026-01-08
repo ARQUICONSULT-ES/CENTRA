@@ -86,7 +86,7 @@ export default function DashboardLayout({
                   className="w-10 h-10 mr-2 object-contain"
                 />
                 {/* Mostrar texto cuando el viewport sea suficientemente ancho */}
-                <span className="hidden min-[400px]:inline truncate text-base sm:text-lg md:text-xl">CENTRA</span>
+                <span className="hidden min-[400px]:inline truncate text-xl sm:text-2xl md:text-2xl">CENTRA</span>
               </Link>
               
               {/* Navegación desktop */}

@@ -135,7 +135,7 @@ export function InstalledAppsPage() {
           </button>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          {installedApps.length} instalaciones en total
+          {installedApps.length} instalaciones
         </p>
       </div>
 
@@ -159,7 +159,7 @@ export function InstalledAppsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar instalaciones por nombre, publisher, cliente o entorno..."
+            placeholder="Buscar instalaciones..."
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
           />
         </div>

@@ -19,8 +19,11 @@ export function FilterDropdown({
 }: FilterDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
@@ -28,6 +31,7 @@ export function FilterDropdown({
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
         setSearchQuery("");
+        setIsSearchFocused(false);
       }
     }
 
@@ -37,10 +41,52 @@ export function FilterDropdown({
     }
   }, [isOpen]);
 
-  // Focus en el buscador cuando se abre el dropdown
+  // Manejar cambios en el viewport (teclado virtual)
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleResize = () => {
+      // visualViewport es más preciso para detectar el teclado virtual
+      if (window.visualViewport) {
+        setViewportHeight(window.visualViewport.height);
+      }
+    };
+
+    // Escuchar cambios en el visualViewport (para teclado virtual)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('scroll', handleResize);
+      handleResize(); // Establecer altura inicial
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener('scroll', handleResize);
+      }
+    };
+  }, [isOpen]);
+
+  // Scroll al input cuando el teclado aparece
+  useEffect(() => {
+    if (isSearchFocused && searchInputRef.current && contentRef.current) {
+      // Pequeño delay para que el teclado termine de aparecer
+      const timer = setTimeout(() => {
+        searchInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isSearchFocused, viewportHeight]);
+
+  // NO hacer focus automático en el buscador en móvil
+  // Solo hacer focus en desktop
   useEffect(() => {
     if (isOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
+      // Detectar si es móvil (pantalla pequeña)
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) {
+        searchInputRef.current.focus();
+      }
     }
   }, [isOpen]);
 
@@ -125,36 +171,54 @@ export function FilterDropdown({
             onClick={() => {
               setIsOpen(false);
               setSearchQuery("");
+              setIsSearchFocused(false);
             }}
           />
           
           {/* Dropdown - Pantalla completa en móvil, normal en desktop */}
-          <div className="fixed md:absolute inset-x-0 bottom-0 md:inset-auto md:z-50 md:mt-1 md:w-80 z-50 bg-white dark:bg-gray-800 border-t md:border border-gray-200 dark:border-gray-700 md:rounded-md shadow-lg rounded-t-2xl md:rounded-t-md max-h-[80vh] md:max-h-none flex flex-col">
-            {/* Header para móvil */}
+          <div 
+            ref={contentRef}
+            className="fixed md:absolute inset-x-0 md:inset-auto md:z-50 md:mt-1 md:w-80 z-50 bg-white dark:bg-gray-800 border-t md:border border-gray-200 dark:border-gray-700 md:rounded-md shadow-lg rounded-t-2xl md:rounded-t-md md:max-h-none flex flex-col md:bottom-auto"
+            style={{
+              // En móvil: ajustar al viewport visible (considerando teclado)
+              bottom: 0,
+              maxHeight: viewportHeight ? `${Math.min(viewportHeight * 0.8, window.innerHeight * 0.8)}px` : '80vh',
+            }}
+          >
+            {/* Header para móvil - con check de confirmar en lugar de X */}
             <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                 {label}
+                {hasValue && (
+                  <span className="ml-2 text-xs text-blue-600 dark:text-blue-400">
+                    ({selectedValues.length} seleccionado{selectedValues.length !== 1 ? 's' : ''})
+                  </span>
+                )}
               </span>
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setSearchQuery("");
+                  setIsSearchFocused(false);
                 }}
-                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors"
+                aria-label="Confirmar"
               >
-                <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                 </svg>
               </button>
             </div>
             
-            {/* Buscador */}
+            {/* Buscador - siempre visible pero no auto-focused en móvil */}
             <div className="p-3 md:p-2 border-b border-gray-200 dark:border-gray-700">
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
                 placeholder="Buscar..."
                 className="w-full px-3 py-2 md:py-1.5 text-sm md:text-xs bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200"
                 onClick={(e) => e.stopPropagation()}
@@ -162,7 +226,7 @@ export function FilterDropdown({
             </div>
 
             {/* Lista de opciones con scrollbar oscuro */}
-            <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-gray-700 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800 md:max-h-60">
+            <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-gray-700 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-800 md:max-h-60 min-h-[200px]">
               {/* Opción "Todos" */}
               <button
                 onClick={() => {
@@ -222,19 +286,6 @@ export function FilterDropdown({
                   No se encontraron resultados
                 </div>
               )}
-            </div>
-            
-            {/* Botón de aplicar/cerrar para móvil */}
-            <div className="md:hidden border-t border-gray-200 dark:border-gray-700 p-3">
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  setSearchQuery("");
-                }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors"
-              >
-                Aplicar {hasValue && `(${selectedValues.length})`}
-              </button>
             </div>
           </div>
         </>

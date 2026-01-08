@@ -31,9 +31,7 @@ export function ReposPage() {
   const { 
     filteredRepos: filteredAndSortedRepos, 
     searchQuery, 
-    setSearchQuery, 
-    sortBy, 
-    setSortBy 
+    setSearchQuery,
   } = useRepoFilter(repos);
   const repoListRef = useRef<RepoListHandle>(null);
   const [showTokenModal, setShowTokenModal] = useState(false);
@@ -207,8 +205,8 @@ export function ReposPage() {
         </p>
       </div>
 
-      {/* Buscador y ordenacion */}
-      <div className="flex flex-col gap-3">
+      {/* Buscador y botón CI/CD */}
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -232,52 +230,24 @@ export function ReposPage() {
           />
         </div>
         
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap hidden sm:inline">Ordenar:</span>
-            <div className="inline-flex rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden">
-              <button
-                onClick={() => setSortBy("updated")}
-                className={`px-3 py-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
-                  sortBy === "updated"
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
-                    : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-                }`}
-              >
-                Recientes
-              </button>
-              <button
-                onClick={() => setSortBy("name")}
-                className={`px-3 py-2 text-xs sm:text-sm font-medium border-l border-gray-300 dark:border-gray-700 transition-colors cursor-pointer ${
-                  sortBy === "name"
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
-                    : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-                }`}
-              >
-                Nombre
-              </button>
-            </div>
-          </div>
-          
-          <button
-            onClick={handleLoadCICD}
-            disabled={isLoadingCICD}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-wait rounded-lg transition-colors whitespace-nowrap"
-            title="Cargar estado CI/CD de los repositorios"
-          >
-            {isLoadingCICD ? (
-              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            ) : (
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            )}
-            CI/CD
-          </button>
-        </div>
+        <button
+          onClick={handleLoadCICD}
+          disabled={isLoadingCICD}
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-wait rounded-lg transition-colors whitespace-nowrap justify-center"
+          title="Cargar estado CI/CD de los repositorios"
+        >
+          {isLoadingCICD ? (
+            <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+          ) : (
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          )}
+          CI/CD
+        </button>
       </div>
 
       {/* Lista de repositorios */}
