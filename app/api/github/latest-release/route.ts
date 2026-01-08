@@ -12,16 +12,53 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-  const owner = searchParams.get("owner");
-  const repo = searchParams.get("repo");
+    const owner = searchParams.get("owner");
+    const repo = searchParams.get("repo");
+    const includePrerelease = searchParams.get("includePrerelease") === "true";
 
-  if (!owner || !repo) {
-    return NextResponse.json(
-      { error: "Faltan parámetros owner y repo" },
-      { status: 400 }
-    );
-  }
+    if (!owner || !repo) {
+      return NextResponse.json(
+        { error: "Faltan parámetros owner y repo" },
+        { status: 400 }
+      );
+    }
 
+    // Si se solicita incluir prereleases, obtener todas las releases y filtrar
+    if (includePrerelease) {
+      const res = await fetch(
+        `${GITHUB_API_URL}/repos/${owner}/${repo}/releases?per_page=50`,
+        {
+          headers: {
+            Authorization: `token ${token}`,
+            Accept: "application/vnd.github.v3+json",
+          },
+          cache: "no-store",
+        }
+      );
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          return NextResponse.json({ release: null, prerelease: null });
+        }
+        throw new Error(`GitHub API error: ${res.status}`);
+      }
+
+      const releases = await res.json();
+      
+      // Buscar la primera prerelease (más reciente)
+      const latestPrerelease = releases.find((r: any) => r.prerelease === true);
+      
+      return NextResponse.json({
+        prerelease: latestPrerelease ? {
+          tag_name: latestPrerelease.tag_name,
+          name: latestPrerelease.name,
+          html_url: latestPrerelease.html_url,
+          published_at: latestPrerelease.published_at,
+        } : null,
+      });
+    }
+
+    // Comportamiento original: obtener solo la última release (no prerelease)
     const res = await fetch(
       `${GITHUB_API_URL}/repos/${owner}/${repo}/releases/latest`,
       {

@@ -147,21 +147,19 @@ export function RepoCard({
 
   const fetchLatestPrerelease = async (owner: string, repo: string): Promise<{ tag_name: string; published_at: string } | null> => {
     try {
+      // Usar el endpoint interno que tiene autenticación
       const res = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/releases`,
+        `/api/github/latest-release?owner=${owner}&repo=${repo}&includePrerelease=true`,
         {
-          headers: {
-            Accept: "application/vnd.github.v3+json",
-          },
           cache: "no-store",
         }
       );
 
       if (res.ok) {
-        const releases = await res.json();
-        // Buscar la primera prerelease
-        const prerelease = releases.find((r: any) => r.prerelease === true);
-        return prerelease ? { tag_name: prerelease.tag_name, published_at: prerelease.published_at } : null;
+        const data = await res.json();
+        if (data.prerelease) {
+          return { tag_name: data.prerelease.tag_name, published_at: data.prerelease.published_at };
+        }
       }
       return null;
     } catch (error) {
@@ -198,28 +196,27 @@ export function RepoCard({
 
   const getNextPrereleaseNumber = async (owner: string, repo: string, version: string): Promise<number> => {
     try {
+      // Usar el endpoint interno que tiene autenticación
       const res = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/releases`,
+        `/api/github/releases?owner=${owner}&repo=${repo}&per_page=100`,
         {
-          headers: {
-            Accept: "application/vnd.github.v3+json",
-          },
           cache: "no-store",
         }
       );
 
       if (res.ok) {
-        const releases = await res.json();
+        const data = await res.json();
+        const releases = data.releases || [];
         
         // Filtrar prereleases que coincidan con la versión actual
-        // Buscar patrones como: v1.2-preview.1, v1.2-preview.2, etc.
-        const versionPattern = new RegExp(`^${version.replace(/\./g, '\\.')}-preview\\.(\\d+)$`);
+        // Buscar patrones como: v1.2-preview.1, v1.2-preview.2, v1.2.0-preview.1, etc.
+        const versionPattern = new RegExp(`^${version.replace(/\./g, '\\.')}(\\.0)?-preview\\.(\\d+)$`);
         
         const existingPrereleases = releases
           .filter((r: any) => r.prerelease === true && versionPattern.test(r.tag_name))
           .map((r: any) => {
             const match = r.tag_name.match(versionPattern);
-            return match ? parseInt(match[1], 10) : 0;
+            return match ? parseInt(match[2], 10) : 0;
           });
 
         // Encontrar el número máximo y sumarle 1
@@ -545,8 +542,8 @@ export function RepoCard({
             </div>
             
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-              {latestRelease 
-                ? `Cambios desde ${latestRelease.tag_name}:`
+              {latestPrereleaseTag 
+                ? `Cambios desde ${latestPrereleaseTag}:`
                 : "Commits a incluir en la primera prerelease:"}
             </p>
 
@@ -560,7 +557,9 @@ export function RepoCard({
                 </div>
               ) : releaseCommits.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">
-                  No hay cambios desde la última release
+                  {latestPrereleaseTag 
+                    ? `No hay cambios desde ${latestPrereleaseTag}`
+                    : "No hay commits disponibles"}
                 </p>
               ) : (
                 <ul className="space-y-3">
@@ -682,7 +681,9 @@ export function RepoCard({
                 </div>
               ) : releaseCommits.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">
-                  No hay cambios desde la última release
+                  {latestRelease 
+                    ? `No hay cambios desde ${latestRelease.tag_name}`
+                    : "No hay commits disponibles"}
                 </p>
               ) : (
                 <ul className="space-y-3">
