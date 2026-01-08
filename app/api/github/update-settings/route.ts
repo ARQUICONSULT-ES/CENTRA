@@ -24,11 +24,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { owner, repo, baseBranch = "main", appDependencyProbingPaths } = body as {
+    const { owner, repo, baseBranch = "main", appDependencyProbingPaths, installApps } = body as {
       owner: string;
       repo: string;
       baseBranch?: string;
       appDependencyProbingPaths: AppDependencyProbingPath[];
+      installApps?: string[];
     };
 
     if (!owner || !repo || !appDependencyProbingPaths) {
@@ -62,13 +63,20 @@ export async function POST(request: NextRequest) {
     const updatedContent = {
       ...currentContent,
       appDependencyProbingPaths,
-      // Asegurar que installApps incluye dependencies/ si no está
-      installApps: currentContent.installApps && Array.isArray(currentContent.installApps)
-        ? currentContent.installApps.includes("dependencies/")
-          ? currentContent.installApps
-          : [...currentContent.installApps, "dependencies/"]
-        : ["dependencies/"],
     };
+
+    // Si se proporcionó installApps, usarlo; sino mantener el existente o crear uno con dependencies/
+    if (installApps !== undefined) {
+      // Asegurar que dependencies/ esté incluido si no está ya
+      const hasDepFolder = installApps.some(path => path.trim() === "dependencies/");
+      updatedContent.installApps = hasDepFolder ? installApps : [...installApps, "dependencies/"];
+    } else if (!currentContent.installApps || !Array.isArray(currentContent.installApps)) {
+      // Si no existe installApps, crear uno con dependencies/
+      updatedContent.installApps = ["dependencies/"];
+    } else if (!currentContent.installApps.includes("dependencies/")) {
+      // Si existe pero no tiene dependencies/, agregarlo
+      updatedContent.installApps = [...currentContent.installApps, "dependencies/"];
+    }
 
     // 3. Obtener el SHA del commit más reciente en la rama base
     const baseRefRes = await fetch(
@@ -147,7 +155,7 @@ export async function POST(request: NextRequest) {
         },
         body: JSON.stringify({
           title: "Update CI/CD Dependencies",
-          body: `This PR updates the \`appDependencyProbingPaths\` in \`.AL-Go/settings.json\`.\n\n**Changes:**\n- Updated dependencies configuration\n\nGenerated automatically by Github Manager.`,
+          body: `This PR updates the \`appDependencyProbingPaths\` in \`.AL-Go/settings.json\`.\n\n**Changes:**\n- Updated dependencies configuration\n\nGenerated automatically by CENTRA.`,
           head: branchName,
           base: baseBranch,
         }),

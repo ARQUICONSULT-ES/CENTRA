@@ -1,4 +1,4 @@
-# GitHub Manager
+# CENTRA
 
 Next.js 16 application that manages Business Central applications, GitHub repositories, customers, tenants, and environments with automatic synchronization.
 

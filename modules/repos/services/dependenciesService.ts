@@ -156,6 +156,7 @@ export async function updateSettings(params: {
   repo: string;
   baseBranch: string;
   appDependencyProbingPaths: AppDependencyProbingPath[];
+  installApps?: string[];
 }): Promise<{ success: boolean; branch?: string; pullRequestUrl?: string; error?: string }> {
   try {
     const res = await fetch(`${GITHUB_API_BASE}/update-settings`, {

@@ -41,7 +41,7 @@ Personal Access Token de GitHub con acceso a todos los repositorios organizacion
 1. Ve a https://github.com/settings/tokens
 2. Click en "Generate new token" → "Generate new token (classic)"
 3. Configura:
-   - **Note**: `Github-Manager Admin Token`
+   - **Note**: `CENTRA Admin Token`
    - **Expiration**: Sin expiración o 1 año
    - **Scopes**:
      - ✅ `repo` (Full control of private repositories)

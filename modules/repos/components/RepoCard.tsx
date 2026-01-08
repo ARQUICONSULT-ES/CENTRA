@@ -29,11 +29,16 @@ export function RepoCard({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
+  const [showPrereleaseModal, setShowPrereleaseModal] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [successMessage, setSuccessMessage] = useState("Workflow iniciado correctamente");
   const [countdown, setCountdown] = useState(3);
   const [showDependenciesModal, setShowDependenciesModal] = useState(false);
   const [isCreatingRelease, setIsCreatingRelease] = useState(false);
+  const [branches, setBranches] = useState<string[]>([]);
+  const [selectedBranch, setSelectedBranch] = useState("main");
+  const [isLoadingBranches, setIsLoadingBranches] = useState(false);
+  const [latestPrereleaseTag, setLatestPrereleaseTag] = useState<string>("");
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Hooks personalizados para workflow y release
@@ -120,6 +125,149 @@ export function RepoCard({
     await releaseHook.fetchCommits(owner, repoName, base, "main");
   };
 
+  const openPrereleaseModal = async () => {
+    setIsMenuOpen(false);
+    setShowPrereleaseModal(true);
+    
+    const [owner, repoName] = repo.full_name.split("/");
+    
+    // Para prereleases, comparar contra lo más reciente: última prerelease O última release
+    const latestPrerelease = await fetchLatestPrerelease(owner, repoName);
+    const latestReleaseOrPrerelease = await getMostRecentReleaseOrPrerelease(owner, repoName, latestPrerelease);
+    
+    const base = latestReleaseOrPrerelease?.tag_name || "";
+    setLatestPrereleaseTag(base);
+    
+    // Cargar las ramas disponibles primero
+    await fetchBranches(owner, repoName);
+    
+    // Hacer la comparación inicial con la rama por defecto (main)
+    await releaseHook.fetchCommits(owner, repoName, base, "main");
+  };
+
+  const fetchLatestPrerelease = async (owner: string, repo: string): Promise<{ tag_name: string; published_at: string } | null> => {
+    try {
+      // Usar el endpoint interno que tiene autenticación
+      const res = await fetch(
+        `/api/github/latest-release?owner=${owner}&repo=${repo}&includePrerelease=true`,
+        {
+          cache: "no-store",
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.prerelease) {
+          return { tag_name: data.prerelease.tag_name, published_at: data.prerelease.published_at };
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error al obtener última prerelease:", error);
+      return null;
+    }
+  };
+
+  const getMostRecentReleaseOrPrerelease = async (
+    owner: string, 
+    repo: string, 
+    latestPrerelease: { tag_name: string; published_at: string } | null
+  ): Promise<{ tag_name: string } | null> => {
+    // Si no hay prerelease, usar la última release
+    if (!latestPrerelease) {
+      return latestRelease ? { tag_name: latestRelease.tag_name } : null;
+    }
+
+    // Si no hay release, usar la última prerelease
+    if (!latestRelease) {
+      return { tag_name: latestPrerelease.tag_name };
+    }
+
+    // Comparar fechas y devolver la más reciente
+    const prereleaseDate = new Date(latestPrerelease.published_at);
+    const releaseDate = new Date(latestRelease.published_at);
+
+    if (prereleaseDate > releaseDate) {
+      return { tag_name: latestPrerelease.tag_name };
+    } else {
+      return { tag_name: latestRelease.tag_name };
+    }
+  };
+
+  const getNextPrereleaseNumber = async (owner: string, repo: string, version: string): Promise<number> => {
+    try {
+      // Usar el endpoint interno que tiene autenticación
+      const res = await fetch(
+        `/api/github/releases?owner=${owner}&repo=${repo}&per_page=100`,
+        {
+          cache: "no-store",
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        const releases = data.releases || [];
+        
+        // Filtrar prereleases que coincidan con la versión actual
+        // Buscar patrones como: v1.2-preview.1, v1.2-preview.2, v1.2.0-preview.1, etc.
+        const versionPattern = new RegExp(`^${version.replace(/\./g, '\\.')}(\\.0)?-preview\\.(\\d+)$`);
+        
+        const existingPrereleases = releases
+          .filter((r: any) => r.prerelease === true && versionPattern.test(r.tag_name))
+          .map((r: any) => {
+            const match = r.tag_name.match(versionPattern);
+            return match ? parseInt(match[2], 10) : 0;
+          });
+
+        // Encontrar el número máximo y sumarle 1
+        if (existingPrereleases.length > 0) {
+          return Math.max(...existingPrereleases) + 1;
+        }
+        
+        // Si no hay prereleases para esta versión, comenzar en 1
+        return 1;
+      }
+      
+      return 1;
+    } catch (error) {
+      console.error("Error al obtener número de prerelease:", error);
+      return 1;
+    }
+  };
+
+  const fetchBranches = async (owner: string, repo: string) => {
+    setIsLoadingBranches(true);
+    try {
+      const res = await fetch(`/api/github/branches?owner=${owner}&repo=${repo}`, {
+        cache: "no-store",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const branchNames = data.branches; // Ya es un array de strings
+        setBranches(branchNames);
+        
+        // Si existe "main" usarla como predeterminada, sino usar la primera rama
+        const defaultBranch = branchNames.includes("main") 
+          ? "main" 
+          : branchNames[0] || "main";
+        setSelectedBranch(defaultBranch);
+      }
+    } catch (error) {
+      console.error("Error al cargar ramas:", error);
+    } finally {
+      setIsLoadingBranches(false);
+    }
+  };
+
+  const handleBranchChangeForPrerelease = async (newBranch: string) => {
+    setSelectedBranch(newBranch);
+    
+    // Recargar commits comparando contra la nueva rama
+    const [owner, repoName] = repo.full_name.split("/");
+    await releaseHook.fetchCommits(owner, repoName, latestPrereleaseTag, newBranch);
+  };
+
   const handleCreateRelease = async () => {
     setIsCreatingRelease(true);
 
@@ -162,6 +310,59 @@ export function RepoCard({
       }, 2000);
     } else {
       showError(result.error || "Error al crear release");
+    }
+    
+    setIsCreatingRelease(false);
+  };
+
+  const handleCreatePrerelease = async () => {
+    setIsCreatingRelease(true);
+
+    const [owner, repoName] = repo.full_name.split("/");
+    const newVersion = getNextMinorVersion(latestRelease?.tag_name ?? null);
+    
+    // Obtener el número de prerelease para esta versión
+    const prereleaseNumber = await getNextPrereleaseNumber(owner, repoName, newVersion);
+    
+    const prereleaseName = `${newVersion}-preview.${prereleaseNumber}`;
+    const prereleaseTag = `${newVersion}.0-preview.${prereleaseNumber}`;
+    
+    const result = await workflowHook.trigger({
+      owner,
+      repo: repoName,
+      workflow: "CreateRelease.yaml",
+      ref: selectedBranch,
+      inputs: {
+        useGhTokenWorkflow: "true",
+        releaseType: "Prerelease",
+        name: prereleaseName,
+        tag: prereleaseTag,
+      },
+    });
+
+    if (result.success) {
+      // Cerrar modal de prerelease
+      setShowPrereleaseModal(false);
+
+      // Mostrar banner y abrir ventana después de 3 segundos
+      setSuccessMessage(`Prerelease ${prereleaseName} creada correctamente`);
+      setShowSuccessBanner(true);
+      setCountdown(3);
+      
+      setTimeout(() => setCountdown(2), 1000);
+      setTimeout(() => setCountdown(1), 2000);
+      setTimeout(() => {
+        setShowSuccessBanner(false);
+        window.open(`https://github.com/${repo.full_name}/actions`, "_blank");
+      }, 3000);
+
+      // Refrescar el estado del workflow y release después de un momento
+      setTimeout(() => {
+        workflowHook.fetchStatus(owner, repoName);
+        releaseHook.fetchLatest(owner, repoName);
+      }, 2000);
+    } else {
+      showError(result.error || "Error al crear prerelease");
     }
     
     setIsCreatingRelease(false);
@@ -322,6 +523,130 @@ export function RepoCard({
         </div>
       )}
 
+      {/* Modal de crear prerelease */}
+      {showPrereleaseModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg w-full shadow-xl border border-gray-200 dark:border-gray-700 max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Nueva prerelease v{getNextMinorVersion(latestRelease?.tag_name ?? null)}-preview
+              </h3>
+              <button
+                onClick={() => setShowPrereleaseModal(false)}
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+              {latestPrereleaseTag 
+                ? `Cambios desde ${latestPrereleaseTag}:`
+                : "Commits a incluir en la primera prerelease:"}
+            </p>
+
+            <div className="flex-1 overflow-y-auto min-h-0 mb-4">
+              {isLoadingCommits ? (
+                <div className="flex items-center justify-center py-8">
+                  <svg className="w-6 h-6 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                </div>
+              ) : releaseCommits.length === 0 ? (
+                <p className="text-center text-gray-500 py-8">
+                  {latestPrereleaseTag 
+                    ? `No hay cambios desde ${latestPrereleaseTag}`
+                    : "No hay commits disponibles"}
+                </p>
+              ) : (
+                <ul className="space-y-3">
+                  {releaseCommits.map((commit) => (
+                    <li key={commit.sha} className="flex items-start gap-2 text-sm">
+                      <span className="text-gray-400 dark:text-gray-500 font-mono shrink-0">
+                        {commit.sha.substring(0, 7)}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-gray-700 dark:text-gray-300 break-words">{commit.message}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">by {commit.author}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Validación de CI/CD */}
+            {(() => {
+              const validation = canCreateRelease();
+              return !validation.canCreate && validation.reason ? (
+                <div className="flex items-center gap-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-md mb-4">
+                  <svg className="w-4 h-4 text-yellow-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <p className="text-sm text-yellow-500">{validation.reason}</p>
+                </div>
+              ) : null;
+            })()}
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+              {/* Selector de rama */}
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-sm text-gray-600 dark:text-gray-400 shrink-0">Rama:</span>
+                <select
+                  value={selectedBranch}
+                  onChange={(e) => handleBranchChangeForPrerelease(e.target.value)}
+                  disabled={isLoadingBranches || isCreatingRelease}
+                  className="flex-1 min-w-0 px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed truncate"
+                >
+                  {isLoadingBranches ? (
+                    <option>Cargando...</option>
+                  ) : branches.length > 0 ? (
+                    branches.map((branch) => (
+                      <option key={branch} value={branch}>
+                        {branch}
+                      </option>
+                    ))
+                  ) : (
+                    <option>main</option>
+                  )}
+                </select>
+              </div>
+
+              <div className="flex gap-3 justify-end shrink-0">
+                <button
+                  onClick={() => setShowPrereleaseModal(false)}
+                  disabled={isCreatingRelease}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleCreatePrerelease}
+                  disabled={releaseCommits.length === 0 || isLoadingCommits || isCreatingRelease || !canCreateRelease().canCreate}
+                  className="px-4 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-500 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  title={!canCreateRelease().canCreate ? canCreateRelease().reason : ""}
+                >
+                  {isCreatingRelease ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Creando...
+                    </>
+                  ) : (
+                    "Crear prerelease"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal de crear release */}
       {showReleaseModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -356,7 +681,9 @@ export function RepoCard({
                 </div>
               ) : releaseCommits.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">
-                  No hay cambios desde la última release
+                  {latestRelease 
+                    ? `No hay cambios desde ${latestRelease.tag_name}`
+                    : "No hay commits disponibles"}
                 </p>
               ) : (
                 <ul className="space-y-3">
@@ -552,6 +879,17 @@ export function RepoCard({
             {isMenuOpen && (
               <div className="absolute right-0 bottom-full mb-1 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 z-50 border border-gray-200 dark:border-gray-700">
                 <div className="py-1">
+                  <button
+                    onClick={openPrereleaseModal}
+                    disabled={!canCreateRelease().canCreate}
+                    title={!canCreateRelease().canCreate ? canCreateRelease().reason : ""}
+                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                    </svg>
+                    Crear prerelease
+                  </button>
                   <button
                     onClick={openConfirmModal}
                     className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"

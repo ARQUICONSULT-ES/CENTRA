@@ -27,11 +27,13 @@ function LoginForm() {
   // Mostrar loading mientras se verifica la sesión
   if (status === "loading") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-black">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-600 via-purple-100 to-blue-200 dark:from-teal-800 dark:via-purple-950 dark:to-blue-900">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl mb-4 animate-pulse">
-            <span className="text-2xl font-bold text-white">CEM</span>
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="CENTRA Logo" 
+            className="w-20 h-20 mx-auto mb-4 object-contain animate-logo-blink"
+          />
           <p className="text-gray-600 dark:text-gray-400">Verificando sesión...</p>
         </div>
       </div>
@@ -41,11 +43,13 @@ function LoginForm() {
   // Si ya está autenticado, mostrar loading mientras redirige
   if (status === "authenticated") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-black">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-600 via-purple-100 to-blue-200 dark:from-teal-800 dark:via-purple-950 dark:to-blue-900">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl mb-4 animate-pulse">
-            <span className="text-2xl font-bold text-white">CEM</span>
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="CENTRA Logo" 
+            className="w-20 h-20 mx-auto mb-4 object-contain animate-logo-blink"
+          />
           <p className="text-gray-600 dark:text-gray-400">Redirigiendo...</p>
         </div>
       </div>
@@ -80,13 +84,13 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-black">
+    <div className="flex min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-blue-200 dark:from-blue-950 dark:via-purple-950 dark:to-blue-900">
       {/* Lado izquierdo - Información */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-12 xl:px-24">
         <div className="max-w-xl mx-auto">
           <div className="mb-8">
             <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Customer Environment Manager
+              CENTRA
             </h1>
             <div className="h-1 w-24 bg-blue-600 dark:bg-blue-400 rounded"></div>
           </div>
@@ -146,9 +150,11 @@ function LoginForm() {
         <div className="w-full max-w-md">
           <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-8 border border-gray-200 dark:border-gray-800">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl mb-4">
-                <span className="text-2xl font-bold text-white">CEM</span>
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="CENTRA Logo" 
+                className="w-20 h-20 mx-auto mb-4 object-contain"
+              />
               
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                 Iniciar Sesión
@@ -242,7 +248,7 @@ function LoginForm() {
           {/* Logo móvil */}
           <div className="lg:hidden text-center mt-8">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Customer Environment Manager
+              CENTRA
             </h3>
           </div>
         </div>
@@ -254,11 +260,13 @@ function LoginForm() {
 export default function Home() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-black">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-600 via-purple-100 to-blue-200 dark:from-teal-800 dark:via-purple-950 dark:to-blue-900">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl mb-4 animate-pulse">
-            <span className="text-2xl font-bold text-white">CEM</span>
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="CENTRA Logo" 
+            className="w-20 h-20 mx-auto mb-4 object-contain animate-logo-blink"
+          />
           <p className="text-gray-600 dark:text-gray-400">Cargando...</p>
         </div>
       </div>

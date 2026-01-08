@@ -31,7 +31,7 @@ Verificar que el sistema de GitHub Token basado en usuarios funciona correctamen
 ### 4. Crear un Token de GitHub (si no tienes uno)
 1. Abre https://github.com/settings/tokens en una nueva pestaña
 2. Haz clic en "Generate new token" → "Generate new token (classic)"
-3. Dale un nombre descriptivo, por ejemplo: "Github-Manager App"
+3. Dale un nombre descriptivo, por ejemplo: "CENTRA App"
 4. Selecciona los scopes necesarios:
    - ✅ `repo` - Full control of private repositories
    - ✅ `workflow` - Update GitHub Action workflows

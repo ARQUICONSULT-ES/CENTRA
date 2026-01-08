@@ -58,6 +58,11 @@ export interface AppDependencyProbingPath {
   projects?: string;
 }
 
+export interface SettingsData {
+  appDependencyProbingPaths: AppDependencyProbingPath[];
+  installApps?: string[];
+}
+
 export interface FileDependency {
   name: string;
   path: string;
@@ -145,6 +150,11 @@ export interface AddRepoModalProps {
 export interface AddFileModalProps {
   onClose: () => void;
   onAdd: (files: File[]) => void;
+}
+
+export interface AddFolderModalProps {
+  onClose: () => void;
+  onAdd: (path: string) => void;
 }
 
 // ==================== CONSTANTS ====================

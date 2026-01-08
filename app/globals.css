@@ -130,3 +130,17 @@ input, textarea, select {
 .animate-slide-in-top {
   animation: slide-in-top 0.3s ease-out;
 }
+
+/* Animación de parpadeo suave para el logo */
+@keyframes logo-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-logo-blink {
+  animation: logo-blink 2s ease-in-out infinite;
+}

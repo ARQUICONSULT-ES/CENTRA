@@ -17,6 +17,8 @@ import type {
   SaveStep,
   AddRepoModalProps,
   AddFileModalProps,
+  AddFolderModalProps,
+  SettingsData,
 } from "@/modules/repos/types";
 import {
   fetchFileContent,
@@ -55,9 +57,7 @@ const EmptyState = ({ message, icon }: { message: string; icon: React.ReactNode 
 export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: DependenciesModalProps) {
   const { error: showError } = useToast();
   
-  const [settingsData, setSettingsData] = useState<{
-    appDependencyProbingPaths: AppDependencyProbingPath[];
-  } | null>(null);
+  const [settingsData, setSettingsData] = useState<SettingsData | null>(null);
   const [appJsonData, setAppJsonData] = useState<{
     dependencies: AppDependency[];
   } | null>(null);
@@ -66,11 +66,13 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
   const [settingsError, setSettingsError] = useState<string | null>(null);
   const [appJsonError, setAppJsonError] = useState<string | null>(null);
   const [editedDependencies, setEditedDependencies] = useState<AppDependencyProbingPath[]>([]);
+  const [editedInstallApps, setEditedInstallApps] = useState<string[]>([]);
   const [fileDependencies, setFileDependencies] = useState<FileDependency[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
   const [filesToDelete, setFilesToDelete] = useState<string[]>([]);
   const [showAddRepoModal, setShowAddRepoModal] = useState(false);
   const [showAddFileModal, setShowAddFileModal] = useState(false);
+  const [showAddFolderModal, setShowAddFolderModal] = useState(false);
   const [saveStep, setSaveStep] = useState<SaveStep>({ status: 'idle' });
   const [branches, setBranches] = useState<string[]>([]);
   const [selectedBranch, setSelectedBranch] = useState("main");
@@ -93,6 +95,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     setSettingsError(null);
     setAppJsonError(null);
     setEditedDependencies([]);
+    setEditedInstallApps([]);
     setFileDependencies([]);
     setFilesToUpload([]);
     setFilesToDelete([]);
@@ -484,6 +487,11 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
         resolveExistingDependencies(deps);
       }
     }
+    
+    // Inicializar installApps
+    if (settingsData?.installApps) {
+      setEditedInstallApps([...settingsData.installApps]);
+    }
   }, [settingsData]);
 
   // Función para resolver dependencias existentes al abrir el modal
@@ -536,6 +544,18 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
     // Recalcular warnings de archivos
     const fileMissing = checkMissingFileDependencies(updatedFiles, updatedAppFileDeps);
     setMissingFileDependencies(fileMissing);
+  };
+
+  // Funciones para gestionar installApps
+  const handleAddInstallApp = (path: string) => {
+    if (path.trim()) {
+      setEditedInstallApps([...editedInstallApps, path.trim()]);
+    }
+  };
+
+  const handleRemoveInstallApp = (index: number) => {
+    const updated = editedInstallApps.filter((_, i) => i !== index);
+    setEditedInstallApps(updated);
   };
 
   // Función para analizar un archivo .app y extraer sus dependencias
@@ -730,6 +750,9 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
       // Paso 1: Actualizar settings.json
       setSaveStep({ status: 'updating-settings', message: 'Actualizando settings.json...' });
       
+      // Filtrar installApps vacíos antes de enviar
+      const filteredInstallApps = editedInstallApps.filter(path => path.trim() !== '');
+      
       const res = await fetch("/api/github/update-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -738,6 +761,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
           repo,
           baseBranch: selectedBranch,
           appDependencyProbingPaths: editedDependencies,
+          installApps: filteredInstallApps.length > 0 ? filteredInstallApps : undefined,
         }),
       });
 
@@ -891,7 +915,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                     </svg>
                   }
                 />
-              ) : editedDependencies.length > 0 || fileDependencies.length > 0 ? (
+              ) : editedDependencies.length > 0 || fileDependencies.length > 0 || editedInstallApps.length > 0 ? (
                 <div className="space-y-2">
                   {/* Dependencias de repositorio ordenadas por árbol */}
                   {getSortedDependencies().map(({ dep, index, depth, parentName }) => {
@@ -1099,6 +1123,40 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                       </div>
                     );
                   })}
+                  
+                  {/* Carpetas installApps */}
+                  {editedInstallApps.map((path, index) => (
+                    <div 
+                      key={`installapp-${index}`}
+                      className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-3 hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start gap-2 flex-1 min-w-0">
+                          <svg className="w-4 h-4 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                          </svg>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-mono text-gray-900 dark:text-white break-all">
+                              {path}
+                            </h4>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                              Carpeta local (installApps)
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleRemoveInstallApp(index)}
+                          disabled={isSaving}
+                          className="shrink-0 p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                          title="Eliminar carpeta"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <EmptyState 
@@ -1115,7 +1173,7 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
             {/* Counter and Add buttons */}
             <div className="p-2 border-t border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900/30 flex items-center justify-between">
               <p className="text-xs text-gray-500 dark:text-gray-500">
-                {editedDependencies.length + fileDependencies.length} dependencia(s)
+                {editedDependencies.length + fileDependencies.length + editedInstallApps.length} dependencia(s)
               </p>
               <div className="flex gap-2">
                 <button
@@ -1139,6 +1197,17 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                   </svg>
                   Archivo
+                </button>
+                <button
+                  onClick={() => setShowAddFolderModal(true)}
+                  disabled={isSaving || isResolvingDeps}
+                  className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-white bg-amber-600 hover:bg-amber-500 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Añadir carpeta local (installApps)"
+                >
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                  </svg>
+                  Carpeta
                 </button>
               </div>
             </div>
@@ -1332,6 +1401,14 @@ export function DependenciesModal({ isOpen, onClose, owner, repo, allRepos }: De
         <AddFileModal
           onClose={() => setShowAddFileModal(false)}
           onAdd={handleAddFileDependencies}
+        />
+      )}
+
+      {/* Modal de añadir carpetas */}
+      {showAddFolderModal && (
+        <AddFolderModal
+          onClose={() => setShowAddFolderModal(false)}
+          onAdd={handleAddInstallApp}
         />
       )}
     </div>
@@ -1678,6 +1755,83 @@ function AddFileModal({ onClose, onAdd }: AddFileModalProps) {
             className="px-4 py-2 text-sm font-medium text-white bg-gray-600 dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-500 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Añadir {selectedFiles.length > 0 && `(${selectedFiles.length})`}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AddFolderModal({ onClose, onAdd }: AddFolderModalProps) {
+  const [folderPath, setFolderPath] = useState("");
+
+  const handleAdd = () => {
+    if (folderPath.trim()) {
+      onAdd(folderPath.trim());
+      onClose();
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && folderPath.trim()) {
+      handleAdd();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 w-[90vw] max-w-xl flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <svg className="w-5 h-5 text-amber-600 dark:text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+            </svg>
+            Añadir carpeta installApps
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="p-6">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Ruta de la carpeta
+          </label>
+          <input
+            type="text"
+            value={folderPath}
+            onChange={(e) => setFolderPath(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Ej: C:/DependenciesApps/tegossuiteApps/"
+            autoFocus
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-mono text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+          />
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            Esta carpeta se agregará al array <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">installApps</code> en settings.json
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleAdd}
+            disabled={!folderPath.trim()}
+            className="px-4 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-500 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Añadir
           </button>
         </div>
       </div>

@@ -1,8 +1,8 @@
-# GitHub Manager - Technical Documentation
+# CENTRA - Technical Documentation
 
 ## Project Overview
 
-**GitHub Manager** is a Next.js 16 application that manages Business Central applications, GitHub repositories, customers, tenants, and environments. It provides synchronization capabilities between Microsoft Business Central (BC) and GitHub with a PostgreSQL database.
+**CENTRA** is a Next.js 16 application that manages Business Central applications, GitHub repositories, customers, tenants, and environments. It provides synchronization capabilities between Microsoft Business Central (BC) and GitHub with a PostgreSQL database.
 
 ### Tech Stack
 - **Framework**: Next.js 16 (App Router)
@@ -17,7 +17,7 @@
 ## Folder Structure
 
 ```
-Github-Manager/
+Centra/
 ├── app/                          # Next.js App Router
 │   ├── (auth)/                   # Authentication pages (login)
 │   ├── (dashboard)/              # Protected dashboard routes

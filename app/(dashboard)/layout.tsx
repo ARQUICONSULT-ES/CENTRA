@@ -53,9 +53,11 @@ export default function DashboardLayout({
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl mb-4 animate-pulse">
-            <span className="text-2xl font-bold text-white">CEM</span>
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="CENTRA Logo" 
+            className="w-20 h-20 mx-auto mb-4 object-contain animate-logo-blink"
+          />
           <p className="text-gray-600 dark:text-gray-400">Cargando...</p>
         </div>
       </div>
@@ -78,11 +80,13 @@ export default function DashboardLayout({
                 href="/"
                 className="flex items-center text-xl font-bold text-gray-900 dark:text-white shrink-0"
               >
-                <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg mr-2">
-                  <span className="text-sm font-bold text-white">CEM</span>
-                </div>
+                <img 
+                  src="/logo.png" 
+                  alt="CENTRA Logo" 
+                  className="w-10 h-10 mr-2 object-contain"
+                />
                 {/* Mostrar texto cuando el viewport sea suficientemente ancho */}
-                <span className="hidden min-[400px]:inline truncate text-base sm:text-lg md:text-xl">Customer Environment Manager</span>
+                <span className="hidden min-[400px]:inline truncate text-base sm:text-lg md:text-xl">CENTRA</span>
               </Link>
               
               {/* Navegación desktop */}
