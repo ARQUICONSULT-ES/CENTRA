@@ -31,13 +31,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const cookieStore = await cookies();
-    const githubToken = cookieStore.get("github_token")?.value;
+    // Usar el token de administrador de GitHub configurado en variables de entorno
+    const githubToken = process.env.GITHUB_ADMIN_TOKEN;
 
     if (!githubToken) {
       return NextResponse.json(
-        { error: "Token de GitHub no encontrado. Por favor inicia sesión." },
-        { status: 401 }
+        { error: "Token de administrador de GitHub no configurado en el servidor" },
+        { status: 500 }
       );
     }
 

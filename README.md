@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GitHub Manager
 
-## Getting Started
+Next.js 16 application that manages Business Central applications, GitHub repositories, customers, tenants, and environments with automatic synchronization.
 
-First, run the development server:
+## 🚀 Features
+
+- **Business Central Integration**: Sync environments and installed applications from BC Admin API
+- **GitHub Integration**: Sync applications from GitHub repositories (automatic `app.json` detection)
+- **Customer Management**: Multi-tenant customer and environment management
+- **Advanced Permissions**: Role-based access control with granular customer access
+- **Automatic Sync**: Daily cron job synchronization (7:00 AM UTC)
+
+## 📋 Prerequisites
+
+- Node.js 20+
+- PostgreSQL database
+- GitHub account with organization access
+- Business Central Admin API access (Azure AD app registration)
+
+## 🔧 Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/ARQUICONSULT-ES/Github-Manager.git
+cd Github-Manager
+
+# Install dependencies
+npm install
+
+# Setup environment variables
+cp .env.example .env.local
+# Edit .env.local with your configuration
+
+# Generate Prisma client
+npx prisma generate
+
+# Run database migrations
+npx prisma db push
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔐 Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Required Variables
 
-## Learn More
+```env
+# Database
+DATABASE_URL=postgresql://user:password@host:port/database
 
-To learn more about Next.js, take a look at the following resources:
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Business Central
+BC_ADMIN_API_URL=https://api.businesscentral.dynamics.com/admin/v2.28/applications
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Cron Job Security
+CRON_SECRET=your-secure-random-token
 
-## Deploy on Vercel
+# GitHub Admin Token (for automatic sync)
+GITHUB_ADMIN_TOKEN=ghp_your_github_admin_token
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+See [`.env.example`](.env.example) for complete configuration.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ⏰ Automatic Synchronization
+
+The application includes a Vercel Cron Job that runs daily at 7:00 AM UTC to synchronize:
+
+1. **Business Central Environments** - All configured tenants
+2. **Installed Applications** - All active environments
+3. **GitHub Applications** - All repositories with `app.json`
+
+### Setup Cron Job
+
+1. Configure environment variables in Vercel:
+   - `CRON_SECRET` - Generate with: `openssl rand -base64 32`
+   - `GITHUB_ADMIN_TOKEN` - GitHub Personal Access Token with `repo` and `read:org` scopes
+
+2. Deploy to Vercel:
+   ```bash
+   vercel --prod
+   ```
+
+3. Verify cron job in Vercel Dashboard → Settings → Crons
+
+📖 **Detailed Guide**: See [docs/CRON_JOB_SETUP.md](docs/CRON_JOB_SETUP.md)
+
+## 📚 Documentation
+
+- [Technical Documentation](.github/copilot-instructions.md) - Complete technical reference
+- [Cron Job Setup Guide](docs/CRON_JOB_SETUP.md) - Automatic synchronization configuration
+
+## 🏗️ Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Database**: PostgreSQL with Prisma ORM 7.x
+- **Authentication**: NextAuth.js 4.x
+- **Styling**: Tailwind CSS 4.x
+- **External APIs**: GitHub API v3, Business Central Admin API v2.28
+
+## 🚀 Deployment
+
+### Deploy to Vercel
+
+The easiest way to deploy is using the [Vercel Platform](https://vercel.com/new):
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel --prod
+```
+
+**Important**: Configure environment variables in Vercel Dashboard before deploying.
+
+## 📖 Learn More
+
+To learn more about the technologies used:
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [NextAuth.js Documentation](https://next-auth.js.org)
+- [Vercel Cron Jobs](https://vercel.com/docs/cron-jobs)
+
+## 🤝 Contributing
+
+This is a private repository for ARQUICONSULT-ES.
+
+## 📄 License
+
+Private - All rights reserved.

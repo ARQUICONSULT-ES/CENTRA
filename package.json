@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "generate:cron-secret": "node scripts/generate-cron-secret.js",
+    "generate:hash": "node scripts/generate-hash.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",
