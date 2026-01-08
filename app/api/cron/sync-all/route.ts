@@ -16,6 +16,18 @@ interface AppJsonContent {
 }
 
 /**
+ * GET /api/cron/sync-all
+ * Health check endpoint para Vercel
+ */
+export async function GET() {
+  return NextResponse.json({
+    status: "ok",
+    message: "Cron job endpoint is ready",
+    timestamp: new Date().toISOString(),
+  });
+}
+
+/**
  * POST /api/cron/sync-all
  * Endpoint para Vercel Cron Job que ejecuta la sincronización completa del sistema.
  * 
@@ -24,10 +36,16 @@ interface AppJsonContent {
  * 
  * Configuración en vercel.json:
  * {
- *   "crons": [{
- *     "path": "/api/cron/sync-all",
- *     "schedule": "0 7 * * *"
- *   }]
+ *   "crons": [
+ *     {
+ *       "path": "/api/cron/sync-all",
+ *       "schedule": "0 6 * * *"
+ *     },
+ *     {
+ *       "path": "/api/cron/sync-all",
+ *       "schedule": "0 15 * * *"
+ *     }
+ *   ]
  * }
  */
 export async function POST(request: NextRequest) {
