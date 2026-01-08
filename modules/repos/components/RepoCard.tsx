@@ -38,6 +38,7 @@ export function RepoCard({
   const [branches, setBranches] = useState<string[]>([]);
   const [selectedBranch, setSelectedBranch] = useState("main");
   const [isLoadingBranches, setIsLoadingBranches] = useState(false);
+  const [latestPrereleaseTag, setLatestPrereleaseTag] = useState<string>("");
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Hooks personalizados para workflow y release
@@ -129,11 +130,70 @@ export function RepoCard({
     setShowPrereleaseModal(true);
     
     const [owner, repoName] = repo.full_name.split("/");
-    const base = latestRelease?.tag_name || "";
-    await releaseHook.fetchCommits(owner, repoName, base, "main");
     
-    // Cargar las ramas disponibles
+    // Para prereleases, comparar contra lo más reciente: última prerelease O última release
+    const latestPrerelease = await fetchLatestPrerelease(owner, repoName);
+    const latestReleaseOrPrerelease = await getMostRecentReleaseOrPrerelease(owner, repoName, latestPrerelease);
+    
+    const base = latestReleaseOrPrerelease?.tag_name || "";
+    setLatestPrereleaseTag(base);
+    
+    // Cargar las ramas disponibles primero
     await fetchBranches(owner, repoName);
+    
+    // Hacer la comparación inicial con la rama por defecto (main)
+    await releaseHook.fetchCommits(owner, repoName, base, "main");
+  };
+
+  const fetchLatestPrerelease = async (owner: string, repo: string): Promise<{ tag_name: string; published_at: string } | null> => {
+    try {
+      const res = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/releases`,
+        {
+          headers: {
+            Accept: "application/vnd.github.v3+json",
+          },
+          cache: "no-store",
+        }
+      );
+
+      if (res.ok) {
+        const releases = await res.json();
+        // Buscar la primera prerelease
+        const prerelease = releases.find((r: any) => r.prerelease === true);
+        return prerelease ? { tag_name: prerelease.tag_name, published_at: prerelease.published_at } : null;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error al obtener última prerelease:", error);
+      return null;
+    }
+  };
+
+  const getMostRecentReleaseOrPrerelease = async (
+    owner: string, 
+    repo: string, 
+    latestPrerelease: { tag_name: string; published_at: string } | null
+  ): Promise<{ tag_name: string } | null> => {
+    // Si no hay prerelease, usar la última release
+    if (!latestPrerelease) {
+      return latestRelease ? { tag_name: latestRelease.tag_name } : null;
+    }
+
+    // Si no hay release, usar la última prerelease
+    if (!latestRelease) {
+      return { tag_name: latestPrerelease.tag_name };
+    }
+
+    // Comparar fechas y devolver la más reciente
+    const prereleaseDate = new Date(latestPrerelease.published_at);
+    const releaseDate = new Date(latestRelease.published_at);
+
+    if (prereleaseDate > releaseDate) {
+      return { tag_name: latestPrerelease.tag_name };
+    } else {
+      return { tag_name: latestRelease.tag_name };
+    }
   };
 
   const fetchBranches = async (owner: string, repo: string) => {
@@ -159,6 +219,14 @@ export function RepoCard({
     } finally {
       setIsLoadingBranches(false);
     }
+  };
+
+  const handleBranchChangeForPrerelease = async (newBranch: string) => {
+    setSelectedBranch(newBranch);
+    
+    // Recargar commits comparando contra la nueva rama
+    const [owner, repoName] = repo.full_name.split("/");
+    await releaseHook.fetchCommits(owner, repoName, latestPrereleaseTag, newBranch);
   };
 
   const handleCreateRelease = async () => {
@@ -214,6 +282,15 @@ export function RepoCard({
     const [owner, repoName] = repo.full_name.split("/");
     const newVersion = getNextMinorVersion(latestRelease?.tag_name ?? null);
     
+    // Generar identificador único para la prerelease basado en fecha y hora
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10).replace(/-/g, ''); // YYYYMMDD
+    const timeStr = now.toTimeString().slice(0, 5).replace(/:/g, ''); // HHMM
+    const prereleaseId = `${dateStr}.${timeStr}`;
+    
+    const prereleaseName = `${newVersion}-preview.${prereleaseId}`;
+    const prereleaseTag = `${newVersion}.0-preview.${prereleaseId}`;
+    
     const result = await workflowHook.trigger({
       owner,
       repo: repoName,
@@ -221,10 +298,9 @@ export function RepoCard({
       ref: selectedBranch,
       inputs: {
         useGhTokenWorkflow: "true",
-        updateVersionNumber: "+0.1",
-        name: `${newVersion}-preview`,
-        tag: `${newVersion}.0-preview`,
-        prerelease: "true",
+        releaseType: "Prerelease",
+        name: prereleaseName,
+        tag: prereleaseTag,
       },
     });
 
@@ -233,7 +309,7 @@ export function RepoCard({
       setShowPrereleaseModal(false);
 
       // Mostrar banner y abrir ventana después de 3 segundos
-      setSuccessMessage(`Prerelease v${newVersion}-preview creada correctamente`);
+      setSuccessMessage(`Prerelease ${prereleaseName} creada correctamente`);
       setShowSuccessBanner(true);
       setCountdown(3);
       
@@ -477,15 +553,15 @@ export function RepoCard({
               ) : null;
             })()}
 
-            <div className="flex items-center justify-between gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
               {/* Selector de rama */}
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Rama:</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-sm text-gray-600 dark:text-gray-400 shrink-0">Rama:</span>
                 <select
                   value={selectedBranch}
-                  onChange={(e) => setSelectedBranch(e.target.value)}
+                  onChange={(e) => handleBranchChangeForPrerelease(e.target.value)}
                   disabled={isLoadingBranches || isCreatingRelease}
-                  className="px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 min-w-0 px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed truncate"
                 >
                   {isLoadingBranches ? (
                     <option>Cargando...</option>
@@ -501,7 +577,7 @@ export function RepoCard({
                 </select>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 justify-end shrink-0">
                 <button
                   onClick={() => setShowPrereleaseModal(false)}
                   disabled={isCreatingRelease}
