@@ -16,7 +16,7 @@ export async function getUserRepos(token: string): Promise<GitHubRepository[]> {
         `${GITHUB_API_URL}/user/repos?per_page=${perPage}&page=${page}&sort=updated`,
         {
           headers: {
-            Authorization: `token ${token}`,
+            Authorization: `Bearer ${token}`,
             Accept: "application/vnd.github.v3+json",
           },
           cache: "no-store",
@@ -52,7 +52,7 @@ export async function getAuthenticatedUser(token: string): Promise<GitHubUser> {
   try {
     const res = await fetch(`${GITHUB_API_URL}/user`, {
       headers: {
-        Authorization: `token ${token}`,
+        Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github.v3+json",
       },
       cache: "no-store",

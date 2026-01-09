@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { getAuthenticatedUserGitHubToken } from "@/lib/auth-github";
 
 const GITHUB_API_URL = "https://api.github.com";
 
 export async function GET(request: NextRequest) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("github_token")?.value;
+  try {
+    const token = await getAuthenticatedUserGitHubToken();
 
-  if (!token) {
-    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-  }
+    if (!token) {
+      return NextResponse.json(
+        { error: "Token de GitHub no configurado" }, 
+        { status: 401 }
+      );
+    }
 
   const { searchParams } = new URL(request.url);
   const owner = searchParams.get("owner");
@@ -31,7 +34,7 @@ export async function GET(request: NextRequest) {
         `${GITHUB_API_URL}/repos/${owner}/${repo}/commits?sha=${head}&per_page=50`,
         {
           headers: {
-            Authorization: `token ${token}`,
+            Authorization: `Bearer ${token}`,
             Accept: "application/vnd.github.v3+json",
           },
           cache: "no-store",
@@ -62,7 +65,7 @@ export async function GET(request: NextRequest) {
       `${GITHUB_API_URL}/repos/${owner}/${repo}/compare/${base}...${head}`,
       {
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `Bearer ${token}`,
           Accept: "application/vnd.github.v3+json",
         },
         cache: "no-store",
