@@ -14,20 +14,19 @@ export async function GET(request: NextRequest) {
       );
     }
 
-  const { searchParams } = new URL(request.url);
-  const owner = searchParams.get("owner");
-  const repo = searchParams.get("repo");
-  const base = searchParams.get("base"); // tag de la última release (ej: "v1.0.0")
-  const head = searchParams.get("head") || "main"; // rama a comparar
+    const { searchParams } = new URL(request.url);
+    const owner = searchParams.get("owner");
+    const repo = searchParams.get("repo");
+    const base = searchParams.get("base"); // tag de la última release (ej: "v1.0.0")
+    const head = searchParams.get("head") || "main"; // rama a comparar
 
-  if (!owner || !repo) {
-    return NextResponse.json(
-      { error: "Faltan parámetros owner y repo" },
-      { status: 400 }
-    );
-  }
+    if (!owner || !repo) {
+      return NextResponse.json(
+        { error: "Faltan parámetros owner y repo" },
+        { status: 400 }
+      );
+    }
 
-  try {
     // Si no hay base (primera release), obtener todos los commits de main
     if (!base) {
       const res = await fetch(
