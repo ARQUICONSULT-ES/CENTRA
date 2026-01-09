@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useToast } from "@/modules/shared/hooks/useToast";
 import ToastContainer from "@/modules/shared/components/ToastContainer";
 import { FilterDropdown } from "@/modules/shared/components/FilterDropdown";
@@ -60,7 +61,7 @@ export function EnvironmentDetailPage({ tenantId, environmentName }: Environment
     applicationVersion?: string | null;
     platformVersion?: string | null;
     locationName?: string | null;
-    installedAppsCount: number;
+    nonMicrosoftAppsCount: number;
   }>>([]);
   const [loadingEnvironments, setLoadingEnvironments] = useState(false);
   const [filters, setFilters] = useState<AppFilters>({
@@ -130,7 +131,7 @@ export function EnvironmentDetailPage({ tenantId, environmentName }: Environment
           applicationVersion: env.applicationVersion,
           platformVersion: env.platformVersion,
           locationName: env.locationName,
-          installedAppsCount: env.installedApps?.length || 0
+          nonMicrosoftAppsCount: env.installedApps?.filter((app: any) => app.publisher.toLowerCase() !== 'microsoft').length || 0
         })));
       }
     } catch (error) {
@@ -403,12 +404,13 @@ export function EnvironmentDetailPage({ tenantId, environmentName }: Environment
               {!isDeleted && (
                 <button
                   onClick={handleCompareClick}
-                  className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg transition-colors flex items-center gap-2 flex-shrink-0"
+                  className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg transition-colors flex items-center gap-1.5 sm:gap-2 flex-shrink-0"
+                  title="Comparar con otro entorno"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                   </svg>
-                  Comparar
+                  <span className="hidden sm:inline">Comparar</span>
                 </button>
               )}
             </div>
@@ -612,12 +614,13 @@ export function EnvironmentDetailPage({ tenantId, environmentName }: Environment
               const isOutdated = isVersionOutdated(app.version, latestVersion);
               
               return (
-                <div
+                <Link
                   key={app.id}
-                  className={`relative bg-white dark:bg-gray-900 border rounded-lg p-4 hover:shadow-md transition-all ${
+                  href={`/applications/${app.id}`}
+                  className={`group relative bg-white dark:bg-gray-900 border rounded-lg p-4 hover:shadow-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all cursor-pointer ${
                     isOutdated 
-                      ? 'border-orange-300 dark:border-orange-600 bg-orange-50/30 dark:bg-orange-900/10' 
-                      : 'border-gray-200 dark:border-gray-700'
+                      ? 'border-orange-300 dark:border-orange-600 hover:border-orange-400 dark:hover:border-orange-500 bg-orange-50/30 dark:bg-orange-900/10' 
+                      : 'border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500'
                   }`}
                 >
                   {/* Outdated Badge */}
@@ -631,7 +634,7 @@ export function EnvironmentDetailPage({ tenantId, environmentName }: Environment
                   )}
 
                   <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm flex-1 pr-2">
+                    <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 text-sm flex-1 pr-2 transition-colors">
                       {app.name}
                     </h3>
                     <span className={`px-2 py-0.5 text-xs font-medium rounded flex-shrink-0 ${getPublishedAsColor(app.publishedAs)}`}>
@@ -669,7 +672,7 @@ export function EnvironmentDetailPage({ tenantId, environmentName }: Environment
                       </div>
                     )}
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
@@ -778,7 +781,7 @@ export function EnvironmentDetailPage({ tenantId, environmentName }: Environment
                               <svg className="w-3 h-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                               </svg>
-                              <span>{env.installedAppsCount} apps</span>
+                              <span>{env.nonMicrosoftAppsCount} apps</span>
                             </div>
                           </div>
                         </div>
