@@ -5,6 +5,11 @@ import { syncMultipleEnvironments } from "@/lib/installedapp-sync";
 
 const GITHUB_API_URL = "https://api.github.com";
 
+interface IdRange {
+  from: number;
+  to: number;
+}
+
 interface AppJsonContent {
   id: string;
   name: string;
@@ -13,6 +18,7 @@ interface AppJsonContent {
   brief?: string;
   description?: string;
   logo?: string;
+  idRanges?: IdRange[];
 }
 
 /**
@@ -360,6 +366,7 @@ async function syncGitHubApplications(githubToken: string) {
               latestReleaseVersion: latestRelease?.version,
               latestReleaseDate: latestRelease?.date,
               logoBase64: logoBase64 || existingApp.logoBase64,
+              idRanges: appJsonContent.idRanges ? appJsonContent.idRanges as any : existingApp.idRanges,
               updatedAt: new Date(),
             },
           });
@@ -375,6 +382,7 @@ async function syncGitHubApplications(githubToken: string) {
               latestReleaseVersion: latestRelease?.version,
               latestReleaseDate: latestRelease?.date,
               logoBase64: logoBase64,
+              idRanges: appJsonContent.idRanges as any,
             },
           });
           results.created++;

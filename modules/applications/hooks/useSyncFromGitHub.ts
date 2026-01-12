@@ -21,7 +21,7 @@ export function useSyncFromGitHub(onSuccess?: () => void): UseSyncFromGitHubRetu
   const [syncResults, setSyncResults] = useState<SyncResults | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const syncFromGitHub = async () => {
+  const syncFromGitHub = async () => {  
     try {
       setIsSyncing(true);
       setError(null);

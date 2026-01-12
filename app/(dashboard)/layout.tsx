@@ -19,6 +19,8 @@ export default function DashboardLayout({
   // Función para determinar si una ruta está activa
   // También considera activas las rutas hijas (ej: /customers/123 activa /customers)
   const isActive = (path: string) => {
+    // Caso especial: /id-ranges debe marcar /applications como activo
+    if (path === '/applications' && pathname === '/id-ranges') return true;
     if (pathname === path) return true;
     // Si estamos en una ruta hija, también marcar como activa
     return pathname.startsWith(path + '/');

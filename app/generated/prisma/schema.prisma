@@ -122,6 +122,7 @@ model Application {
   latestReleaseVersion String?   @map("latest_release_version") @db.VarChar(100)
   latestReleaseDate    DateTime? @map("latest_release_date")
   logoBase64           String?   @map("logo_base64") @db.Text
+  idRanges             Json?     @map("id_ranges")
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
