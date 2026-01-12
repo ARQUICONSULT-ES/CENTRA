@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import type { ApiResponse, ApplicationWithRanges, IdRange } from "./types";
+import { FilterDropdown } from "@/modules/shared/components/FilterDropdown";
 import {
   COLORS,
   ROW_HEIGHT,
@@ -13,10 +14,21 @@ import {
   TOTAL_RANGE,
 } from "./utils/constants";
 
+interface Customer {
+  id: string;
+  customerName: string;
+}
+
 export function IdRangesPage() {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false); // Estado para refresh sin bloquear UI
   const [error, setError] = useState<string | null>(null);
+  
+  // Estado para clientes
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [selectedCustomers, setSelectedCustomers] = useState<string>("");
+  const [customersLoading, setCustomersLoading] = useState(true);
   
   // Estado para zoom (escala del contenido)
   const [zoomScale, setZoomScale] = useState(1);
@@ -110,11 +122,44 @@ export function IdRangesPage() {
     setIsDragging(false);
   }, []);
 
-  // Cargar datos
+  // Cargar lista de clientes
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await fetch("/api/customers");
+        if (!response.ok) {
+          throw new Error("Error al cargar los clientes");
+        }
+        const json = await response.json();
+        setCustomers(json);
+      } catch (err) {
+        console.error("Error loading customers:", err);
+      } finally {
+        setCustomersLoading(false);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
+
+  // Cargar datos (dependiendo de los clientes seleccionados)
   useEffect(() => {
     const fetchData = async () => {
+      // Solo mostrar loading completo en la carga inicial
+      const isInitialLoad = !data;
+      if (isInitialLoad) {
+        setLoading(true);
+      } else {
+        setIsRefreshing(true);
+      }
+      
       try {
-        const response = await fetch("/api/applications/id-ranges");
+        const params = new URLSearchParams();
+        if (selectedCustomers) {
+          params.set("customerIds", selectedCustomers);
+        }
+        const url = `/api/applications/id-ranges${params.toString() ? `?${params.toString()}` : ""}`;
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Error al cargar los datos");
         }
@@ -124,11 +169,13 @@ export function IdRangesPage() {
         setError(err instanceof Error ? err.message : "Error desconocido");
       } finally {
         setLoading(false);
+        setIsRefreshing(false);
       }
     };
 
     fetchData();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCustomers]);
 
   // Filtrar y ordenar aplicaciones por búsqueda y rango
   const filteredApplications = useMemo(() => {
@@ -346,10 +393,10 @@ export function IdRangesPage() {
 
   // Resetear zoom cuando cambia el texto de búsqueda o el filtro de rango
   useEffect(() => {
-    if (searchText || rangeFrom || rangeTo) {
+    if (searchText || rangeFrom || rangeTo || selectedCustomers) {
       resetZoom();
     }
-  }, [searchText, rangeFrom, rangeTo, resetZoom]);
+  }, [searchText, rangeFrom, rangeTo, selectedCustomers, resetZoom]);
 
   // Manejar pantalla completa
   const toggleFullscreen = useCallback(() => {
@@ -422,9 +469,15 @@ export function IdRangesPage() {
     if (isDragging) return; // No mostrar tooltip mientras se arrastra
     
     const tooltipOffset = 10;
+    const tooltipWidth = 300; // Ancho estimado del tooltip
+    const windowWidth = window.innerWidth;
+    
+    // Determinar si hay espacio a la derecha
+    const spaceOnRight = windowWidth - e.clientX;
+    const showOnLeft = spaceOnRight < tooltipWidth + tooltipOffset;
     
     // Usar coordenadas absolutas de la ventana para posicionamiento fixed
-    const x = e.clientX + tooltipOffset;
+    const x = showOnLeft ? e.clientX - tooltipOffset : e.clientX + tooltipOffset;
     const y = e.clientY + tooltipOffset;
     
     setTooltip({
@@ -444,10 +497,20 @@ export function IdRangesPage() {
     e.stopPropagation();
     hideTooltip();
     
+    const menuWidth = 200; // Ancho mínimo del menú
+    const windowWidth = window.innerWidth;
+    
+    // Determinar si hay espacio a la derecha
+    const spaceOnRight = windowWidth - e.clientX;
+    const showOnLeft = spaceOnRight < menuWidth + 10;
+    
+    const x = showOnLeft ? e.clientX - menuWidth : e.clientX;
+    const y = e.clientY;
+    
     setContextMenu({
       visible: true,
-      x: e.clientX,
-      y: e.clientY,
+      x,
+      y,
       range,
     });
   }, [hideTooltip]);
@@ -520,6 +583,31 @@ export function IdRangesPage() {
   // Ancho del contenido escalado
   const scaledWidth = `${zoomScale * 100}%`;
 
+  // Preparar opciones de clientes para el filtro
+  const customerOptions = customers.map(c => c.customerName);
+  
+  // Convertir IDs seleccionados a nombres para el FilterDropdown
+  const selectedCustomerNames = selectedCustomers
+    ? selectedCustomers.split("|").map(id => {
+        const customer = customers.find(c => c.id === id);
+        return customer?.customerName || "";
+      }).filter(Boolean).join("|")
+    : "";
+  
+  // Convertir nombres seleccionados a IDs
+  const handleCustomerChange = (value: string) => {
+    if (!value) {
+      setSelectedCustomers("");
+      return;
+    }
+    const names = value.split("|");
+    const ids = names.map(name => {
+      const customer = customers.find(c => c.customerName === name);
+      return customer?.id || "";
+    }).filter(Boolean);
+    setSelectedCustomers(ids.join("|"));
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -537,58 +625,84 @@ export function IdRangesPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Rangos de IDs
           </h1>
+          {/* Indicador de refresh */}
+          {isRefreshing && (
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent" />
+          )}
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Buscador */}
+{/* Buscador con estilo FilterDropdown */}
           <div className="relative">
-            <input
-              type="text"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              placeholder="Buscar aplicación..."
-              className="pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-48"
-            />
-            <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            {searchText && (
-              <button
-                onClick={() => setSearchText("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            <div className={`flex items-center gap-1.5 px-3 h-[30px] text-sm rounded-md border transition-colors ${
+              searchText
+                ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:border-blue-600 dark:text-blue-300"
+                : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+            }`}>
+              <svg
+                className="w-3.5 h-3.5 text-gray-400 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                placeholder="Buscar aplicación..."
+                className="bg-transparent border-none outline-none text-xs w-32 h-full placeholder-gray-400 dark:placeholder-gray-500 placeholder:text-[10px]"
+              />
+              {searchText && (
+                <button
+                  onClick={() => setSearchText("")}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* Filtro de clientes */}
+          {!customersLoading && customers.length > 0 && (
+            <FilterDropdown
+              label="Cliente"
+              value={selectedCustomerNames}
+              onChange={handleCustomerChange}
+              options={customerOptions}
+              placeholder="Todos los clientes"
+            />
+          )}          
           
-          {/* Filtro de rango */}
-          <div className="flex items-center gap-1">
+          {/* Filtro de rango con estilo FilterDropdown */}
+          <div className={`flex items-center gap-1.5 px-3 h-[30px] text-sm rounded-md border transition-colors ${
+            rangeFrom || rangeTo
+              ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:border-blue-600 dark:text-blue-300"
+              : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+          }`}>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Rango:</span>
             <input
               type="number"
               value={rangeFrom}
               onChange={(e) => setRangeFrom(e.target.value)}
               placeholder="Desde"
-              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="bg-transparent border-none outline-none text-xs w-16 h-full placeholder-gray-400 dark:placeholder-gray-500 placeholder:text-[10px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
-            <span className="text-gray-500 dark:text-gray-400">-</span>
+            <span className="text-gray-400 dark:text-gray-500">-</span>
             <input
               type="number"
               value={rangeTo}
               onChange={(e) => setRangeTo(e.target.value)}
               placeholder="Hasta"
-              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="bg-transparent border-none outline-none text-xs w-16 h-full placeholder-gray-400 dark:placeholder-gray-500 placeholder:text-[10px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             {(rangeFrom || rangeTo) && (
               <button
@@ -596,10 +710,10 @@ export function IdRangesPage() {
                   setRangeFrom("");
                   setRangeTo("");
                 }}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0"
                 title="Limpiar filtro de rango"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -609,13 +723,13 @@ export function IdRangesPage() {
           <button
             onClick={resetZoom}
             disabled={zoomScale === 1}
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-3 h-[30px] text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Reiniciar zoom
           </button>
           <button
             onClick={toggleFullscreen}
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors"
+            className="flex items-center justify-center px-3 h-[30px] text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors"
             title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
           >
             {isFullscreen ? (
@@ -644,56 +758,78 @@ export function IdRangesPage() {
                 Rangos de IDs
               </h2>
               
-              {/* Buscador */}
-              <div className="relative flex-1 max-w-md">
-                <input
-                  type="text"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="Buscar aplicación..."
-                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+              {/* Filtro de clientes */}
+              {!customersLoading && customers.length > 0 && (
+                <FilterDropdown
+                  label="Cliente"
+                  value={selectedCustomerNames}
+                  onChange={handleCustomerChange}
+                  options={customerOptions}
+                  placeholder="Todos los clientes"
                 />
-                <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                {searchText && (
-                  <button
-                    onClick={() => setSearchText("")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              )}
+              
+              {/* Buscador con estilo FilterDropdown */}
+              <div className="relative flex-1 max-w-md">
+                <div className={`flex items-center gap-1.5 px-3 h-[30px] text-sm rounded-md border transition-colors ${
+                  searchText
+                    ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:border-blue-600 dark:text-blue-300"
+                    : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                }`}>
+                  <svg
+                    className="w-3.5 h-3.5 text-gray-400 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  <input
+                    type="text"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="Buscar aplicación..."
+                    className="bg-transparent border-none outline-none text-xs flex-1 h-full placeholder-gray-400 dark:placeholder-gray-500 placeholder:text-[10px]"
+                  />
+                  {searchText && (
+                    <button
+                      onClick={() => setSearchText("")}
+                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
               
-              {/* Filtro de rango */}
-              <div className="flex items-center gap-1">
+              {/* Filtro de rango con estilo FilterDropdown */}
+              <div className={`flex items-center gap-1.5 px-3 h-[30px] text-sm rounded-md border transition-colors ${
+                rangeFrom || rangeTo
+                  ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:border-blue-600 dark:text-blue-300"
+                  : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              }`}>
+                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Rango:</span>
                 <input
                   type="number"
                   value={rangeFrom}
                   onChange={(e) => setRangeFrom(e.target.value)}
                   placeholder="Desde"
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="bg-transparent border-none outline-none text-xs w-16 h-full placeholder-gray-400 dark:placeholder-gray-500 placeholder:text-[10px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
-                <span className="text-gray-500 dark:text-gray-400">-</span>
+                <span className="text-gray-400 dark:text-gray-500">-</span>
                 <input
                   type="number"
                   value={rangeTo}
                   onChange={(e) => setRangeTo(e.target.value)}
                   placeholder="Hasta"
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="bg-transparent border-none outline-none text-xs w-16 h-full placeholder-gray-400 dark:placeholder-gray-500 placeholder:text-[10px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
                 {(rangeFrom || rangeTo) && (
                   <button
@@ -701,10 +837,10 @@ export function IdRangesPage() {
                       setRangeFrom("");
                       setRangeTo("");
                     }}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0"
                     title="Limpiar filtro de rango"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -716,13 +852,13 @@ export function IdRangesPage() {
               <button
                 onClick={resetZoom}
                 disabled={zoomScale === 1}
-                className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center px-3 h-[30px] text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Reiniciar zoom
               </button>
               <button
                 onClick={toggleFullscreen}
-                className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors"
+                className="flex items-center justify-center px-3 h-[30px] text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors"
                 title="Salir de pantalla completa"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -734,14 +870,25 @@ export function IdRangesPage() {
         )}
         
         {/* Tooltip */}
-        {tooltip.visible && (
-          <div
-            className="fixed z-50 px-3 py-2 text-sm bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-lg shadow-lg pointer-events-none whitespace-pre-line max-w-xs"
-            style={{ left: tooltip.x, top: tooltip.y }}
-          >
-            {tooltip.content}
-          </div>
-        )}
+        {tooltip.visible && (() => {
+          const tooltipWidth = 300;
+          const windowWidth = window.innerWidth;
+          const spaceOnRight = windowWidth - tooltip.x;
+          const isOnLeft = spaceOnRight < tooltipWidth;
+          
+          return (
+            <div
+              className="fixed z-50 px-3 py-2 text-sm bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-lg shadow-lg pointer-events-none whitespace-pre-line max-w-xs"
+              style={{ 
+                left: isOnLeft ? undefined : tooltip.x, 
+                right: isOnLeft ? (windowWidth - tooltip.x) : undefined,
+                top: tooltip.y 
+              }}
+            >
+              {tooltip.content}
+            </div>
+          );
+        })()}
 
         {/* Menú contextual */}
         {contextMenu.visible && contextMenu.range && (
