@@ -476,9 +476,6 @@ export default function IdRangesPage() {
             )}
           </div>
           
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            Zoom: {zoomPercent}%
-          </span>
           <button
             onClick={resetZoom}
             disabled={zoomScale === 1}

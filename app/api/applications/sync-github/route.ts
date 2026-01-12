@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
               latestReleaseVersion: latestRelease?.version,
               latestReleaseDate: latestRelease?.date,
               logoBase64: logoBase64 || existingApp.logoBase64, // Mantener logo existente si no se encuentra uno nuevo
-              idRanges: appJsonContent.idRanges || existingApp.idRanges, // Mantener idRanges existentes si no se encuentran nuevos
+              idRanges: (appJsonContent.idRanges || existingApp.idRanges || []) as any, // Mantener idRanges existentes si no se encuentran nuevos
               updatedAt: new Date(),
             },
           });
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
               latestReleaseVersion: latestRelease?.version,
               latestReleaseDate: latestRelease?.date,
               logoBase64: logoBase64,
-              idRanges: appJsonContent.idRanges,
+              idRanges: (appJsonContent.idRanges || []) as any,
             },
           });
           console.log(`  ✓ Creada: ${appJsonContent.name}`);
