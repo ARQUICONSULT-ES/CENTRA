@@ -55,6 +55,12 @@ export default function IdRangesPage() {
   // Estado para zoom (escala del contenido)
   const [zoomScale, setZoomScale] = useState(1);
   
+  // Estado para búsqueda
+  const [searchText, setSearchText] = useState("");
+  
+  // Estado para pantalla completa
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  
   // Tooltip
   const [tooltip, setTooltip] = useState<{
     visible: boolean;
@@ -65,6 +71,18 @@ export default function IdRangesPage() {
   
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const labelPanelRef = useRef<HTMLDivElement>(null);
+
+  // Sincronizar scrolls verticales entre panel de etiquetas y gráfico
+  const syncScroll = useCallback((source: 'label' | 'chart') => {
+    if (!labelPanelRef.current || !scrollContainerRef.current) return;
+    
+    if (source === 'label') {
+      scrollContainerRef.current.scrollTop = labelPanelRef.current.scrollTop;
+    } else {
+      labelPanelRef.current.scrollTop = scrollContainerRef.current.scrollTop;
+    }
+  }, []);
 
   // Cargar datos
   useEffect(() => {
@@ -109,7 +127,7 @@ export default function IdRangesPage() {
     });
   }, []);
 
-  // Manejar zoom con Ctrl++ y Ctrl+-
+  // Manejar zoom con Ctrl++ y Ctrl+- y trackpad pinch
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Verificar si Ctrl está presionado
@@ -130,31 +148,51 @@ export default function IdRangesPage() {
         applyZoom(false);
         return;
       }
+      
+      // Reset zoom con Ctrl+0
+      if (e.key === '0' || e.code === 'Digit0' || e.code === 'Numpad0') {
+        e.preventDefault();
+        e.stopPropagation();
+        resetZoom();
+        return;
+      }
     };
 
     // Prevenir zoom del navegador globalmente cuando el componente está montado
     const preventBrowserZoom = (e: KeyboardEvent) => {
-      if (e.ctrlKey && (e.key === '+' || e.key === '=' || e.key === '-' || 
-          e.code === 'Equal' || e.code === 'Minus' || e.code === 'NumpadAdd' || e.code === 'NumpadSubtract')) {
+      if (e.ctrlKey && (e.key === '+' || e.key === '=' || e.key === '-' || e.key === '0' ||
+          e.code === 'Equal' || e.code === 'Minus' || e.code === 'NumpadAdd' || e.code === 'NumpadSubtract' ||
+          e.code === 'Digit0' || e.code === 'Numpad0')) {
         e.preventDefault();
       }
     };
 
-    // Prevenir zoom con rueda del ratón
-    const preventWheelZoom = (e: WheelEvent) => {
+    // Manejar zoom con trackpad (pinch gesture) o Ctrl + rueda del ratón
+    const handleWheelZoom = (e: WheelEvent) => {
+      // Detectar gesto de pinch en trackpad (Ctrl + wheel)
       if (e.ctrlKey) {
         e.preventDefault();
+        
+        // deltaY positivo = zoom out, negativo = zoom in
+        // Aplicar zoom suave basado en el delta
+        setZoomScale(prev => {
+          const delta = -e.deltaY; // Invertir para que sea intuitivo
+          const zoomFactor = 1 + (delta * 0.005); // Factor suave
+          const newScale = prev * zoomFactor;
+          // Limitar entre 1x y MAX_ZOOM
+          return Math.min(Math.max(newScale, 1), MAX_ZOOM);
+        });
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keydown', preventBrowserZoom, { capture: true });
-    document.addEventListener('wheel', preventWheelZoom, { passive: false });
+    document.addEventListener('wheel', handleWheelZoom, { passive: false });
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keydown', preventBrowserZoom, { capture: true });
-      document.removeEventListener('wheel', preventWheelZoom);
+      document.removeEventListener('wheel', handleWheelZoom);
     };
   }, [applyZoom]);
 
@@ -166,6 +204,47 @@ export default function IdRangesPage() {
       scrollContainerRef.current.scrollLeft = 0;
     }
   }, []);
+
+  // Manejar pantalla completa
+  const toggleFullscreen = useCallback(() => {
+    if (!containerRef.current) return;
+    
+    if (!isFullscreen) {
+      // Entrar a pantalla completa
+      if (containerRef.current.requestFullscreen) {
+        containerRef.current.requestFullscreen();
+      }
+    } else {
+      // Salir de pantalla completa
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  }, [isFullscreen]);
+
+  // Escuchar cambios en el estado de pantalla completa
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  // Filtrar aplicaciones por búsqueda
+  const filteredApplications = useMemo(() => {
+    if (!data) return [];
+    if (!searchText.trim()) return data.applications;
+    
+    const search = searchText.toLowerCase();
+    return data.applications.filter(app => 
+      app.name.toLowerCase().includes(search) || 
+      app.publisher.toLowerCase().includes(search)
+    );
+  }, [data, searchText]);
 
   // Generar marcas del eje X con números redondos (~10 marcas visibles)
   const xAxisTicks = useMemo(() => {
@@ -263,7 +342,7 @@ export default function IdRangesPage() {
     );
   }
 
-  const chartHeight = data.applications.length * ROW_HEIGHT;
+  const chartHeight = filteredApplications.length * ROW_HEIGHT;
   const zoomPercent = Math.round(zoomScale * 100);
   // Ancho del contenido escalado
   const scaledWidth = `${zoomScale * 100}%`;
@@ -276,11 +355,42 @@ export default function IdRangesPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Rangos de IDs
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Visualización de rangos de IDs por aplicación ({MIN_ID.toLocaleString()} - {MAX_ID.toLocaleString()})
-          </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Buscador */}
+          <div className="relative">
+            <input
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="Buscar aplicación..."
+              className="pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-48"
+            />
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            {searchText && (
+              <button
+                onClick={() => setSearchText("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+          
           <span className="text-sm text-gray-600 dark:text-gray-400">
             Zoom: {zoomPercent}%
           </span>
@@ -291,21 +401,103 @@ export default function IdRangesPage() {
           >
             Reiniciar zoom
           </button>
+          <button
+            onClick={toggleFullscreen}
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors"
+            title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
+          >
+            {isFullscreen ? (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 
       {/* Instrucciones */}
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
         <p className="text-sm text-blue-700 dark:text-blue-300">
-          <strong>Controles:</strong> Usa <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">+</kbd> para acercar y <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">-</kbd> para alejar. Usa scroll para navegar.
+          <strong>Controles:</strong> Usa <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">+</kbd> / <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">-</kbd> para zoom, <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs font-mono">0</kbd> para resetear, o usa el gesto de pellizcar en el trackpad. Usa scroll para navegar.
         </p>
       </div>
 
       {/* Chart container */}
       <div 
         ref={containerRef}
-        className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+        className={`relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden ${isFullscreen ? 'h-screen flex flex-col' : ''}`}
       >
+        {/* Barra superior en pantalla completa - integrada */}
+        {isFullscreen && (
+          <div className="flex-shrink-0 flex items-center justify-between bg-gray-50 dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-4 flex-1">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Rangos de IDs
+              </h2>
+              
+              {/* Buscador */}
+              <div className="relative flex-1 max-w-md">
+                <input
+                  type="text"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  placeholder="Buscar aplicación..."
+                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+                />
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+                {searchText && (
+                  <button
+                    onClick={() => setSearchText("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Zoom: {zoomPercent}%
+              </span>
+              <button
+                onClick={resetZoom}
+                disabled={zoomScale === 1}
+                className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Reiniciar zoom
+              </button>
+              <button
+                onClick={toggleFullscreen}
+                className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors"
+                title="Salir de pantalla completa"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+        
         {/* Tooltip */}
         {tooltip.visible && (
           <div
@@ -316,11 +508,13 @@ export default function IdRangesPage() {
           </div>
         )}
 
-        <div className="flex max-h-[70vh]">
+        <div className={`flex ${isFullscreen ? 'flex-1 min-h-0' : 'max-h-[70vh]'}`}>
           {/* Panel de etiquetas (nombres de aplicaciones) - Fixed */}
           <div 
-            className="flex-shrink-0 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto"
+            ref={labelPanelRef}
+            className="flex-shrink-0 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
             style={{ width: LABEL_WIDTH }}
+            onScroll={() => syncScroll('label')}
           >
             {/* Header del panel - Sticky */}
             <div 
@@ -331,31 +525,36 @@ export default function IdRangesPage() {
             </div>
             {/* Lista de aplicaciones */}
             <div>
-              {data.applications.map((app, index) => (
-                <div
-                  key={app.id}
-                  className="flex items-center px-4 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  style={{ height: ROW_HEIGHT }}
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div 
-                      className="w-3 h-3 rounded-sm flex-shrink-0"
-                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                    />
-                    <span className="truncate" title={`${app.publisher} - ${app.name}`}>
-                      {app.name}
-                    </span>
+              {filteredApplications.map((app, index) => {
+                // Mantener el color original basado en el índice de la aplicación en data.applications
+                const originalIndex = data.applications.findIndex(a => a.id === app.id);
+                return (
+                  <div
+                    key={app.id}
+                    className="flex items-center px-4 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    style={{ height: ROW_HEIGHT }}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div 
+                        className="w-3 h-3 rounded-sm flex-shrink-0"
+                        style={{ backgroundColor: COLORS[originalIndex % COLORS.length] }}
+                      />
+                      <span className="truncate" title={`${app.publisher} - ${app.name}`}>
+                        {app.name}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
           {/* Área del gráfico con scroll */}
           <div 
             ref={scrollContainerRef}
-            className={`flex-1 ${zoomScale > 1 ? 'overflow-auto' : 'overflow-hidden'}`}
+            className={`flex-1 overflow-y-auto ${zoomScale > 1 ? 'overflow-x-auto' : 'overflow-x-hidden'}`}
             onMouseLeave={hideTooltip}
+            onScroll={() => syncScroll('chart')}
           >
             {/* Contenedor escalable - solo se expande cuando hay zoom */}
             <div style={{ width: zoomScale > 1 ? scaledWidth : '100%' }}>
@@ -395,49 +594,46 @@ export default function IdRangesPage() {
                 })}
 
                 {/* Barras de rangos */}
-                {data.applications.map((app, appIndex) => (
-                  <div
-                    key={app.id}
-                    className="absolute left-0 right-0 border-b border-gray-100 dark:border-gray-800"
-                    style={{
-                      top: appIndex * ROW_HEIGHT,
-                      height: ROW_HEIGHT,
-                    }}
-                  >
-                    {app.idRanges.map((range, rangeIndex) => {
-                      const xPos = getXPosition(range.from);
-                      const width = getBarWidth(range.from, range.to);
+                {filteredApplications.map((app, appIndex) => {
+                  // Mantener el color original basado en el índice de la aplicación en data.applications
+                  const originalIndex = data.applications.findIndex(a => a.id === app.id);
+                  return (
+                    <div
+                      key={app.id}
+                      className="absolute left-0 right-0 border-b border-gray-100 dark:border-gray-800"
+                      style={{
+                        top: appIndex * ROW_HEIGHT,
+                        height: ROW_HEIGHT,
+                      }}
+                    >
+                      {app.idRanges.map((range, rangeIndex) => {
+                        const xPos = getXPosition(range.from);
+                        const width = getBarWidth(range.from, range.to);
 
-                      return (
-                        <div
-                          key={`${app.id}-${rangeIndex}`}
-                          className="absolute rounded-sm cursor-pointer hover:brightness-110 transition-all"
-                          style={{
-                            left: `${xPos}%`,
-                            width: `${width}%`,
-                            top: BAR_PADDING,
-                            height: ROW_HEIGHT - BAR_PADDING * 2,
-                            backgroundColor: COLORS[appIndex % COLORS.length],
-                            opacity: 0.85,
-                          }}
-                          onMouseEnter={(e) => showTooltip(e, app, range)}
-                          onMouseMove={(e) => showTooltip(e, app, range)}
-                          onMouseLeave={hideTooltip}
-                        />
-                      );
-                    })}
-                  </div>
-                ))}
+                        return (
+                          <div
+                            key={`${app.id}-${rangeIndex}`}
+                            className="absolute rounded-sm cursor-pointer hover:brightness-110 transition-all"
+                            style={{
+                              left: `${xPos}%`,
+                              width: `${width}%`,
+                              top: BAR_PADDING,
+                              height: ROW_HEIGHT - BAR_PADDING * 2,
+                              backgroundColor: COLORS[originalIndex % COLORS.length],
+                              opacity: 0.85,
+                            }}
+                            onMouseEnter={(e) => showTooltip(e, app, range)}
+                            onMouseMove={(e) => showTooltip(e, app, range)}
+                            onMouseLeave={hideTooltip}
+                          />
+                        );
+                      })}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Info del rango */}
-        <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
-          <span>Inicio: {MIN_ID.toLocaleString()}</span>
-          <span>Rango total: {TOTAL_RANGE.toLocaleString()} IDs</span>
-          <span>Fin: {MAX_ID.toLocaleString()}</span>
         </div>
       </div>
     </div>
