@@ -24,6 +24,10 @@ export function IdRangesPage() {
   // Estado para búsqueda
   const [searchText, setSearchText] = useState("");
   
+  // Estado para filtro de rango
+  const [rangeFrom, setRangeFrom] = useState("");
+  const [rangeTo, setRangeTo] = useState("");
+  
   // Estado para pantalla completa
   const [isFullscreen, setIsFullscreen] = useState(false);
   
@@ -34,6 +38,14 @@ export function IdRangesPage() {
     y: number;
     content: string;
   }>({ visible: false, x: 0, y: 0, content: "" });
+  
+  // Estado para dropdown contextual
+  const [contextMenu, setContextMenu] = useState<{
+    visible: boolean;
+    x: number;
+    y: number;
+    range: IdRange | null;
+  }>({ visible: false, x: 0, y: 0, range: null });
   
   // Estado para drag scroll
   const [isDragging, setIsDragging] = useState(false);
@@ -118,7 +130,7 @@ export function IdRangesPage() {
     fetchData();
   }, []);
 
-  // Filtrar y ordenar aplicaciones por búsqueda
+  // Filtrar y ordenar aplicaciones por búsqueda y rango
   const filteredApplications = useMemo(() => {
     if (!data) return [];
     
@@ -133,13 +145,36 @@ export function IdRangesPage() {
       );
     }
     
+    // Filtrar por rango de IDs si hay valores
+    const filterFrom = rangeFrom ? parseInt(rangeFrom) : null;
+    const filterTo = rangeTo ? parseInt(rangeTo) : null;
+    
+    if (filterFrom !== null || filterTo !== null) {
+      apps = apps.filter(app => {
+        // Verificar si alguno de los rangos de la app intersecta con el filtro
+        return app.idRanges.some(range => {
+          // Si solo hay filterFrom, verificar que el rango termine después de filterFrom
+          if (filterFrom !== null && filterTo === null) {
+            return range.to >= filterFrom;
+          }
+          // Si solo hay filterTo, verificar que el rango empiece antes de filterTo
+          if (filterFrom === null && filterTo !== null) {
+            return range.from <= filterTo;
+          }
+          // Si hay ambos, verificar intersección completa
+          // Dos rangos [a, b] y [c, d] intersectan si: a <= d && b >= c
+          return range.from <= filterTo! && range.to >= filterFrom!;
+        });
+      });
+    }
+    
     // Ordenar por el rango más pequeño (from más pequeño)
     return apps.slice().sort((a, b) => {
       const minFromA = Math.min(...a.idRanges.map(r => r.from));
       const minFromB = Math.min(...b.idRanges.map(r => r.from));
       return minFromA - minFromB;
     });
-  }, [data, searchText]);
+  }, [data, searchText, rangeFrom, rangeTo]);
 
   // Calcular el rango dinámico basado en las aplicaciones filtradas
   const { displayMinId, displayMaxId, displayRange } = useMemo(() => {
@@ -309,12 +344,12 @@ export function IdRangesPage() {
     }
   }, []);
 
-  // Resetear zoom cuando cambia el texto de búsqueda
+  // Resetear zoom cuando cambia el texto de búsqueda o el filtro de rango
   useEffect(() => {
-    if (searchText) {
+    if (searchText || rangeFrom || rangeTo) {
       resetZoom();
     }
-  }, [searchText, resetZoom]);
+  }, [searchText, rangeFrom, rangeTo, resetZoom]);
 
   // Manejar pantalla completa
   const toggleFullscreen = useCallback(() => {
@@ -403,6 +438,40 @@ export function IdRangesPage() {
   const hideTooltip = useCallback(() => {
     setTooltip(prev => ({ ...prev, visible: false }));
   }, []);
+
+  // Manejar clic en una barra para mostrar menú contextual
+  const handleBarClick = useCallback((e: React.MouseEvent, range: IdRange) => {
+    e.stopPropagation();
+    hideTooltip();
+    
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      range,
+    });
+  }, [hideTooltip]);
+
+  // Cerrar menú contextual
+  const closeContextMenu = useCallback(() => {
+    setContextMenu(prev => ({ ...prev, visible: false }));
+  }, []);
+
+  // Aplicar filtro desde el menú contextual
+  const applyRangeFilter = useCallback((range: IdRange) => {
+    setRangeFrom(range.from.toString());
+    setRangeTo(range.to.toString());
+    closeContextMenu();
+  }, [closeContextMenu]);
+
+  // Cerrar menú contextual al hacer clic fuera
+  useEffect(() => {
+    if (contextMenu.visible) {
+      const handleClickOutside = () => closeContextMenu();
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [contextMenu.visible, closeContextMenu]);
 
   if (loading) {
     return (
@@ -495,6 +564,39 @@ export function IdRangesPage() {
             )}
           </div>
           
+          {/* Filtro de rango */}
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              value={rangeFrom}
+              onChange={(e) => setRangeFrom(e.target.value)}
+              placeholder="Desde"
+              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <span className="text-gray-500 dark:text-gray-400">-</span>
+            <input
+              type="number"
+              value={rangeTo}
+              onChange={(e) => setRangeTo(e.target.value)}
+              placeholder="Hasta"
+              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            {(rangeFrom || rangeTo) && (
+              <button
+                onClick={() => {
+                  setRangeFrom("");
+                  setRangeTo("");
+                }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                title="Limpiar filtro de rango"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+          
           <button
             onClick={resetZoom}
             disabled={zoomScale === 1}
@@ -566,6 +668,39 @@ export function IdRangesPage() {
                   </button>
                 )}
               </div>
+              
+              {/* Filtro de rango */}
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  value={rangeFrom}
+                  onChange={(e) => setRangeFrom(e.target.value)}
+                  placeholder="Desde"
+                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <span className="text-gray-500 dark:text-gray-400">-</span>
+                <input
+                  type="number"
+                  value={rangeTo}
+                  onChange={(e) => setRangeTo(e.target.value)}
+                  placeholder="Hasta"
+                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                {(rangeFrom || rangeTo) && (
+                  <button
+                    onClick={() => {
+                      setRangeFrom("");
+                      setRangeTo("");
+                    }}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    title="Limpiar filtro de rango"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
             </div>
             
             <div className="flex items-center gap-2">
@@ -596,6 +731,27 @@ export function IdRangesPage() {
             style={{ left: tooltip.x, top: tooltip.y }}
           >
             {tooltip.content}
+          </div>
+        )}
+
+        {/* Menú contextual */}
+        {contextMenu.visible && contextMenu.range && (
+          <div
+            className="fixed z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 min-w-[200px]"
+            style={{ left: contextMenu.x, top: contextMenu.y }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => applyRangeFilter(contextMenu.range!)}
+              className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span>
+                Filtrar este rango {contextMenu.range.from.toLocaleString()} - {contextMenu.range.to.toLocaleString()}
+              </span>
+            </button>
           </div>
         )}
 
@@ -660,10 +816,14 @@ export function IdRangesPage() {
                 <div className="relative w-full h-6">
                   {xAxisTicks.map((tick, i) => {
                     const xPos = getXPosition(tick);
+                    const isFirst = i === 0;
+                    const isLast = i === xAxisTicks.length - 1;
                     return (
                       <div
                         key={i}
-                        className="absolute text-xs text-gray-500 dark:text-gray-400 transform -translate-x-1/2 whitespace-nowrap"
+                        className={`absolute text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ${
+                          isFirst ? '' : isLast ? 'transform -translate-x-full' : 'transform -translate-x-1/2'
+                        }`}
                         style={{ left: `${xPos}%` }}
                       >
                         {tick.toLocaleString()}
@@ -705,7 +865,15 @@ export function IdRangesPage() {
                         const isAboveMax = range.from > MAX_ID;
                         const isBelowMin = range.to < MIN_ID;
                         
-                        if (isAboveMax) {
+                        // Contar cuántos rangos están en cada categoría para esta app
+                        const aboveMaxRanges = app.idRanges.filter(r => r.from > MAX_ID);
+                        const belowMinRanges = app.idRanges.filter(r => r.to < MIN_ID);
+                        
+                        // Solo mostrar el primer rango de cada categoría
+                        const isFirstAboveMax = isAboveMax && aboveMaxRanges.findIndex(r => r.from === range.from && r.to === range.to) === 0;
+                        const isFirstBelowMin = isBelowMin && belowMinRanges.findIndex(r => r.from === range.from && r.to === range.to) === 0;
+                        
+                        if (isAboveMax && isFirstAboveMax) {
                           // Mostrar indicador al final del rango visible con flecha derecha
                           return (
                             <div
@@ -719,12 +887,14 @@ export function IdRangesPage() {
                               onMouseEnter={(e) => showTooltip(e, app, range)}
                               onMouseMove={(e) => showTooltip(e, app, range)}
                               onMouseLeave={hideTooltip}
+                              onClick={(e) => handleBarClick(e, range)}
                             >
                               <div 
-                                className="rounded-sm px-2 py-1 text-xs font-medium text-white flex items-center gap-1"
+                                className="rounded-sm px-2 py-1 text-xs font-medium flex items-center gap-1 border-2"
                                 style={{
-                                  backgroundColor: COLORS[originalIndex % COLORS.length],
-                                  opacity: 0.85,
+                                  borderColor: COLORS[originalIndex % COLORS.length],
+                                  color: COLORS[originalIndex % COLORS.length],
+                                  backgroundColor: 'transparent',
                                 }}
                               >
                                 {range.from.toLocaleString()}
@@ -744,7 +914,7 @@ export function IdRangesPage() {
                           );
                         }
                         
-                        if (isBelowMin) {
+                        if (isBelowMin && isFirstBelowMin) {
                           // Mostrar indicador al inicio del rango visible con flecha izquierda
                           return (
                             <div
@@ -758,12 +928,14 @@ export function IdRangesPage() {
                               onMouseEnter={(e) => showTooltip(e, app, range)}
                               onMouseMove={(e) => showTooltip(e, app, range)}
                               onMouseLeave={hideTooltip}
+                              onClick={(e) => handleBarClick(e, range)}
                             >
                               <div 
-                                className="rounded-sm px-2 py-1 text-xs font-medium text-white flex items-center gap-1"
+                                className="rounded-sm px-2 py-1 text-xs font-medium flex items-center gap-1 border-2"
                                 style={{
-                                  backgroundColor: COLORS[originalIndex % COLORS.length],
-                                  opacity: 0.85,
+                                  borderColor: COLORS[originalIndex % COLORS.length],
+                                  color: COLORS[originalIndex % COLORS.length],
+                                  backgroundColor: 'transparent',
                                 }}
                               >
                                 <svg 
@@ -781,6 +953,11 @@ export function IdRangesPage() {
                               </div>
                             </div>
                           );
+                        }
+                        
+                        // Si el rango está fuera pero no es el primero, no mostrar nada
+                        if ((isAboveMax && !isFirstAboveMax) || (isBelowMin && !isFirstBelowMin)) {
+                          return null;
                         }
                         
                         // Barra normal
@@ -802,6 +979,7 @@ export function IdRangesPage() {
                             onMouseEnter={(e) => showTooltip(e, app, range)}
                             onMouseMove={(e) => showTooltip(e, app, range)}
                             onMouseLeave={hideTooltip}
+                            onClick={(e) => handleBarClick(e, range)}
                           />
                         );
                       })}
