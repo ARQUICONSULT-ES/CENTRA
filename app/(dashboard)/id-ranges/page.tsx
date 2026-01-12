@@ -152,28 +152,84 @@ export default function IdRangesPage() {
     fetchData();
   }, []);
 
-  // Calcular posición X para un ID dado (siempre sobre el rango completo)
+  // Filtrar y ordenar aplicaciones por búsqueda
+  const filteredApplications = useMemo(() => {
+    if (!data) return [];
+    
+    let apps = data.applications;
+    
+    // Filtrar por búsqueda si hay texto
+    if (searchText.trim()) {
+      const search = searchText.toLowerCase();
+      apps = apps.filter(app => 
+        app.name.toLowerCase().includes(search) || 
+        app.publisher.toLowerCase().includes(search)
+      );
+    }
+    
+    // Ordenar por el rango más pequeño (from más pequeño)
+    return apps.slice().sort((a, b) => {
+      const minFromA = Math.min(...a.idRanges.map(r => r.from));
+      const minFromB = Math.min(...b.idRanges.map(r => r.from));
+      return minFromA - minFromB;
+    });
+  }, [data, searchText]);
+
+  // Calcular el rango dinámico basado en las aplicaciones filtradas
+  const { displayMinId, displayMaxId, displayRange } = useMemo(() => {
+    if (filteredApplications.length === 0) {
+      return { displayMinId: MIN_ID, displayMaxId: MAX_ID, displayRange: TOTAL_RANGE };
+    }
+
+    // Encontrar el mínimo y máximo de todos los rangos de las aplicaciones filtradas
+    let min = Infinity;
+    let max = -Infinity;
+
+    filteredApplications.forEach(app => {
+      app.idRanges.forEach(range => {
+        min = Math.min(min, range.from);
+        max = Math.max(max, range.to);
+      });
+    });
+
+    // Agregar un pequeño margen (5% a cada lado)
+    const range = max - min;
+    const margin = Math.ceil(range * 0.05);
+    
+    const adjustedMin = Math.max(MIN_ID, min - margin);
+    const adjustedMax = Math.min(MAX_ID, max + margin);
+    const adjustedRange = adjustedMax - adjustedMin;
+
+    return { 
+      displayMinId: adjustedMin, 
+      displayMaxId: adjustedMax, 
+      displayRange: adjustedRange 
+    };
+  }, [filteredApplications]);
+
+  // Calcular posición X para un ID dado (ahora basado en el rango dinámico)
   const getXPosition = useCallback((id: number): number => {
-    return ((id - MIN_ID) / TOTAL_RANGE) * 100;
-  }, []);
+    return ((id - displayMinId) / displayRange) * 100;
+  }, [displayMinId, displayRange]);
 
   // Calcular ancho de una barra en porcentaje
   const getBarWidth = useCallback((from: number, to: number): number => {
-    const width = ((to - from) / TOTAL_RANGE) * 100;
+    const width = ((to - from) / displayRange) * 100;
     return Math.max(width, 0.05); // Mínimo 0.05% para que sea visible
-  }, []);
+  }, [displayRange]);
 
   // Función de zoom - máximo zoom muestra 100 IDs de rango
-  const MAX_ZOOM = TOTAL_RANGE / 100; // ~500x para ver de 100 en 100
+  const MAX_ZOOM = displayRange / 100; // Calculado dinámicamente basado en el rango actual
   
   const applyZoom = useCallback((zoomIn: boolean) => {
     setZoomScale(prev => {
       const factor = zoomIn ? 1.5 : 0.67;
       const newScale = prev * factor;
       // Limitar entre 1x y MAX_ZOOM
-      return Math.min(Math.max(newScale, 1), MAX_ZOOM);
+      const maxZoom = displayRange / 100;
+      return Math.min(Math.max(newScale, 1), maxZoom);
     });
-  }, []);
+  }, [displayRange]);
 
   // Manejar zoom con Ctrl++ y Ctrl+- y trackpad pinch
   useEffect(() => {
@@ -239,8 +295,9 @@ export default function IdRangesPage() {
           const delta = -e.deltaY; // Invertir para que sea intuitivo
           const zoomFactor = 1 + (delta * 0.005); // Factor suave
           const newScale = prev * zoomFactor;
-          // Limitar entre 1x y MAX_ZOOM
-          const clampedScale = Math.min(Math.max(newScale, 1), MAX_ZOOM);
+          // Limitar entre 1x y MAX_ZOOM dinámico
+          const maxZoom = displayRange / 100;
+          const clampedScale = Math.min(Math.max(newScale, 1), maxZoom);
           
           // Ajustar el scroll después del zoom para mantener el punto bajo el cursor
           setTimeout(() => {
@@ -266,7 +323,7 @@ export default function IdRangesPage() {
       document.removeEventListener('keydown', preventBrowserZoom, { capture: true });
       document.removeEventListener('wheel', handleWheelZoom);
     };
-  }, [applyZoom]);
+  }, [applyZoom, displayRange]);
 
   // Reset zoom
   const resetZoom = useCallback(() => {
@@ -306,34 +363,11 @@ export default function IdRangesPage() {
     };
   }, []);
 
-  // Filtrar y ordenar aplicaciones por búsqueda
-  const filteredApplications = useMemo(() => {
-    if (!data) return [];
-    
-    let apps = data.applications;
-    
-    // Filtrar por búsqueda si hay texto
-    if (searchText.trim()) {
-      const search = searchText.toLowerCase();
-      apps = apps.filter(app => 
-        app.name.toLowerCase().includes(search) || 
-        app.publisher.toLowerCase().includes(search)
-      );
-    }
-    
-    // Ordenar por el rango más pequeño (from más pequeño)
-    return apps.slice().sort((a, b) => {
-      const minFromA = Math.min(...a.idRanges.map(r => r.from));
-      const minFromB = Math.min(...b.idRanges.map(r => r.from));
-      return minFromA - minFromB;
-    });
-  }, [data, searchText]);
-
   // Generar marcas del eje X con números redondos (~10 marcas visibles)
   const xAxisTicks = useMemo(() => {
     // Determinar el intervalo redondo basado en el zoom
     // Queremos aproximadamente 10 marcas visibles
-    const visibleRange = TOTAL_RANGE / zoomScale;
+    const visibleRange = displayRange / zoomScale;
     
     // Elegir un intervalo redondo apropiado para tener ~10 marcas
     let interval: number;
@@ -352,31 +386,34 @@ export default function IdRangesPage() {
     } else if (visibleRange <= 20000) {
       interval = 2000;
     } else {
-      interval = 5000; // ~10 marcas para el rango completo de 49999
+      interval = 5000; // Para rangos muy grandes
     }
     
     const ticks: number[] = [];
-    // Empezar desde el primer múltiplo del intervalo >= MIN_ID
-    const start = Math.ceil(MIN_ID / interval) * interval;
+    // Empezar desde el primer múltiplo del intervalo >= displayMinId
+    const start = Math.ceil(displayMinId / interval) * interval;
     
-    for (let tick = start; tick <= MAX_ID; tick += interval) {
+    for (let tick = start; tick <= displayMaxId; tick += interval) {
       ticks.push(tick);
     }
     
     return ticks;
-  }, [zoomScale]);
+  }, [zoomScale, displayMinId, displayMaxId, displayRange]);
 
   // Mostrar tooltip
   const showTooltip = useCallback((e: React.MouseEvent, app: ApplicationWithRanges, range: IdRange) => {
     if (isDragging) return; // No mostrar tooltip mientras se arrastra
     
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
+    const tooltipOffset = 10;
+    
+    // Usar coordenadas absolutas de la ventana para posicionamiento fixed
+    const x = e.clientX + tooltipOffset;
+    const y = e.clientY + tooltipOffset;
     
     setTooltip({
       visible: true,
-      x: e.clientX - rect.left + 10,
-      y: e.clientY - rect.top - 10,
+      x,
+      y,
       content: `${app.name}\nRango: ${range.from.toLocaleString()} - ${range.to.toLocaleString()}\nTotal: ${(range.to - range.from + 1).toLocaleString()} IDs`,
     });
   }, [isDragging]);
@@ -476,6 +513,9 @@ export default function IdRangesPage() {
             )}
           </div>
           
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Zoom: {zoomPercent}%
+          </span>
           <button
             onClick={resetZoom}
             disabled={zoomScale === 1}
@@ -583,7 +623,7 @@ export default function IdRangesPage() {
         {/* Tooltip */}
         {tooltip.visible && (
           <div
-            className="absolute z-50 px-3 py-2 text-sm bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-lg shadow-lg pointer-events-none whitespace-pre-line"
+            className="fixed z-50 px-3 py-2 text-sm bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-lg shadow-lg pointer-events-none whitespace-pre-line max-w-xs"
             style={{ left: tooltip.x, top: tooltip.y }}
           >
             {tooltip.content}
@@ -600,7 +640,7 @@ export default function IdRangesPage() {
           >
             {/* Header del panel - Sticky */}
             <div 
-              className="flex items-center px-4 font-medium text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-750 sticky top-0 z-10"
+              className="flex items-center px-4 font-medium text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-700 sticky top-0 z-10"
               style={{ height: X_AXIS_HEIGHT }}
             >
               Aplicación
