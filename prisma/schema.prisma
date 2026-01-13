@@ -17,7 +17,8 @@ model User {
   id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name          String
   email         String    @unique
-  password      String    
+  password      String?   // Nullable: permite crear usuarios sin contraseña (pendientes de activación)
+  isActive      Boolean   @default(false) @map("is_active") // Usuario activo solo tras establecer contraseña
   githubToken   String?   @map("github_token")
   githubAvatar  String?   @map("github_avatar")
   createdAt     DateTime  @default(now())
@@ -30,7 +31,29 @@ model User {
   canAccessAdmin        Boolean  @default(false) @map("can_access_admin")
 
   // Relación: Un usuario puede tener acceso a muchos customers (solo aplica si canAccessCustomers=true y allCustomers=false)
-  allowedCustomers  UserCustomer[]
+  allowedCustomers       UserCustomer[]
+  passwordSetupTokens    PasswordSetupToken[]
+}
+
+// Token para configuración de contraseña (activación de cuenta)
+// Seguridad: token criptográficamente seguro, de un solo uso, con expiración
+model PasswordSetupToken {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  token       String    @unique @db.VarChar(64) // Token de 32 bytes en hex = 64 chars
+  userId      String    @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime  @map("expires_at")
+  usedAt      DateTime? @map("used_at") // Null = no usado, fecha = usado
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([token])
+  @@index([userId])
+  @@map("password_setup_tokens")
+}
+
+enum InfrastructureType {
+  Saas
+  OnPremise
 }
 
 // Tabla principal: Customers
@@ -39,6 +62,8 @@ model Customer {
   customerName String   @db.VarChar(50)
   imageBase64  String?  @db.Text
   tenants      Tenant[]
+  infraestructureType  InfrastructureType @default(Saas)
+  description String?   @db.Text
   
   // Relación: Un customer puede ser accedido por muchos usuarios
   allowedUsers UserCustomer[]

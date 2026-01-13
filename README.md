@@ -52,7 +52,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 DATABASE_URL=postgresql://user:password@host:port/database
 
 # NextAuth
-NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-secret-key
 
 # Business Central

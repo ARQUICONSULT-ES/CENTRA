@@ -56,9 +56,30 @@ export function CustomerCard({ customer, onEdit }: CustomerCardProps) {
 
         {/* Información del cliente */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 dark:text-white text-base truncate">
-            {customer.customerName}
-          </h3>
+          {/* Nombre y Badge con responsive */}
+          <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white text-base min-w-0 flex-1">
+              {customer.customerName}
+            </h3>
+            
+            {/* Badge de tipo de infraestructura */}
+            {customer.infraestructureType && (
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] sm:text-xs font-medium flex-shrink-0 ${
+                customer.infraestructureType === 'Saas'
+                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                  : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+              }`}>
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {customer.infraestructureType === 'Saas' ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.052A4.001 4.001 0 003 15z" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM9 13V9m0 0V5m0 4h6m0 0v4m0 4a2 2 0 11-4 0 2 2 0 014 0zM9 7a1 1 0 100-2 1 1 0 000 2z M19 11h-8v8h8v-8z" />
+                  )}
+                </svg>
+                {customer.infraestructureType === 'Saas' ? 'SaaS' : 'On-Premise'}
+              </span>
+            )}
+          </div>
           
           {/* Contadores con estilo del EnvironmentCard */}
           <div className="mt-2 grid grid-cols-2 gap-3">

@@ -142,7 +142,7 @@ export default function TenantFormModal({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al olvidar el tenant");
+        throw new Error(errorData.error || "Error al eliminar el tenant");
       }
 
       onSave();
@@ -567,7 +567,7 @@ export default function TenantFormModal({
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={handleDelete}
         title="Olvidar tenant"
-        message="Esta acción no borrará el tenant real del cliente, solo desaparecerá de esta aplicación. Para olvidar el tenant, escribe el nombre del cliente:"
+        message="Esta acción no borrará el tenant real del cliente, solo desaparecerá de esta aplicación. Para eliminar el tenant, escribe el nombre del cliente:"
         confirmationWord={customerName}
         confirmButtonText="Olvidar"
         loading={loading}

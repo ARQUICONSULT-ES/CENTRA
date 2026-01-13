@@ -30,7 +30,6 @@ export async function GET() {
       bcAdminApiUrlConfigured: !!process.env.BC_ADMIN_API_URL,
       databaseUrlConfigured: !!process.env.DATABASE_URL,
       nextAuthSecretConfigured: !!process.env.NEXTAUTH_SECRET,
-      nextAuthUrlConfigured: !!process.env.NEXTAUTH_URL,
       vercelEnv: process.env.VERCEL_ENV || 'development',
       nodeEnv: process.env.NODE_ENV || 'development',
       cronJobSchedule: "0 7 * * *",

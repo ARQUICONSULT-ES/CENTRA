@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.1.0
- * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
+ * Prisma Client JS version: 7.2.0
+ * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
  */
 Prisma.prismaVersion = {
-  client: "7.1.0",
-  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
+  client: "7.2.0",
+  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -125,6 +125,7 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  isActive: 'isActive',
   githubToken: 'githubToken',
   githubAvatar: 'githubAvatar',
   createdAt: 'createdAt',
@@ -135,10 +136,21 @@ exports.Prisma.UserScalarFieldEnum = {
   canAccessAdmin: 'canAccessAdmin'
 };
 
+exports.Prisma.PasswordSetupTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.CustomerScalarFieldEnum = {
   id: 'id',
   customerName: 'customerName',
-  imageBase64: 'imageBase64'
+  imageBase64: 'imageBase64',
+  infraestructureType: 'infraestructureType',
+  description: 'description'
 };
 
 exports.Prisma.UserCustomerScalarFieldEnum = {
@@ -223,10 +235,14 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-
+exports.InfrastructureType = exports.$Enums.InfrastructureType = {
+  Saas: 'Saas',
+  OnPremise: 'OnPremise'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
+  PasswordSetupToken: 'PasswordSetupToken',
   Customer: 'Customer',
   UserCustomer: 'UserCustomer',
   Tenant: 'Tenant',

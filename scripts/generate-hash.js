@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 // Cambia esta contraseña por la que quieres hashear
-const password = 'tuContraseña123';
+const password = 'password';
 
 // Genera el hash
 const salt = bcrypt.genSaltSync(10);

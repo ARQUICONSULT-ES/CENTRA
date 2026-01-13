@@ -4,6 +4,8 @@ export interface Customer {
   id: string;
   customerName: string;
   imageBase64?: string | null;
+  infraestructureType?: "Saas" | "OnPremise";
+  description?: string | null;
   tenantsCount?: number;
   activeEnvironmentsCount?: number;
 }

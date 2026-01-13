@@ -122,7 +122,7 @@ export async function DELETE(
   } catch (error) {
     console.error("Error deleting tenant:", error);
     return NextResponse.json(
-      { error: "Error al olvidar el tenant" },
+      { error: "Error al eliminar el tenant" },
       { status: 500 }
     );
   }

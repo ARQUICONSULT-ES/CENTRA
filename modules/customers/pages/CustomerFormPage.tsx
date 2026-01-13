@@ -31,6 +31,8 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
   const [formData, setFormData] = useState({
     customerName: "",
     imageBase64: "",
+    infraestructureType: "Saas" as "Saas" | "OnPremise",
+    description: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -162,6 +164,8 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
       setFormData({
         customerName: data.customerName,
         imageBase64: data.imageBase64 || "",
+        infraestructureType: data.infraestructureType || "Saas",
+        description: data.description || "",
       });
       setImagePreview(data.imageBase64 || "");
     } catch (err) {
@@ -445,7 +449,7 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
       )}
 
       <form id="customer-form" onSubmit={handleSubmit}>
-        <div className={`grid grid-cols-1 ${isEditMode ? 'lg:grid-cols-2' : ''} gap-3 sm:gap-4 md:gap-6`}>
+        <div className={`grid gap-3 sm:gap-4 md:gap-6 ${isEditMode && formData.infraestructureType === "Saas" ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}>
           {/* Columna 1: Información del Cliente */}
           <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden h-full">
             <div className="px-3 sm:px-5 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
@@ -508,29 +512,62 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
 
                 {/* Campos del formulario */}
                 <div className="flex-1 space-y-3 sm:space-y-4 min-w-0">
+                  {/* Nombre y Tipo de Infraestructura en fila responsive */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
+                        Nombre del Cliente <span className="text-red-500 dark:text-red-400">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.customerName}
+                        onChange={(e) =>
+                          setFormData({ ...formData, customerName: e.target.value })
+                        }
+                        className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-xs sm:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                        placeholder="Ingresa el nombre del cliente"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
+                        Tipo de Infraestructura
+                      </label>
+                      <select
+                        value={formData.infraestructureType}
+                        onChange={(e) =>
+                          setFormData({ ...formData, infraestructureType: e.target.value as "Saas" | "OnPremise" })
+                        }
+                        className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-xs sm:text-sm"
+                      >
+                        <option value="Saas">SaaS</option>
+                        <option value="OnPremise">On-Premise</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Descripción en fila completa */}
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
-                      Nombre del Cliente <span className="text-red-500 dark:text-red-400">*</span>
+                      Descripción
                     </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.customerName}
+                    <textarea
+                      value={formData.description}
                       onChange={(e) =>
-                        setFormData({ ...formData, customerName: e.target.value })
+                        setFormData({ ...formData, description: e.target.value })
                       }
-                      className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-xs sm:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                      placeholder="Ingresa el nombre del cliente"
+                      rows={3}
+                      className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-xs sm:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 resize-none"
+                      placeholder="Añade una descripción del cliente"
                     />
                   </div>
-                  {/* Espacio para más campos aquí */}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Columna 2: Tenants - Solo en modo edición */}
-          {isEditMode && (
+          {/* Columna 2: Tenants - Solo en modo edición y si el tipo es SaaS */}
+          {isEditMode && formData.infraestructureType === "Saas" && (
             <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden h-full flex flex-col">
               <div className="px-3 sm:px-5 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between gap-2">
                 <h2 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white flex items-center gap-1.5 sm:gap-2">

@@ -31,6 +31,19 @@ export function useUserForm({ onSuccess, protectedMode = false }: UseUserFormPro
       }
 
       const result = await response.json();
+      
+      // Si se solicitó enviar email de activación, enviarlo después de crear el usuario
+      if (data.sendActivationEmail && result.user?.id) {
+        try {
+          await fetch(`/api/users/${result.user.id}/send-activation`, {
+            method: "POST",
+          });
+        } catch (emailErr) {
+          console.error("Error enviando email de activación:", emailErr);
+          // No lanzar error, el usuario ya fue creado
+        }
+      }
+      
       onSuccess?.();
       return result;
     } catch (err) {

@@ -29,6 +29,16 @@ const authOptions: NextAuthOptions = {
                         throw new Error("No existe un usuario con ese email");
                     }
 
+                    // Verificar si el usuario está activo
+                    if (!user.isActive) {
+                        throw new Error("Tu cuenta está pendiente de activación. Revisa tu email para completar el registro.");
+                    }
+
+                    // Verificar si tiene contraseña configurada
+                    if (!user.password) {
+                        throw new Error("Tu cuenta no tiene contraseña configurada. Contacta con tu administrador.");
+                    }
+
                     // Comparar la contraseña con el hash
                     const isPasswordValid = await bcrypt.compare(
                         credentials.password,
@@ -96,8 +106,6 @@ const authOptions: NextAuthOptions = {
     },
     secret: process.env.NEXTAUTH_SECRET,
     debug: process.env.NODE_ENV === 'development',
-    // NEXTAUTH_URL no es necesario en producción - NextAuth lo detecta automáticamente
-    // Solo se necesita en desarrollo local si no usas el puerto por defecto (3000)
 }
 
 const handler = NextAuth(authOptions);

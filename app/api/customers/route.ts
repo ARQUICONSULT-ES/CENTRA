@@ -64,6 +64,8 @@ export async function GET() {
         id: customer.id,
         customerName: customer.customerName,
         imageBase64: customer.imageBase64,
+        infraestructureType: customer.infraestructureType,
+        description: customer.description,
         tenantsCount: customer._count.tenants,
         activeEnvironmentsCount,
       };
@@ -83,7 +85,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { customerName, imageBase64 } = body;
+    const { customerName, imageBase64, infraestructureType, description } = body;
 
     if (!customerName || customerName.trim() === "") {
       return NextResponse.json(
@@ -96,6 +98,8 @@ export async function POST(request: NextRequest) {
       data: {
         customerName: customerName.trim(),
         imageBase64: imageBase64 || null,
+        infraestructureType: infraestructureType || "Saas",
+        description: description || null,
       },
     });
 
