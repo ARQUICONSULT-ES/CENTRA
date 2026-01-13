@@ -36,6 +36,7 @@ export async function GET() {
         id: true,
         name: true,
         email: true,
+        isActive: true,
         githubToken: true,
         githubAvatar: true,
         createdAt: true,
@@ -107,7 +108,8 @@ export async function POST(request: Request) {
     const { 
       name, 
       email, 
-      password, 
+      password,
+      sendActivationEmail: shouldSendActivation, // Si es true, no requiere password
       githubToken, 
       allowedCustomerIds,
       canAccessRepos,
@@ -117,9 +119,17 @@ export async function POST(request: Request) {
     } = body;
 
     // Validar campos requeridos
-    if (!name || !email || !password) {
+    if (!name || !email) {
       return NextResponse.json(
-        { error: "Nombre, email y contraseña son requeridos" },
+        { error: "Nombre y email son requeridos" },
+        { status: 400 }
+      );
+    }
+
+    // Si no se enviará email de activación, la contraseña es obligatoria
+    if (!shouldSendActivation && !password) {
+      return NextResponse.json(
+        { error: "Contraseña es requerida cuando no se envía email de activación" },
         { status: 400 }
       );
     }
@@ -136,15 +146,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // Encriptar contraseña
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Encriptar contraseña solo si se proporciona
+    const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
 
     // Crear el nuevo usuario con relaciones de clientes
+    // Si no hay contraseña, el usuario queda inactivo (pendiente de activación)
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        isActive: !shouldSendActivation, // Activo solo si NO se envía email de activación
         githubToken: githubToken || null,
         canAccessRepos: canAccessRepos ?? false,
         canAccessCustomers: canAccessCustomers ?? false,
@@ -162,6 +174,7 @@ export async function POST(request: Request) {
         id: true,
         name: true,
         email: true,
+        isActive: true,
         canAccessRepos: true,
         canAccessCustomers: true,
         allCustomers: true,

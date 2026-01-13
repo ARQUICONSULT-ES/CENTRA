@@ -21,7 +21,7 @@ export default function UserFormModal({
   onSave,
   protectedMode = false,
 }: UserFormModalProps) {
-  const { warning } = useToast();
+  const { warning, success, error: showError } = useToast();
   
   const [formData, setFormData] = useState<UserFormData>({
     name: "",
@@ -43,6 +43,11 @@ export default function UserFormModal({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isLoadingUser, setIsLoadingUser] = useState(false);
+  
+  // Nuevos estados para activación por email
+  const [sendActivationEmail, setSendActivationEmail] = useState(true); // Por defecto activado
+  const [isSendingActivation, setIsSendingActivation] = useState(false);
+  
   const { createUser, updateUser, deleteUser, isLoading, error } = useUserForm({
     onSuccess: () => {
       onSave();
@@ -146,17 +151,28 @@ export default function UserFormModal({
         await updateUser(user.id, dataToSend);
       } else {
         // Crear nuevo usuario
-        if (!formData.password || formData.password.trim() === "") {
-          warning("La contraseña es obligatoria para crear un nuevo usuario");
+        // Si se enviará email de activación, la contraseña no es requerida
+        if (!sendActivationEmail && (!formData.password || formData.password.trim() === "")) {
+          warning("La contraseña es obligatoria cuando no se envía email de activación");
           return;
         }
 
         const dataToSend: UserFormData = {
           ...formData,
           allowedCustomerIds: selectedCustomers.map(c => c.id),
+          sendActivationEmail, // Incluir el flag
         };
 
+        // Si se envía email de activación, no enviar contraseña
+        if (sendActivationEmail) {
+          delete dataToSend.password;
+        }
+
         await createUser(dataToSend);
+        
+        if (sendActivationEmail) {
+          success("Usuario creado. Se enviará el email de activación.");
+        }
       }
     } catch (err) {
       // El error ya se maneja en el hook
@@ -171,6 +187,31 @@ export default function UserFormModal({
       setShowDeleteConfirm(false);
     } catch (err) {
       // El error ya se maneja en el hook
+    }
+  };
+
+  // Enviar o reenviar email de activación
+  const handleSendActivationEmail = async () => {
+    if (!user) return;
+    
+    setIsSendingActivation(true);
+    try {
+      const response = await fetch(`/api/users/${user.id}/send-activation`, {
+        method: 'POST',
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        showError(data.error || 'Error al enviar el email de activación');
+        return;
+      }
+      
+      success('Email de activación enviado correctamente');
+    } catch (err) {
+      showError('Error de conexión al enviar el email');
+    } finally {
+      setIsSendingActivation(false);
     }
   };
 
@@ -329,45 +370,115 @@ export default function UserFormModal({
               </p>
             </div>
 
-            {/* Password (solo en modo creación) */}
+            {/* Password / Activación por email (solo en modo creación) */}
             {!isEditMode && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Contraseña <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
+              <div className="space-y-4">
+                {/* Toggle: Activación por email */}
+                <div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                   <input
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    autoComplete="new-password"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                    placeholder="Contraseña del usuario"
+                    type="checkbox"
+                    id="sendActivationEmail"
+                    checked={sendActivationEmail}
+                    onChange={(e) => setSendActivationEmail(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
-                  >
-                    {showPassword ? (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    )}
-                  </button>
+                  <label htmlFor="sendActivationEmail" className="flex-1">
+                    <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                      Enviar email de activación
+                    </span>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      El usuario recibirá un email para crear su propia contraseña (recomendado)
+                    </p>
+                  </label>
                 </div>
+
+                {/* Campo de contraseña (solo si NO se envía email) */}
+                {!sendActivationEmail && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Contraseña <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        required={!sendActivationEmail}
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        autoComplete="new-password"
+                        className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                        placeholder="Contraseña del usuario"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
+                      >
+                        {showPassword ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                    <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                      ⚠️ Deberás comunicar esta contraseña al usuario de forma segura
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
-              {/* Reset Password Button (solo en modo edición) */}
+            {/* Botones de gestión de contraseña/activación (solo en modo edición) */}
             {isEditMode && (
-              <div className="pt-2">
+              <div className="space-y-3 pt-2">
+                {/* Mostrar estado de activación si el usuario no está activo */}
+                {user && !user.isActive && (
+                  <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                          Cuenta pendiente de activación
+                        </p>
+                        <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                          Este usuario aún no ha configurado su contraseña.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleSendActivationEmail}
+                          disabled={isSendingActivation}
+                          className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-amber-800 bg-amber-100 hover:bg-amber-200 dark:text-amber-200 dark:bg-amber-800/50 dark:hover:bg-amber-800 rounded-lg transition-colors disabled:opacity-50"
+                        >
+                          {isSendingActivation ? (
+                            <>
+                              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                              </svg>
+                              Enviando...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                              Reenviar email de activación
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Reset Password Button */}
                 <button
                   type="button"
                   onClick={() => setShowResetPasswordModal(true)}

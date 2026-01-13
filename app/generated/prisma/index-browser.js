@@ -125,6 +125,7 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  isActive: 'isActive',
   githubToken: 'githubToken',
   githubAvatar: 'githubAvatar',
   createdAt: 'createdAt',
@@ -133,6 +134,15 @@ exports.Prisma.UserScalarFieldEnum = {
   canAccessCustomers: 'canAccessCustomers',
   allCustomers: 'allCustomers',
   canAccessAdmin: 'canAccessAdmin'
+};
+
+exports.Prisma.PasswordSetupTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.CustomerScalarFieldEnum = {
@@ -232,6 +242,7 @@ exports.InfrastructureType = exports.$Enums.InfrastructureType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  PasswordSetupToken: 'PasswordSetupToken',
   Customer: 'Customer',
   UserCustomer: 'UserCustomer',
   Tenant: 'Tenant',

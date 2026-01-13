@@ -57,6 +57,7 @@ export function UserMenu() {
     id: session.user.id,
     name: session.user.name,
     email: session.user.email,
+    isActive: true, // Si tiene sesión activa, está activo
     canAccessRepos: session.user.canAccessRepos ?? false,
     canAccessCustomers: session.user.canAccessCustomers ?? false,
     allCustomers: session.user.allCustomers ?? false,

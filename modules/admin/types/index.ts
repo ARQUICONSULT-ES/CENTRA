@@ -9,6 +9,7 @@ export interface User {
   name: string;
   email: string;
   password: string;
+  isActive: boolean; // Usuario activo tras establecer contraseña
   githubToken?: string | null;
   githubAvatar?: string | null;
   allowedCustomers?: AllowedCustomer[];
@@ -27,6 +28,7 @@ export interface UserFormData {
   password?: string;
   githubToken?: string;
   allowedCustomerIds?: string[];
+  sendActivationEmail?: boolean; // Si es true, no requiere password y envía email
   // Permisos de acceso
   canAccessRepos?: boolean;
   canAccessCustomers?: boolean;

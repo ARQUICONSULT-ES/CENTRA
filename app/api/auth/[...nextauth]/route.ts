@@ -29,6 +29,16 @@ const authOptions: NextAuthOptions = {
                         throw new Error("No existe un usuario con ese email");
                     }
 
+                    // Verificar si el usuario está activo
+                    if (!user.isActive) {
+                        throw new Error("Tu cuenta está pendiente de activación. Revisa tu email para completar el registro.");
+                    }
+
+                    // Verificar si tiene contraseña configurada
+                    if (!user.password) {
+                        throw new Error("Tu cuenta no tiene contraseña configurada. Contacta con tu administrador.");
+                    }
+
                     // Comparar la contraseña con el hash
                     const isPasswordValid = await bcrypt.compare(
                         credentials.password,
