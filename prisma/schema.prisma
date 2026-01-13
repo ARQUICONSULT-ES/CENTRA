@@ -33,12 +33,19 @@ model User {
   allowedCustomers  UserCustomer[]
 }
 
+enum InfrastructureType {
+  Saas
+  OnPremise
+}
+
 // Tabla principal: Customers
 model Customer {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   customerName String   @db.VarChar(50)
   imageBase64  String?  @db.Text
   tenants      Tenant[]
+  infraestructureType  InfrastructureType @default(Saas)
+  description String?   @db.Text
   
   // Relación: Un customer puede ser accedido por muchos usuarios
   allowedUsers UserCustomer[]
