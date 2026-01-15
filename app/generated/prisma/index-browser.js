@@ -171,7 +171,8 @@ exports.Prisma.TenantScalarFieldEnum = {
   clientSecret: 'clientSecret',
   scope: 'scope',
   token: 'token',
-  tokenExpiresAt: 'tokenExpiresAt'
+  tokenExpiresAt: 'tokenExpiresAt',
+  authContext: 'authContext'
 };
 
 exports.Prisma.EnvironmentScalarFieldEnum = {

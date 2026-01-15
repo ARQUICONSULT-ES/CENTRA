@@ -99,6 +99,7 @@ model Tenant {
   scope          String?       @db.VarChar(200)
   token          String?       @db.Text
   tokenExpiresAt DateTime?
+  authContext    String?       @map("auth_context") @db.Text
   environments   Environment[]
 
   @@map("tenants")

@@ -70,7 +70,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { id, customerId, description, connectionId, grantType, clientId, clientSecret, scope, token, tokenExpiresAt } = body;
+    const { id, customerId, description, connectionId, grantType, clientId, clientSecret, scope, token, tokenExpiresAt, authContext } = body;
 
     if (!customerId) {
       return NextResponse.json(
@@ -108,6 +108,7 @@ export async function POST(request: Request) {
         scope: scope || null,
         token: token || null,
         tokenExpiresAt: tokenExpiresAt ? new Date(tokenExpiresAt) : null,
+        authContext: authContext || null,
       },
       include: {
         customer: {

@@ -28,6 +28,7 @@ export interface Tenant {
   scope?: string | null;
   token?: string | null;
   tokenExpiresAt?: string | Date | null;
+  authContext?: string | null;
 }
 
 // ==================== ENVIRONMENT TYPES ====================

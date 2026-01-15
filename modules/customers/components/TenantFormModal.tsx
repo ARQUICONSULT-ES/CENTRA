@@ -38,6 +38,7 @@ export default function TenantFormModal({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [refreshingToken, setRefreshingToken] = useState(false);
   const [tokenRefreshSuccess, setTokenRefreshSuccess] = useState("");
+  const [commandCopied, setCommandCopied] = useState(false);
 
   // Determinar si es un tenant existente (tiene ID válido)
   const isExistingTenant = !!(tenant?.id && tenant.id.trim() !== "");
@@ -155,6 +156,18 @@ export default function TenantFormModal({
     } finally {
       setLoading(false);
       setShowDeleteConfirm(false);
+    }
+  };
+
+  const handleCopyCommand = async () => {
+    const command = `$AuthContext = New-BcAuthContext -includeDeviceLogin\nGet-ALGoAuthContext -bcAuthContext $AuthContext | Set-Clipboard`;
+    
+    try {
+      await navigator.clipboard.writeText(command);
+      setCommandCopied(true);
+      setTimeout(() => setCommandCopied(false), 2000);
+    } catch (err) {
+      console.error('Error copying to clipboard:', err);
     }
   };
 
@@ -330,7 +343,7 @@ export default function TenantFormModal({
                   <svg className="w-5 h-5 text-purple-500 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
-                  Configuración de Conexión
+                  Configuración de OAuth 2.0 (Admin)
                 </h3>
                 {isExistingTenant && (
                   <button
@@ -535,13 +548,13 @@ export default function TenantFormModal({
                 <svg className="w-5 h-5 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Auth Context (Opcional)
+                Auth Context (CD)
               </h3>
               
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Contexto de Autenticación
+                    Auth Context
                   </label>
                   <textarea
                     value={formData.authContext}
@@ -550,11 +563,44 @@ export default function TenantFormModal({
                     }
                     rows={6}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y font-mono text-sm"
-                    placeholder="Información adicional de contexto de autenticación...&#10;&#10;Ejemplo: certificados, configuraciones especiales, notas técnicas, etc."
+                    placeholder="Pega aquí el resultado del comando de PowerShell..."
                   />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    Campo libre para almacenar información técnica relacionada con la autenticación del tenant
-                  </p>
+                  <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded text-xs space-y-2">
+                    <p className="text-blue-700 dark:text-blue-300 font-medium">
+                      Para obtener el Auth Context, ejecuta desde tu PowerShell (administrador) y sigue los pasos del comando:
+                    </p>
+                    <div className="relative">
+                      <code className="block bg-white dark:bg-gray-900 p-2 pr-20 rounded border border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-100 font-mono">
+                        $AuthContext = New-BcAuthContext -includeDeviceLogin<br />
+                        Get-ALGoAuthContext -bcAuthContext $AuthContext | Set-Clipboard
+                      </code>
+                      <button
+                        type="button"
+                        onClick={handleCopyCommand}
+                        className="absolute top-2 right-2 px-2 py-1 text-xs text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-gray-800 border border-blue-300 dark:border-blue-600 rounded hover:bg-blue-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-1"
+                        title="Copiar comando"
+                      >
+                        {commandCopied ? (
+                          <>
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span className="hidden sm:inline">Copiado</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            <span className="hidden sm:inline">Copiar</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <p className="text-blue-600 dark:text-blue-400">
+                      El resultado se guardará en el portapapeles listo para pegar aquí.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

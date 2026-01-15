@@ -6091,6 +6091,7 @@ export namespace Prisma {
     scope: string | null
     token: string | null
     tokenExpiresAt: Date | null
+    authContext: string | null
   }
 
   export type TenantMaxAggregateOutputType = {
@@ -6106,6 +6107,7 @@ export namespace Prisma {
     scope: string | null
     token: string | null
     tokenExpiresAt: Date | null
+    authContext: string | null
   }
 
   export type TenantCountAggregateOutputType = {
@@ -6121,6 +6123,7 @@ export namespace Prisma {
     scope: number
     token: number
     tokenExpiresAt: number
+    authContext: number
     _all: number
   }
 
@@ -6138,6 +6141,7 @@ export namespace Prisma {
     scope?: true
     token?: true
     tokenExpiresAt?: true
+    authContext?: true
   }
 
   export type TenantMaxAggregateInputType = {
@@ -6153,6 +6157,7 @@ export namespace Prisma {
     scope?: true
     token?: true
     tokenExpiresAt?: true
+    authContext?: true
   }
 
   export type TenantCountAggregateInputType = {
@@ -6168,6 +6173,7 @@ export namespace Prisma {
     scope?: true
     token?: true
     tokenExpiresAt?: true
+    authContext?: true
     _all?: true
   }
 
@@ -6256,6 +6262,7 @@ export namespace Prisma {
     scope: string | null
     token: string | null
     tokenExpiresAt: Date | null
+    authContext: string | null
     _count: TenantCountAggregateOutputType | null
     _min: TenantMinAggregateOutputType | null
     _max: TenantMaxAggregateOutputType | null
@@ -6288,6 +6295,7 @@ export namespace Prisma {
     scope?: boolean
     token?: boolean
     tokenExpiresAt?: boolean
+    authContext?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     environments?: boolean | Tenant$environmentsArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
@@ -6306,6 +6314,7 @@ export namespace Prisma {
     scope?: boolean
     token?: boolean
     tokenExpiresAt?: boolean
+    authContext?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -6322,6 +6331,7 @@ export namespace Prisma {
     scope?: boolean
     token?: boolean
     tokenExpiresAt?: boolean
+    authContext?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -6338,9 +6348,10 @@ export namespace Prisma {
     scope?: boolean
     token?: boolean
     tokenExpiresAt?: boolean
+    authContext?: boolean
   }
 
-  export type TenantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerId" | "description" | "createdAt" | "modifiedAt" | "connectionId" | "grantType" | "clientId" | "clientSecret" | "scope" | "token" | "tokenExpiresAt", ExtArgs["result"]["tenant"]>
+  export type TenantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerId" | "description" | "createdAt" | "modifiedAt" | "connectionId" | "grantType" | "clientId" | "clientSecret" | "scope" | "token" | "tokenExpiresAt" | "authContext", ExtArgs["result"]["tenant"]>
   export type TenantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     environments?: boolean | Tenant$environmentsArgs<ExtArgs>
@@ -6372,6 +6383,7 @@ export namespace Prisma {
       scope: string | null
       token: string | null
       tokenExpiresAt: Date | null
+      authContext: string | null
     }, ExtArgs["result"]["tenant"]>
     composites: {}
   }
@@ -6809,6 +6821,7 @@ export namespace Prisma {
     readonly scope: FieldRef<"Tenant", 'String'>
     readonly token: FieldRef<"Tenant", 'String'>
     readonly tokenExpiresAt: FieldRef<"Tenant", 'DateTime'>
+    readonly authContext: FieldRef<"Tenant", 'String'>
   }
     
 
@@ -10617,7 +10630,8 @@ export namespace Prisma {
     clientSecret: 'clientSecret',
     scope: 'scope',
     token: 'token',
-    tokenExpiresAt: 'tokenExpiresAt'
+    tokenExpiresAt: 'tokenExpiresAt',
+    authContext: 'authContext'
   };
 
   export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
@@ -11075,6 +11089,7 @@ export namespace Prisma {
     scope?: StringNullableFilter<"Tenant"> | string | null
     token?: StringNullableFilter<"Tenant"> | string | null
     tokenExpiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    authContext?: StringNullableFilter<"Tenant"> | string | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     environments?: EnvironmentListRelationFilter
   }
@@ -11092,6 +11107,7 @@ export namespace Prisma {
     scope?: SortOrderInput | SortOrder
     token?: SortOrderInput | SortOrder
     tokenExpiresAt?: SortOrderInput | SortOrder
+    authContext?: SortOrderInput | SortOrder
     customer?: CustomerOrderByWithRelationInput
     environments?: EnvironmentOrderByRelationAggregateInput
   }
@@ -11112,6 +11128,7 @@ export namespace Prisma {
     scope?: StringNullableFilter<"Tenant"> | string | null
     token?: StringNullableFilter<"Tenant"> | string | null
     tokenExpiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    authContext?: StringNullableFilter<"Tenant"> | string | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     environments?: EnvironmentListRelationFilter
   }, "id">
@@ -11129,6 +11146,7 @@ export namespace Prisma {
     scope?: SortOrderInput | SortOrder
     token?: SortOrderInput | SortOrder
     tokenExpiresAt?: SortOrderInput | SortOrder
+    authContext?: SortOrderInput | SortOrder
     _count?: TenantCountOrderByAggregateInput
     _max?: TenantMaxOrderByAggregateInput
     _min?: TenantMinOrderByAggregateInput
@@ -11150,6 +11168,7 @@ export namespace Prisma {
     scope?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
     token?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
     tokenExpiresAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
+    authContext?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
   }
 
   export type EnvironmentWhereInput = {
@@ -11677,6 +11696,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     customer: CustomerCreateNestedOneWithoutTenantsInput
     environments?: EnvironmentCreateNestedManyWithoutTenantInput
   }
@@ -11694,6 +11714,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     environments?: EnvironmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
@@ -11709,6 +11730,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutTenantsNestedInput
     environments?: EnvironmentUpdateManyWithoutTenantNestedInput
   }
@@ -11726,6 +11748,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     environments?: EnvironmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
@@ -11742,6 +11765,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
   }
 
   export type TenantUpdateManyMutationInput = {
@@ -11756,6 +11780,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TenantUncheckedUpdateManyInput = {
@@ -11771,6 +11796,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EnvironmentCreateInput = {
@@ -12399,6 +12425,7 @@ export namespace Prisma {
     scope?: SortOrder
     token?: SortOrder
     tokenExpiresAt?: SortOrder
+    authContext?: SortOrder
   }
 
   export type TenantMaxOrderByAggregateInput = {
@@ -12414,6 +12441,7 @@ export namespace Prisma {
     scope?: SortOrder
     token?: SortOrder
     tokenExpiresAt?: SortOrder
+    authContext?: SortOrder
   }
 
   export type TenantMinOrderByAggregateInput = {
@@ -12429,6 +12457,7 @@ export namespace Prisma {
     scope?: SortOrder
     token?: SortOrder
     tokenExpiresAt?: SortOrder
+    authContext?: SortOrder
   }
 
   export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -13424,6 +13453,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     environments?: EnvironmentCreateNestedManyWithoutTenantInput
   }
 
@@ -13439,6 +13469,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     environments?: EnvironmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
@@ -13504,6 +13535,7 @@ export namespace Prisma {
     scope?: StringNullableFilter<"Tenant"> | string | null
     token?: StringNullableFilter<"Tenant"> | string | null
     tokenExpiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    authContext?: StringNullableFilter<"Tenant"> | string | null
   }
 
   export type UserCustomerUpsertWithWhereUniqueWithoutCustomerInput = {
@@ -13784,6 +13816,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     customer: CustomerCreateNestedOneWithoutTenantsInput
   }
 
@@ -13800,6 +13833,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
   }
 
   export type TenantCreateOrConnectWithoutEnvironmentsInput = {
@@ -13858,6 +13892,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutTenantsNestedInput
   }
 
@@ -13874,6 +13909,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type InstalledAppUpsertWithWhereUniqueWithoutEnvironmentInput = {
@@ -14030,6 +14066,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
   }
 
   export type UserCustomerCreateManyCustomerInput = {
@@ -14049,6 +14086,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     environments?: EnvironmentUpdateManyWithoutTenantNestedInput
   }
 
@@ -14064,6 +14102,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     environments?: EnvironmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
@@ -14079,6 +14118,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserCustomerUpdateWithoutCustomerInput = {
