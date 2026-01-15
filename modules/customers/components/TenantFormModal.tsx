@@ -29,6 +29,7 @@ export default function TenantFormModal({
     scope: "https://api.businesscentral.dynamics.com/.default",
     token: "",
     tokenExpiresAt: "",
+    authContext: "",
   });
 
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -78,6 +79,7 @@ export default function TenantFormModal({
               ? tenant.tokenExpiresAt
               : tenant.tokenExpiresAt.toISOString()
             : "",
+          authContext: tenant.authContext || "",
         });
       } else {
         setFormData({
@@ -90,6 +92,7 @@ export default function TenantFormModal({
           scope: "https://api.businesscentral.dynamics.com/.default",
           token: "",
           tokenExpiresAt: "",
+          authContext: "",
         });
       }
       setError("");
@@ -524,6 +527,36 @@ export default function TenantFormModal({
                     </div>
                   </div>
                 </div>
+            </div>
+
+            {/* Auth Context */}
+            <div className="mb-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+              <h3 className="text-base font-semibold mb-4 text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                <svg className="w-5 h-5 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Auth Context (Opcional)
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Contexto de Autenticación
+                  </label>
+                  <textarea
+                    value={formData.authContext}
+                    onChange={(e) =>
+                      setFormData({ ...formData, authContext: e.target.value })
+                    }
+                    rows={6}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y font-mono text-sm"
+                    placeholder="Información adicional de contexto de autenticación...&#10;&#10;Ejemplo: certificados, configuraciones especiales, notas técnicas, etc."
+                  />
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Campo libre para almacenar información técnica relacionada con la autenticación del tenant
+                  </p>
+                </div>
+              </div>
             </div>
           </form>
         </div>
