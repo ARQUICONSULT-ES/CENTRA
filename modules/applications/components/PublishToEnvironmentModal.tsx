@@ -14,6 +14,10 @@ interface PublishToEnvironmentModalProps {
   owner: string;
   repo: string;
   onPublish: (appVersion: string, environmentName: string) => Promise<void>;
+  latestVersion?: string | null;
+  latestDate?: string | null;
+  prereleaseVersion?: string | null;
+  prereleaseDate?: string | null;
 }
 
 export function PublishToEnvironmentModal({
@@ -22,6 +26,10 @@ export function PublishToEnvironmentModal({
   owner,
   repo,
   onPublish,
+  latestVersion,
+  latestDate,
+  prereleaseVersion,
+  prereleaseDate,
 }: PublishToEnvironmentModalProps) {
   const [appVersion, setAppVersion] = useState<string>("current");
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>("");
@@ -85,19 +93,30 @@ export function PublishToEnvironmentModal({
 
   if (!isOpen) return null;
 
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   const versions = [
     { 
       value: "latest", 
-      label: "Latest", 
+      label: "Última release", 
       icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z", 
-      description: "Última release",
+      description: latestVersion ? `${latestVersion}` : "Última release",
+      date: formatDate(latestDate),
       color: "blue"
     },
     { 
       value: "prerelease", 
-      label: "Prerelease", 
+      label: "Última prerelease", 
       icon: "M13 10V3L4 14h7v7l9-11h-7z", 
-      description: "Última pre-release",
+      description: prereleaseVersion ? `${prereleaseVersion}` : "Última pre-release",
+      date: formatDate(prereleaseDate),
       color: "orange"
     },
     { 
@@ -105,6 +124,7 @@ export function PublishToEnvironmentModal({
       label: "Current", 
       icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", 
       description: "Última compilación (main)",
+      date: null,
       color: "green"
     },
   ];
@@ -213,6 +233,11 @@ export function PublishToEnvironmentModal({
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                           {version.description}
                         </p>
+                        {version.date && (
+                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">
+                            {version.date}
+                          </p>
+                        )}
                       </div>
                       {isSelected && (
                         <div className="absolute top-2 right-2">

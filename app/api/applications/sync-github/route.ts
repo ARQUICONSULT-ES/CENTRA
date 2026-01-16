@@ -109,6 +109,13 @@ export async function POST(request: NextRequest) {
           repo.name
         );
 
+        // Obtener la última prerelease del repositorio
+        const latestPrerelease = await getLatestPrerelease(
+          githubToken,
+          repo.owner.login,
+          repo.name
+        );
+
         // Construir la URL del repositorio
         const githubUrl = repo.html_url;
 
@@ -128,6 +135,8 @@ export async function POST(request: NextRequest) {
               githubUrl: githubUrl,
               latestReleaseVersion: latestRelease?.version,
               latestReleaseDate: latestRelease?.date,
+              latestPrereleaseVersion: latestPrerelease?.version,
+              latestPrereleaseDate: latestPrerelease?.date,
               logoBase64: logoBase64 || existingApp.logoBase64, // Mantener logo existente si no se encuentra uno nuevo
               idRanges: (appJsonContent.idRanges || existingApp.idRanges || []) as any, // Mantener idRanges existentes si no se encuentran nuevos
               updatedAt: new Date(),
@@ -146,6 +155,8 @@ export async function POST(request: NextRequest) {
               githubUrl: githubUrl,
               latestReleaseVersion: latestRelease?.version,
               latestReleaseDate: latestRelease?.date,
+              latestPrereleaseVersion: latestPrerelease?.version,
+              latestPrereleaseDate: latestPrerelease?.date,
               logoBase64: logoBase64,
               idRanges: (appJsonContent.idRanges || []) as any,
             },
@@ -391,6 +402,50 @@ async function getLatestRelease(
     };
   } catch (error) {
     console.error(`Error obteniendo última release de ${owner}/${repo}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Obtiene la información de la última prerelease de un repositorio
+ */
+async function getLatestPrerelease(
+  token: string,
+  owner: string,
+  repo: string
+): Promise<{ version: string; date: Date } | null> {
+  try {
+    // Obtener todas las releases
+    const res = await fetch(
+      `${GITHUB_API_URL}/repos/${owner}/${repo}/releases?per_page=10`,
+      {
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (res.status === 404 || !res.ok) {
+      return null;
+    }
+
+    const releases = await res.json();
+    
+    // Buscar la primera prerelease
+    const prerelease = releases.find((r: any) => r.prerelease === true);
+    
+    if (!prerelease) {
+      return null;
+    }
+    
+    return {
+      version: prerelease.tag_name || prerelease.name || "Unknown",
+      date: new Date(prerelease.published_at || prerelease.created_at)
+    };
+  } catch (error) {
+    console.error(`Error obteniendo última prerelease de ${owner}/${repo}:`, error);
     return null;
   }
 }

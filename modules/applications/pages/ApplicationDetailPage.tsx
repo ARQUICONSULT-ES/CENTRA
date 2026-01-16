@@ -283,6 +283,28 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
                 </div>
               )}
 
+              {/* Latest Prerelease */}
+              {application.latestPrereleaseVersion && (
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5">Última versión (Pre-release)</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium font-mono">{application.latestPrereleaseVersion}</p>
+                    {application.latestPrereleaseDate && (
+                      <p className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                        {new Date(application.latestPrereleaseDate).toLocaleDateString('es-ES', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* GitHub Repository */}
               <div className="flex items-start gap-2 sm:gap-3">
                 <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
@@ -524,6 +546,10 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
           owner={owner}
           repo={repo}
           onPublish={handlePublish}
+          latestVersion={application.latestReleaseVersion}
+          latestDate={application.latestReleaseDate}
+          prereleaseVersion={application.latestPrereleaseVersion}
+          prereleaseDate={application.latestPrereleaseDate}
         />
       )}
     </div>

@@ -6,6 +6,8 @@ export interface Application {
   githubUrl?: string | null;
   latestReleaseVersion?: string | null;
   latestReleaseDate?: string | null;
+  latestPrereleaseVersion?: string | null;
+  latestPrereleaseDate?: string | null;
   logoBase64?: string | null;
   createdAt: string;
   updatedAt: string;
