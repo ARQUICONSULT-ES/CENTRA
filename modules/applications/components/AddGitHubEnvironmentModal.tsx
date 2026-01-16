@@ -3,18 +3,12 @@
 import { useState, useEffect } from "react";
 import TenantFormModal from "@/modules/customers/components/TenantFormModal";
 import { fetchTenantById } from "@/modules/customers/services/tenantService";
+import type { Tenant } from "@/modules/customers/types";
 
 interface Customer {
   id: string;
   customerName: string;
   imageBase64?: string;
-}
-
-interface Tenant {
-  id: string;
-  customerId: string;
-  description?: string;
-  authContext?: string;
 }
 
 interface Environment {

@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import type { GitHubEnvironment } from "@/modules/applications/types/github-environments";
 import { AddGitHubEnvironmentModal } from "./AddGitHubEnvironmentModal";
+import { useToast } from "@/modules/shared/hooks/useToast";
+import ToastContainer from "@/modules/shared/components/ToastContainer";
 
 interface GitHubEnvironmentsListProps {
   environments: GitHubEnvironment[];
@@ -21,6 +23,7 @@ export function GitHubEnvironmentsList({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [envToDelete, setEnvToDelete] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const { toasts, removeToast, success, error } = useToast();
 
   // Escuchar evento para abrir modal
   useEffect(() => {
@@ -58,9 +61,10 @@ export function GitHubEnvironmentsList({
       }
 
       closeDeleteModal();
+      success(`Entorno "${envToDelete}" eliminado exitosamente`);
       onEnvironmentDeleted();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Error al eliminar el entorno");
+      error(err instanceof Error ? err.message : "Error al eliminar el entorno");
     } finally {
       setDeletingEnv(null);
     }
@@ -71,21 +75,55 @@ export function GitHubEnvironmentsList({
   };
 
   const handleAddEnvironments = async (selectedEnvironments: { tenantId: string; environmentName: string; customerName: string }[], mode: 'manual' | 'auto') => {
-    // TODO: Implementar la creación de los GitHub Environments
-    console.log("Entornos seleccionados:", selectedEnvironments);
-    console.log("Modo de deployment:", mode);
+    if (selectedEnvironments.length === 0) {
+      alert("No se seleccionó ningún entorno");
+      return;
+    }
+
+    const env = selectedEnvironments[0];
     
-    // Aquí se debe hacer la llamada a la API de GitHub para crear los entornos
-    // Por ahora solo mostramos un mensaje
-    const modeText = mode === 'manual' ? 'Manual deploy' : 'Auto-deploy';
-    alert(`Se va a crear 1 entorno de GitHub con modo ${modeText}. Funcionalidad en desarrollo.`);
-    
-    // Recargar la lista de entornos
-    onEnvironmentDeleted();
+    // Construir el nombre del entorno según el modo
+    // Si es manual deploy: "Entorno (Production)"
+    // Si no es manual: solo "Entorno"
+    const githubEnvName = mode === 'manual' 
+      ? `${env.environmentName} (Production)` 
+      : env.environmentName;
+
+    try {
+      // Crear el entorno en GitHub
+      const response = await fetch('/api/github/create-environment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          owner,
+          repo,
+          environmentName: githubEnvName,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al crear el entorno en GitHub");
+      }
+
+      const modeText = mode === 'manual' ? 'Manual deploy' : 'Auto-deploy';
+      success(`Entorno "${githubEnvName}" creado exitosamente con modo ${modeText}`);
+      
+      // Recargar la lista de entornos
+      onEnvironmentDeleted();
+    } catch (err) {
+      error(err instanceof Error ? err.message : "Error al crear el entorno");
+      console.error("Error al crear entorno en GitHub:", err);
+    }
   };
 
   return (
     <>
+      {/* Toast Container */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+      
       {/* Modal para añadir entornos */}
       <AddGitHubEnvironmentModal
         isOpen={showAddModal}

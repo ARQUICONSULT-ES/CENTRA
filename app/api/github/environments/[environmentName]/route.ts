@@ -9,7 +9,7 @@ import prisma from "@/lib/prisma";
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { environmentName: string } }
+  { params }: { params: Promise<{ environmentName: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -45,10 +45,19 @@ export async function DELETE(
       );
     }
 
+    // Await params en Next.js 15+
+    const resolvedParams = await params;
     const { searchParams } = new URL(request.url);
     const owner = searchParams.get("owner");
     const repo = searchParams.get("repo");
-    const environmentName = params.environmentName;
+    const environmentName = decodeURIComponent(resolvedParams.environmentName);
+
+    console.log("DELETE environment - params:", {
+      owner,
+      repo,
+      environmentName,
+      rawParam: resolvedParams.environmentName
+    });
 
     if (!owner || !repo) {
       return NextResponse.json(
@@ -57,9 +66,12 @@ export async function DELETE(
       );
     }
 
-    // Eliminar el entorno
+    const githubUrl = `https://api.github.com/repos/${owner}/${repo}/environments/${encodeURIComponent(environmentName)}`;
+    console.log("Calling GitHub API:", githubUrl);
+
+    // Eliminar el entorno (codificamos el nombre para la URL de GitHub)
     const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/environments/${environmentName}`,
+      githubUrl,
       {
         method: "DELETE",
         headers: {
@@ -70,10 +82,20 @@ export async function DELETE(
       }
     );
 
+    // GitHub devuelve 204 (No Content) cuando se elimina exitosamente
+    if (response.status === 204) {
+      return NextResponse.json({ success: true });
+    }
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.error("Error de GitHub API:", {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData
+      });
       return NextResponse.json(
-        { error: errorData.message || "Error al eliminar el entorno" },
+        { error: errorData.message || `Error al eliminar el entorno (${response.status})` },
         { status: response.status }
       );
     }
