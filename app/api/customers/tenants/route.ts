@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getUserPermissions } from "@/lib/auth-permissions";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const permissions = await getUserPermissions();
 
@@ -21,10 +21,30 @@ export async function GET() {
       );
     }
 
-    // Construir el where según los permisos
-    const whereClause = permissions.allCustomers
-      ? {} // Ve todos los tenants
-      : { customerId: { in: permissions.allowedCustomerIds } }; // Ve solo tenants de sus clientes permitidos
+    // Obtener el parámetro customerId de la URL si existe
+    const { searchParams } = new URL(request.url);
+    const customerId = searchParams.get('customerId');
+
+    // Construir el where según los permisos y el filtro de customerId
+    let whereClause: any = {};
+    
+    if (customerId) {
+      // Si se especifica un customerId, filtrar por ese cliente
+      // Verificar que el usuario tenga permiso para ver ese cliente (solo si no tiene allCustomers)
+      const allowedIds: string[] = permissions.allowedCustomerIds;
+      if (!permissions.allCustomers && allowedIds.length > 0 && !allowedIds.includes(customerId)) {
+        return NextResponse.json(
+          { error: "No autorizado para ver este cliente" },
+          { status: 403 }
+        );
+      }
+      whereClause = { customerId };
+    } else {
+      // Sin customerId, aplicar permisos generales
+      whereClause = permissions.allCustomers
+        ? {} // Ve todos los tenants
+        : { customerId: { in: permissions.allowedCustomerIds } }; // Ve solo tenants de sus clientes permitidos
+    }
 
     const tenants = await prisma.tenant.findMany({
       where: whereClause,
@@ -34,6 +54,7 @@ export async function GET() {
         description: true,
         createdAt: true,
         modifiedAt: true,
+        authContext: true,
         customer: {
           select: {
             customerName: true,
@@ -55,6 +76,7 @@ export async function GET() {
       description: tenant.description,
       createdAt: tenant.createdAt,
       modifiedAt: tenant.modifiedAt,
+      authContext: tenant.authContext,
     }));
 
     return NextResponse.json(tenantsWithCustomerName);
