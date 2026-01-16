@@ -4,33 +4,12 @@ import { useState, useEffect } from "react";
 import TenantFormModal from "@/modules/customers/components/TenantFormModal";
 import { fetchTenantById } from "@/modules/customers/services/tenantService";
 import type { Tenant } from "@/modules/customers/types";
-
-interface Customer {
-  id: string;
-  customerName: string;
-  imageBase64?: string;
-}
-
-interface Environment {
-  tenantId: string;
-  name: string;
-  type?: string;
-  status?: string;
-}
-
-interface CustomerTenantPair {
-  customer: Customer;
-  tenant: Tenant;
-  environments: Environment[];
-}
-
-interface AddGitHubEnvironmentModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAdd: (selectedEnvironments: { tenantId: string; environmentName: string; customerName: string }[], mode: 'manual' | 'auto') => void;
-  owner: string;
-  repo: string;
-}
+import type { 
+  Customer, 
+  Environment, 
+  CustomerTenantPair, 
+  AddGitHubEnvironmentModalProps 
+} from "@/modules/applications/types";
 
 export function AddGitHubEnvironmentModal({
   isOpen,
