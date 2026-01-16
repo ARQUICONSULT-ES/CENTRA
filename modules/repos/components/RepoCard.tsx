@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GitHubRepository } from "@/types/github";
 import { DependenciesModal } from "./DependenciesModal";
@@ -24,6 +25,7 @@ export function RepoCard({
   allRepos = [] 
 }: RepoCardProps) {
   const { error: showError } = useToast();
+  const router = useRouter();
   
   // Estados de UI local
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -266,6 +268,34 @@ export function RepoCard({
     // Recargar commits comparando contra la nueva rama
     const [owner, repoName] = repo.full_name.split("/");
     await releaseHook.fetchCommits(owner, repoName, latestPrereleaseTag, newBranch);
+  };
+
+  const handleNavigateToApplication = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    try {
+      const response = await fetch(`/api/applications/by-repo?repoName=${encodeURIComponent(repo.name)}`, {
+        cache: "no-store",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        router.push(`/applications/${data.id}`);
+      } else if (response.status === 404) {
+        const message = "Esta aplicación aún no está sincronizada en el catálogo. Sincroniza desde GitHub primero.";
+        window.alert(message);
+        showError(message);
+      } else {
+        const message = "Error al buscar la aplicación";
+        window.alert(message);
+        showError(message);
+      }
+    } catch (error) {
+      console.error("Error navegando a aplicación:", error);
+      const message = "Error al buscar la aplicación";
+      window.alert(message);
+      showError(message);
+    }
   };
 
   const handleCreateRelease = async () => {
@@ -776,14 +806,25 @@ export function RepoCard({
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-2">
         {/* Header: Nombre y estado */}
         <div className="flex items-start justify-between gap-2">
-          <Link
-            href={repo.html_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-semibold text-sm truncate"
-          >
-            {repo.name}
-          </Link>
+          <div className="flex items-center gap-1.5 min-w-0 flex-1">
+            <button
+              onClick={handleNavigateToApplication}
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-semibold text-sm truncate text-left"
+            >
+              {repo.name}
+            </button>
+            <a
+              href={repo.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+              title="Abrir en GitHub"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
           
           {/* Indicador de estado */}
           <div className="shrink-0">
