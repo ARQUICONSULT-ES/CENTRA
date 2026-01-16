@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import TenantFormModal from "@/modules/customers/components/TenantFormModal";
+import { fetchTenantById } from "@/modules/customers/services/tenantService";
 
 interface Customer {
   id: string;
@@ -149,9 +150,20 @@ export function AddGitHubEnvironmentModal({
     onClose();
   };
 
-  const handleConfigureTenant = (tenant: Tenant) => {
-    setEditingTenant(tenant);
-    setShowTenantModal(true);
+  const handleConfigureTenant = async (tenant: Tenant) => {
+    try {
+      // Obtener todos los detalles del tenant desde la API
+      const fullTenant = await fetchTenantById(tenant.id);
+      if (fullTenant) {
+        setEditingTenant(fullTenant);
+        setShowTenantModal(true);
+      } else {
+        setError("No se pudo cargar la información del tenant");
+      }
+    } catch (err) {
+      setError("Error al cargar los detalles del tenant");
+      console.error("Error loading tenant details:", err);
+    }
   };
 
   const handleTenantModalClose = () => {
@@ -238,9 +250,9 @@ export function AddGitHubEnvironmentModal({
                 const hasAuthContext = !!pair.tenant.authContext;
 
                 return (
-                  <div key={pairKey} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                  <div key={pairKey} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-visible">
                     {/* Customer + Tenant Header */}
-                    <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-900">
+                    <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-t-lg">
                       <button
                         onClick={() => togglePair(pairKey)}
                         className="flex items-center gap-3 flex-1 hover:bg-gray-100 dark:hover:bg-gray-800 p-2 -ml-2 rounded transition-colors"
@@ -293,7 +305,7 @@ export function AddGitHubEnvironmentModal({
                         <div className="flex items-center gap-2 ml-2">
                           <div className="relative group">
                             <svg
-                              className="w-5 h-5 text-yellow-500 dark:text-yellow-400"
+                              className="w-5 h-5 text-orange-600 dark:text-orange-500 cursor-help"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -305,8 +317,11 @@ export function AddGitHubEnvironmentModal({
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                               />
                             </svg>
-                            <div className="absolute right-0 top-full mt-2 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                              Este tenant no tiene configurado el AUTHCONTEXT. Los entornos no se podrán seleccionar.
+                            <div className="absolute right-full top-1/2 -translate-y-1/2 mr-2 w-80 p-3 bg-gray-900 dark:bg-gray-800 text-white text-sm rounded-lg shadow-2xl border border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
+                              <p className="leading-relaxed">
+                                Este tenant no tiene configurado el <span className="font-semibold text-orange-400">AUTHCONTEXT</span>. Los entornos no se podrán seleccionar.
+                              </p>
+                              <div className="absolute left-full top-1/2 -translate-y-1/2 -ml-1 border-4 border-transparent border-l-gray-900 dark:border-l-gray-800"></div>
                             </div>
                           </div>
                           <button
