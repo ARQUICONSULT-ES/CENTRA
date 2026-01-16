@@ -9,7 +9,7 @@ import prisma from "@/lib/prisma";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { environmentName: string } }
+  { params }: { params: Promise<{ environmentName: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -45,10 +45,12 @@ export async function GET(
       );
     }
 
+    // Await params en Next.js 16+
+    const resolvedParams = await params;
     const { searchParams } = new URL(request.url);
     const owner = searchParams.get("owner");
     const repo = searchParams.get("repo");
-    const environmentName = decodeURIComponent(params.environmentName);
+    const environmentName = decodeURIComponent(resolvedParams.environmentName);
 
     if (!owner || !repo) {
       return NextResponse.json(
