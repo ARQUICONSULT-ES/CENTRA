@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
             data: {
               name: appJsonContent.name,
               publisher: appJsonContent.publisher,
-              githubRepoName: repo.name,
+              githubRepoName: repo.full_name,
               githubUrl: githubUrl,
               latestReleaseVersion: latestRelease?.version,
               latestReleaseDate: latestRelease?.date,
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
               id: appJsonContent.id,
               name: appJsonContent.name,
               publisher: appJsonContent.publisher,
-              githubRepoName: repo.name,
+              githubRepoName: repo.full_name,
               githubUrl: githubUrl,
               latestReleaseVersion: latestRelease?.version,
               latestReleaseDate: latestRelease?.date,

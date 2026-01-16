@@ -6,6 +6,8 @@ import type { Application } from "@/modules/applications/types";
 import { useApplicationInstallations } from "@/modules/applications/hooks/useApplicationInstallations";
 import { InstallationsByCustomer } from "@/modules/applications/components/InstallationsByCustomer";
 import { countOutdatedInstallations, isVersionOutdated } from "@/modules/applications/utils/versionComparison";
+import { useGitHubEnvironments } from "@/modules/applications/hooks/useGitHubEnvironments";
+import { GitHubEnvironmentsList } from "@/modules/applications/components/GitHubEnvironmentsList";
 
 interface ApplicationDetailPageProps {
   applicationId: string;
@@ -24,6 +26,42 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
     error: installationsError,
     refetch: refetchInstallations,
   } = useApplicationInstallations(applicationId);
+
+  // Extraer owner y repo del githubRepoName (formato: "owner/repo")
+  // Si githubRepoName no tiene el formato correcto, intentar extraer del githubUrl
+  const [owner, repo] = useMemo(() => {
+    if (!application) return [null, null];
+    
+    // Intentar primero con githubRepoName
+    if (application.githubRepoName) {
+      const parts = application.githubRepoName.split("/");
+      if (parts.length === 2) {
+        return [parts[0], parts[1]];
+      }
+    }
+    
+    // Si no funciona, extraer del githubUrl
+    if (application.githubUrl) {
+      try {
+        const url = new URL(application.githubUrl);
+        const pathParts = url.pathname.split("/").filter(p => p);
+        if (pathParts.length >= 2) {
+          return [pathParts[0], pathParts[1]];
+        }
+      } catch (e) {
+        console.error("Error parsing githubUrl:", e);
+      }
+    }
+    
+    return [null, null];
+  }, [application?.githubRepoName, application?.githubUrl]);
+
+  const {
+    environments,
+    loading: environmentsLoading,
+    error: environmentsError,
+    refetch: refetchEnvironments,
+  } = useGitHubEnvironments({ owner, repo });
 
   // Cargar datos de la aplicación
   useEffect(() => {
@@ -194,13 +232,13 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
               )}
 
               {/* GitHub Repository */}
-              {application.githubUrl && (
-                <div className="flex items-start gap-2 sm:gap-3">
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"/>
-                  </svg>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5">Repositorio GitHub</p>
+              <div className="flex items-start gap-2 sm:gap-3">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"/>
+                </svg>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5">Repositorio GitHub</p>
+                  {application.githubUrl ? (
                     <a
                       href={application.githubUrl}
                       target="_blank"
@@ -212,9 +250,13 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
-                  </div>
+                  ) : (
+                    <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-mono">
+                      {application.githubRepoName || "No configurado"}
+                    </p>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
@@ -231,11 +273,6 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
               </h2>
             </div>
             <div className="p-3 sm:p-4 md:p-5 space-y-3 sm:space-y-4">
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 sm:p-4">
-                <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1">Total instalaciones</p>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{installations.length}</p>
-              </div>
-              
               <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 sm:p-4">
                 <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1">Clientes</p>
                 <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
@@ -323,6 +360,90 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
             isLoading={installationsLoading}
             latestVersion={application.latestReleaseVersion || undefined}
           />
+        </div>
+      </div>
+
+      {/* Sección de Entornos de GitHub */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="px-3 sm:px-5 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <h2 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white flex items-center gap-1.5 sm:gap-2">
+            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+            </svg>
+            <span className="hidden sm:inline">Entornos de GitHub</span>
+            <span className="sm:hidden">Entornos</span>
+            {environments && (
+              <span className="ml-0.5 sm:ml-1 px-1.5 py-0.5 text-[10px] sm:text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
+                {environments.total_count}
+              </span>
+            )}
+          </h2>
+          
+          <button
+            type="button"
+            onClick={refetchEnvironments}
+            disabled={environmentsLoading || !owner || !repo}
+            className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 sm:gap-1.5 w-full sm:w-auto justify-center"
+          >
+            {environmentsLoading ? (
+              <>
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Actualizando...
+              </>
+            ) : (
+              <>
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Actualizar
+              </>
+            )}
+          </button>
+        </div>
+        <div className="p-3 sm:p-4 md:p-5">
+          {!owner || !repo ? (
+            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-600 text-yellow-800 dark:text-yellow-300 rounded-lg text-sm">
+              <p className="font-semibold mb-1">Repositorio no configurado</p>
+              <p className="text-xs">
+                Esta aplicación no tiene un repositorio GitHub válido configurado.
+                {application?.githubRepoName && (
+                  <span className="block mt-1">
+                    githubRepoName: <code className="bg-yellow-100 dark:bg-yellow-800 px-1 py-0.5 rounded">{application.githubRepoName}</code>
+                  </span>
+                )}
+              </p>
+            </div>
+          ) : environmentsLoading ? (
+            <div className="text-center py-8">
+              <svg className="w-8 h-8 animate-spin mx-auto text-gray-400" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Cargando entornos...</p>
+            </div>
+          ) : environmentsError ? (
+            <div className="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-600 text-red-700 dark:text-red-400 rounded-lg text-sm">
+              <p className="font-semibold mb-1">Error al cargar entornos</p>
+              <p className="text-xs">{environmentsError}</p>
+              <p className="text-xs mt-2 text-gray-600 dark:text-gray-400">
+                Repositorio: <code className="bg-red-100 dark:bg-red-800 px-1 py-0.5 rounded">{owner}/{repo}</code>
+              </p>
+            </div>
+          ) : environments && environments.environments ? (
+            <GitHubEnvironmentsList
+              environments={environments.environments}
+              owner={owner}
+              repo={repo}
+              onEnvironmentDeleted={refetchEnvironments}
+            />
+          ) : (
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              No se pudieron cargar los entornos
+            </div>
+          )}
         </div>
       </div>
     </div>
