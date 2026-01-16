@@ -100,6 +100,7 @@ export function GitHubEnvironmentsList({
           owner,
           repo,
           environmentName: githubEnvName,
+          tenantId: env.tenantId,
         }),
       });
 
@@ -108,8 +109,17 @@ export function GitHubEnvironmentsList({
         throw new Error(errorData.error || "Error al crear el entorno en GitHub");
       }
 
+      const responseData = await response.json();
+      
       const modeText = mode === 'manual' ? 'Manual deploy' : 'Auto-deploy';
-      success(`Entorno "${githubEnvName}" creado exitosamente con modo ${modeText}`);
+      let message = `Entorno "${githubEnvName}" creado exitosamente con modo ${modeText}`;
+      
+      // Mostrar warning si existe
+      if (responseData.warning) {
+        message += `. Aviso: ${responseData.warning}`;
+      }
+      
+      success(message);
       
       // Recargar la lista de entornos
       onEnvironmentDeleted();
