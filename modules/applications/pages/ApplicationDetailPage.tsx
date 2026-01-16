@@ -8,6 +8,7 @@ import { InstallationsByCustomer } from "@/modules/applications/components/Insta
 import { countOutdatedInstallations, isVersionOutdated } from "@/modules/applications/utils/versionComparison";
 import { useGitHubEnvironments } from "@/modules/applications/hooks/useGitHubEnvironments";
 import { GitHubEnvironmentsList } from "@/modules/applications/components/GitHubEnvironmentsList";
+import { PublishToEnvironmentModal } from "@/modules/applications/components/PublishToEnvironmentModal";
 
 interface ApplicationDetailPageProps {
   applicationId: string;
@@ -19,6 +20,7 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showOnlyOutdated, setShowOnlyOutdated] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
 
   const {
     installations,
@@ -102,6 +104,42 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
     router.back();
   };
 
+  const handlePublish = async (appVersion: string, environmentName: string) => {
+    if (!owner || !repo) {
+      throw new Error("Repositorio no configurado");
+    }
+
+    try {
+      const response = await fetch("/api/github/trigger-workflow", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          owner,
+          repo,
+          workflow: "PublishToEnvironment.yaml",
+          ref: "main",
+          inputs: {
+            appVersion,
+            environmentName,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al ejecutar el workflow");
+      }
+
+      // Mostrar mensaje de éxito
+      alert("Workflow ejecutado correctamente");
+    } catch (error) {
+      console.error("Error triggering workflow:", error);
+      throw error;
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -172,6 +210,20 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
             </div>
           </div>
         </div>
+        
+        {/* Botón de Publicar a Entorno */}
+        {owner && repo && (
+          <button
+            onClick={() => setShowPublishModal(true)}
+            className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 flex-shrink-0"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <span className="hidden sm:inline">Publicar a Entorno</span>
+            <span className="sm:hidden">Publicar</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
@@ -463,6 +515,17 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
           )}
         </div>
       </div>
+
+      {/* Modal de Publicar a Entorno */}
+      {owner && repo && (
+        <PublishToEnvironmentModal
+          isOpen={showPublishModal}
+          onClose={() => setShowPublishModal(false)}
+          owner={owner}
+          repo={repo}
+          onPublish={handlePublish}
+        />
+      )}
     </div>
   );
 }

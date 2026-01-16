@@ -172,7 +172,7 @@ export function GitHubEnvironmentsList({
                       />
                     </svg>
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                      {env.name}
+                      {env.name.replace(' (Production)', '')}
                     </h3>
                   </div>
                   <div className="flex items-center gap-2">
