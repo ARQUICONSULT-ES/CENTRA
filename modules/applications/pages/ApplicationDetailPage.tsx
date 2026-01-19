@@ -446,6 +446,24 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
             </svg>
             <span className="hidden sm:inline">Entornos de GitHub</span>
             <span className="sm:hidden">Entornos</span>
+            {owner && repo && (
+              <a
+                href={`https://github.com/${owner}/${repo}/settings/environments`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors group"
+                title="Abrir entornos en GitHub"
+              >
+                <svg 
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            )}
             {environments && (
               <span className="ml-0.5 sm:ml-1 px-1.5 py-0.5 text-[10px] sm:text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
                 {environments.total_count}
