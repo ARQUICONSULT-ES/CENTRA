@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { Customer, Tenant } from "@/modules/customers/types";
 import type { Application } from "@/modules/applications/types";
 import ConfirmationModal from "@/modules/customers/components/ConfirmationModal";
@@ -24,6 +24,7 @@ interface CustomerFormPageProps {
 
 export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const isEditMode = !!customerId;
   const { toasts, removeToast, success, error: showError, warning } = useToast();
 
@@ -151,6 +152,21 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
       fetchCustomer();
     }
   }, [customerId]);
+
+  // Abrir modal de tenant si viene el parámetro editTenant en la URL
+  useEffect(() => {
+    const editTenantId = searchParams.get('editTenant');
+    if (editTenantId && tenants.length > 0 && !tenantsLoading) {
+      const tenant = tenants.find(t => t.id === editTenantId);
+      if (tenant) {
+        setSelectedTenant(tenant);
+        setIsTenantModalOpen(true);
+        // Limpiar el parámetro de la URL sin recargar la página
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+      }
+    }
+  }, [searchParams, tenants, tenantsLoading]);
 
   const fetchCustomer = async () => {
     setLoadingCustomer(true);

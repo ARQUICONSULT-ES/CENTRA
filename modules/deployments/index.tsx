@@ -9,8 +9,10 @@ import { EnvironmentSelector } from "./components/EnvironmentSelector";
 import { ApplicationList } from "./components/ApplicationList";
 import { ApplicationSelectorModal } from "./components/ApplicationSelectorModal";
 import { DeploymentProgressModal, type DeploymentProgress } from "./components/DeploymentProgressModal";
+import TenantFormModal from "@/modules/customers/components/TenantFormModal";
 import type { Application } from "@/modules/applications/types";
 import type { VersionType } from "./types";
+import type { Tenant } from "@/modules/customers/types";
 
 export function DeploymentsPage() {
   const { environments, loading: loadingEnvs } = useAllEnvironments();
@@ -34,6 +36,8 @@ export function DeploymentsPage() {
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [progressData, setProgressData] = useState<DeploymentProgress[]>([]);
   const [isDeploying, setIsDeploying] = useState(false);
+  const [isTenantModalOpen, setIsTenantModalOpen] = useState(false);
+  const [selectedTenantForEdit, setSelectedTenantForEdit] = useState<Tenant | undefined>();
 
   // Initialize state from URL params
   useEffect(() => {
@@ -82,6 +86,34 @@ export function DeploymentsPage() {
 
   const selectedAppIds = selectedApplications.map((app: Application) => app.id);
 
+  const handleConfigureTenant = async (tenantId: string) => {
+    try {
+      // Cargar todos los datos del tenant desde la API
+      const response = await fetch(`/api/customers/tenants/${tenantId}`);
+      if (!response.ok) {
+        throw new Error('Error al cargar los datos del tenant');
+      }
+      const tenantData = await response.json();
+      setSelectedTenantForEdit(tenantData);
+      setIsTenantModalOpen(true);
+    } catch (error) {
+      console.error('Error loading tenant:', error);
+      alert('Error al cargar los datos del tenant');
+    }
+  };
+
+  const handleTenantModalClose = () => {
+    setIsTenantModalOpen(false);
+    setSelectedTenantForEdit(undefined);
+  };
+
+  const handleTenantSaved = async () => {
+    setIsTenantModalOpen(false);
+    setSelectedTenantForEdit(undefined);
+    // Recargar environments para actualizar el authContext
+    window.location.reload();
+  };
+
   const handleDeploy = async () => {
     if (!selectedEnvironment) {
       alert('Por favor selecciona un entorno primero');
@@ -94,7 +126,7 @@ export function DeploymentsPage() {
 
     // Solicitar AuthContext al usuario
     const authContextInput = prompt(
-      '🔐 Ingresa el AuthContext de Business Central:\n\n' +
+      'Ingresa el AuthContext de Business Central:\n\n' +
       'El AuthContext es un objeto JSON que contiene la información de autenticación.\n' +
       'Puedes obtenerlo de varias formas:\n' +
       '• Desde la página de Business Central (sessionStorage["authContext"])\n' +
@@ -104,7 +136,7 @@ export function DeploymentsPage() {
     );
 
     if (!authContextInput || authContextInput.trim() === '') {
-      alert('❌ El AuthContext es obligatorio para realizar el despliegue.');
+      alert('El AuthContext es obligatorio para realizar el despliegue.');
       return;
     }
 
@@ -123,7 +155,7 @@ export function DeploymentsPage() {
       }
     } catch (e) {
       alert(
-        '❌ El AuthContext no es válido.\n\n' +
+        'El AuthContext no es válido.\n\n' +
         'Debe ser un objeto JSON con los campos: TenantID, RefreshToken, ClientID, Scopes\n\n' +
         'Error: ' + (e instanceof Error ? e.message : 'Formato JSON inválido')
       );
@@ -335,6 +367,7 @@ export function DeploymentsPage() {
           environments={activeEnvironments}
           selectedEnvironment={selectedEnvironment}
           onSelectEnvironment={setSelectedEnvironment}
+          onConfigureTenant={handleConfigureTenant}
         />
 
         {/* Right Panel - Applications */}
@@ -368,6 +401,14 @@ export function DeploymentsPage() {
         }}
         totalApps={selectedApplications.length}
         progressData={progressData}
+      />
+
+      {/* Tenant Configuration Modal */}
+      <TenantFormModal
+        isOpen={isTenantModalOpen}
+        onClose={handleTenantModalClose}
+        tenant={selectedTenantForEdit}
+        onSave={handleTenantSaved}
       />
     </div>
   );

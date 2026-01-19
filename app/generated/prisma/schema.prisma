@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../app/generated/prisma"
@@ -14,97 +8,80 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  email        String   @unique
-  password     String? // Nullable: permite crear usuarios sin contraseña (pendientes de activación)
-  isActive     Boolean  @default(false) @map("is_active") // Usuario activo solo tras establecer contraseña
-  githubToken  String?  @map("github_token")
-  githubAvatar String?  @map("github_avatar")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Permisos de acceso a módulos
-  canAccessRepos     Boolean @default(false) @map("can_access_repos")
-  canAccessCustomers Boolean @default(false) @map("can_access_customers")
-  allCustomers       Boolean @default(false) @map("all_customers")
-  canAccessAdmin     Boolean @default(false) @map("can_access_admin")
-
-  // Relación: Un usuario puede tener acceso a muchos customers (solo aplica si canAccessCustomers=true y allCustomers=false)
-  allowedCustomers    UserCustomer[]
+  id                  String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String
+  email               String               @unique
+  password            String?
+  githubToken         String?              @map("github_token")
+  githubAvatar        String?              @map("github_avatar")
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  canAccessRepos      Boolean              @default(false) @map("can_access_repos")
+  canAccessCustomers  Boolean              @default(false) @map("can_access_customers")
+  allCustomers        Boolean              @default(false) @map("all_customers")
+  canAccessAdmin      Boolean              @default(false) @map("can_access_admin")
+  isActive            Boolean              @default(false) @map("is_active")
   passwordSetupTokens PasswordSetupToken[]
+  allowedCustomers    UserCustomer[]
 }
 
-// Token para configuración de contraseña (activación de cuenta)
-// Seguridad: token criptográficamente seguro, de un solo uso, con expiración
 model PasswordSetupToken {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  token     String    @unique @db.VarChar(64) // Token de 32 bytes en hex = 64 chars
+  token     String    @unique @db.VarChar(64)
   userId    String    @db.Uuid
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime  @map("expires_at")
-  usedAt    DateTime? @map("used_at") // Null = no usado, fecha = usado
+  usedAt    DateTime? @map("used_at")
   createdAt DateTime  @default(now()) @map("created_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([userId])
   @@map("password_setup_tokens")
 }
 
-enum InfrastructureType {
-  Saas
-  OnPremise
-}
-
-// Tabla principal: Customers
 model Customer {
   id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   customerName        String             @db.VarChar(50)
-  imageBase64         String?            @db.Text
-  tenants             Tenant[]
+  imageBase64         String?
   infraestructureType InfrastructureType @default(Saas)
-  description         String?            @db.Text
-
-  // Relación: Un customer puede ser accedido por muchos usuarios
-  allowedUsers UserCustomer[]
+  description         String?
+  tenants             Tenant[]
+  allowedUsers        UserCustomer[]
 
   @@map("customers")
 }
 
-// Tabla intermedia para la relación muchos a muchos entre User y Customer
 model UserCustomer {
   userId     String   @db.Uuid
   customerId String   @db.Uuid
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   assignedAt DateTime @default(now())
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, customerId])
   @@map("user_customers")
 }
 
-// Tabla de Tenants
 model Tenant {
   id             String        @id @db.Uuid
   customerId     String        @db.Uuid
-  customer       Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   description    String?       @db.VarChar(500)
   createdAt      DateTime
   modifiedAt     DateTime
-  // Campos de conexión
   connectionId   String?       @db.Uuid
   grantType      String?       @db.VarChar(100)
   clientId       String?       @db.Uuid
-  clientSecret   String?       @db.Text
+  clientSecret   String?
   scope          String?       @db.VarChar(200)
-  token          String?       @db.Text
+  token          String?
   tokenExpiresAt DateTime?
+  authContext    String?
   environments   Environment[]
+  customer       Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   @@map("tenants")
 }
 
-// Tabla relacionada: Environments
 model Environment {
   tenantId           String         @db.Uuid
   name               String         @db.VarChar(50)
@@ -121,7 +98,6 @@ model Environment {
   @@map("environments")
 }
 
-// Tabla relacionada: InstalledApps
 model InstalledApp {
   tenantId        String      @db.Uuid
   environmentName String      @db.VarChar(100)
@@ -137,7 +113,6 @@ model InstalledApp {
   @@map("installed_apps")
 }
 
-// Tabla de Aplicaciones
 model Application {
   id                   String    @id @db.Uuid
   name                 String    @db.VarChar(255)
@@ -146,10 +121,15 @@ model Application {
   githubUrl            String?   @map("github_url") @db.VarChar(500)
   latestReleaseVersion String?   @map("latest_release_version") @db.VarChar(100)
   latestReleaseDate    DateTime? @map("latest_release_date")
-  logoBase64           String?   @map("logo_base64") @db.Text
+  logoBase64           String?   @map("logo_base64")
   idRanges             Json?     @map("id_ranges")
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
   @@map("applications")
+}
+
+enum InfrastructureType {
+  Saas
+  OnPremise
 }

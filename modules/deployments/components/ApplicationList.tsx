@@ -60,11 +60,11 @@ export function ApplicationList({
 
   const handleDeploy = () => {
     if (!selectedEnvironmentName) {
-      alert("⚠️ Debes seleccionar un entorno antes de desplegar");
+      alert("Debes seleccionar un entorno antes de desplegar");
       return;
     }
     if (applications.length === 0) {
-      alert("⚠️ Debes añadir al menos una aplicación para desplegar");
+      alert("Debes añadir al menos una aplicación para desplegar");
       return;
     }
     onDeploy();
@@ -204,12 +204,12 @@ export function ApplicationList({
                             ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
                             : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
                         }`}>
-                          {app.versionType === 'release' ? `✓ Release ${app.latestReleaseVersion}` : `Release ${app.latestReleaseVersion}`}
+                          {app.versionType === 'release' ? `Release ${app.latestReleaseVersion}` : `Release ${app.latestReleaseVersion}`}
                         </span>
                       )}
                       {app.versionType === 'prerelease' && (
                         <span className="inline-block text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded font-medium">
-                          ✓ Prerelease --
+                          Prerelease --
                         </span>
                       )}
                     </div>
@@ -275,7 +275,7 @@ export function ApplicationList({
           </button>
           {!selectedEnvironmentName && (
             <p className="text-xs text-amber-600 dark:text-amber-400 text-center mt-2 font-medium">
-              ⚠️ Primero debes seleccionar un entorno destino
+              Primero debes seleccionar un entorno destino
             </p>
           )}
         </div>

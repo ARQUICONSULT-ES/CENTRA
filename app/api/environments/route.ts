@@ -124,6 +124,7 @@ export async function GET(request: NextRequest) {
         customerName: env.tenant.customer.customerName,
         customerImage: env.tenant.customer.imageBase64,
         tenantDescription: env.tenant.description,
+        tenantAuthContext: env.tenant.authContext,
         appsCount: env.installedApps.length,
         outdatedAppsCount,
       };

@@ -1516,13 +1516,13 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    allowedCustomers: number
     passwordSetupTokens: number
+    allowedCustomers: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    allowedCustomers?: boolean | UserCountOutputTypeCountAllowedCustomersArgs
     passwordSetupTokens?: boolean | UserCountOutputTypeCountPasswordSetupTokensArgs
+    allowedCustomers?: boolean | UserCountOutputTypeCountAllowedCustomersArgs
   }
 
   // Custom InputTypes
@@ -1539,15 +1539,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountAllowedCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserCustomerWhereInput
+  export type UserCountOutputTypeCountPasswordSetupTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PasswordSetupTokenWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountPasswordSetupTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PasswordSetupTokenWhereInput
+  export type UserCountOutputTypeCountAllowedCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserCustomerWhereInput
   }
 
 
@@ -1672,7 +1672,6 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    isActive: boolean | null
     githubToken: string | null
     githubAvatar: string | null
     createdAt: Date | null
@@ -1681,6 +1680,7 @@ export namespace Prisma {
     canAccessCustomers: boolean | null
     allCustomers: boolean | null
     canAccessAdmin: boolean | null
+    isActive: boolean | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1688,7 +1688,6 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    isActive: boolean | null
     githubToken: string | null
     githubAvatar: string | null
     createdAt: Date | null
@@ -1697,6 +1696,7 @@ export namespace Prisma {
     canAccessCustomers: boolean | null
     allCustomers: boolean | null
     canAccessAdmin: boolean | null
+    isActive: boolean | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1704,7 +1704,6 @@ export namespace Prisma {
     name: number
     email: number
     password: number
-    isActive: number
     githubToken: number
     githubAvatar: number
     createdAt: number
@@ -1713,6 +1712,7 @@ export namespace Prisma {
     canAccessCustomers: number
     allCustomers: number
     canAccessAdmin: number
+    isActive: number
     _all: number
   }
 
@@ -1722,7 +1722,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    isActive?: true
     githubToken?: true
     githubAvatar?: true
     createdAt?: true
@@ -1731,6 +1730,7 @@ export namespace Prisma {
     canAccessCustomers?: true
     allCustomers?: true
     canAccessAdmin?: true
+    isActive?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1738,7 +1738,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    isActive?: true
     githubToken?: true
     githubAvatar?: true
     createdAt?: true
@@ -1747,6 +1746,7 @@ export namespace Prisma {
     canAccessCustomers?: true
     allCustomers?: true
     canAccessAdmin?: true
+    isActive?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1754,7 +1754,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    isActive?: true
     githubToken?: true
     githubAvatar?: true
     createdAt?: true
@@ -1763,6 +1762,7 @@ export namespace Prisma {
     canAccessCustomers?: true
     allCustomers?: true
     canAccessAdmin?: true
+    isActive?: true
     _all?: true
   }
 
@@ -1843,7 +1843,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string | null
-    isActive: boolean
     githubToken: string | null
     githubAvatar: string | null
     createdAt: Date
@@ -1852,6 +1851,7 @@ export namespace Prisma {
     canAccessCustomers: boolean
     allCustomers: boolean
     canAccessAdmin: boolean
+    isActive: boolean
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -1876,7 +1876,6 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    isActive?: boolean
     githubToken?: boolean
     githubAvatar?: boolean
     createdAt?: boolean
@@ -1885,8 +1884,9 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
-    allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
+    isActive?: boolean
     passwordSetupTokens?: boolean | User$passwordSetupTokensArgs<ExtArgs>
+    allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1895,7 +1895,6 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    isActive?: boolean
     githubToken?: boolean
     githubAvatar?: boolean
     createdAt?: boolean
@@ -1904,6 +1903,7 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
+    isActive?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1911,7 +1911,6 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    isActive?: boolean
     githubToken?: boolean
     githubAvatar?: boolean
     createdAt?: boolean
@@ -1920,6 +1919,7 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
+    isActive?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -1927,7 +1927,6 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    isActive?: boolean
     githubToken?: boolean
     githubAvatar?: boolean
     createdAt?: boolean
@@ -1936,12 +1935,13 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
+    isActive?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "isActive" | "githubToken" | "githubAvatar" | "createdAt" | "updatedAt" | "canAccessRepos" | "canAccessCustomers" | "allCustomers" | "canAccessAdmin", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "githubToken" | "githubAvatar" | "createdAt" | "updatedAt" | "canAccessRepos" | "canAccessCustomers" | "allCustomers" | "canAccessAdmin" | "isActive", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
     passwordSetupTokens?: boolean | User$passwordSetupTokensArgs<ExtArgs>
+    allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1950,15 +1950,14 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      allowedCustomers: Prisma.$UserCustomerPayload<ExtArgs>[]
       passwordSetupTokens: Prisma.$PasswordSetupTokenPayload<ExtArgs>[]
+      allowedCustomers: Prisma.$UserCustomerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       email: string
       password: string | null
-      isActive: boolean
       githubToken: string | null
       githubAvatar: string | null
       createdAt: Date
@@ -1967,6 +1966,7 @@ export namespace Prisma {
       canAccessCustomers: boolean
       allCustomers: boolean
       canAccessAdmin: boolean
+      isActive: boolean
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2361,8 +2361,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    allowedCustomers<T extends User$allowedCustomersArgs<ExtArgs> = {}>(args?: Subset<T, User$allowedCustomersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     passwordSetupTokens<T extends User$passwordSetupTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$passwordSetupTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordSetupTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    allowedCustomers<T extends User$allowedCustomersArgs<ExtArgs> = {}>(args?: Subset<T, User$allowedCustomersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2396,7 +2396,6 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
-    readonly isActive: FieldRef<"User", 'Boolean'>
     readonly githubToken: FieldRef<"User", 'String'>
     readonly githubAvatar: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -2405,6 +2404,7 @@ export namespace Prisma {
     readonly canAccessCustomers: FieldRef<"User", 'Boolean'>
     readonly allCustomers: FieldRef<"User", 'Boolean'>
     readonly canAccessAdmin: FieldRef<"User", 'Boolean'>
+    readonly isActive: FieldRef<"User", 'Boolean'>
   }
     
 
@@ -2793,30 +2793,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.allowedCustomers
-   */
-  export type User$allowedCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the UserCustomer
-     */
-    select?: UserCustomerSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the UserCustomer
-     */
-    omit?: UserCustomerOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserCustomerInclude<ExtArgs> | null
-    where?: UserCustomerWhereInput
-    orderBy?: UserCustomerOrderByWithRelationInput | UserCustomerOrderByWithRelationInput[]
-    cursor?: UserCustomerWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: UserCustomerScalarFieldEnum | UserCustomerScalarFieldEnum[]
-  }
-
-  /**
    * User.passwordSetupTokens
    */
   export type User$passwordSetupTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2838,6 +2814,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PasswordSetupTokenScalarFieldEnum | PasswordSetupTokenScalarFieldEnum[]
+  }
+
+  /**
+   * User.allowedCustomers
+   */
+  export type User$allowedCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCustomer
+     */
+    select?: UserCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCustomer
+     */
+    omit?: UserCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCustomerInclude<ExtArgs> | null
+    where?: UserCustomerWhereInput
+    orderBy?: UserCustomerOrderByWithRelationInput | UserCustomerOrderByWithRelationInput[]
+    cursor?: UserCustomerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserCustomerScalarFieldEnum | UserCustomerScalarFieldEnum[]
   }
 
   /**
@@ -5176,24 +5176,24 @@ export namespace Prisma {
     userId?: boolean
     customerId?: boolean
     assignedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userCustomer"]>
 
   export type UserCustomerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     userId?: boolean
     customerId?: boolean
     assignedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userCustomer"]>
 
   export type UserCustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     userId?: boolean
     customerId?: boolean
     assignedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userCustomer"]>
 
   export type UserCustomerSelectScalar = {
@@ -5204,23 +5204,23 @@ export namespace Prisma {
 
   export type UserCustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "customerId" | "assignedAt", ExtArgs["result"]["userCustomer"]>
   export type UserCustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type UserCustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type UserCustomerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $UserCustomerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "UserCustomer"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       customer: Prisma.$CustomerPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       userId: string
@@ -5620,8 +5620,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserCustomerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6091,6 +6091,7 @@ export namespace Prisma {
     scope: string | null
     token: string | null
     tokenExpiresAt: Date | null
+    authContext: string | null
   }
 
   export type TenantMaxAggregateOutputType = {
@@ -6106,6 +6107,7 @@ export namespace Prisma {
     scope: string | null
     token: string | null
     tokenExpiresAt: Date | null
+    authContext: string | null
   }
 
   export type TenantCountAggregateOutputType = {
@@ -6121,6 +6123,7 @@ export namespace Prisma {
     scope: number
     token: number
     tokenExpiresAt: number
+    authContext: number
     _all: number
   }
 
@@ -6138,6 +6141,7 @@ export namespace Prisma {
     scope?: true
     token?: true
     tokenExpiresAt?: true
+    authContext?: true
   }
 
   export type TenantMaxAggregateInputType = {
@@ -6153,6 +6157,7 @@ export namespace Prisma {
     scope?: true
     token?: true
     tokenExpiresAt?: true
+    authContext?: true
   }
 
   export type TenantCountAggregateInputType = {
@@ -6168,6 +6173,7 @@ export namespace Prisma {
     scope?: true
     token?: true
     tokenExpiresAt?: true
+    authContext?: true
     _all?: true
   }
 
@@ -6256,6 +6262,7 @@ export namespace Prisma {
     scope: string | null
     token: string | null
     tokenExpiresAt: Date | null
+    authContext: string | null
     _count: TenantCountAggregateOutputType | null
     _min: TenantMinAggregateOutputType | null
     _max: TenantMaxAggregateOutputType | null
@@ -6288,8 +6295,9 @@ export namespace Prisma {
     scope?: boolean
     token?: boolean
     tokenExpiresAt?: boolean
-    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    authContext?: boolean
     environments?: boolean | Tenant$environmentsArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -6306,6 +6314,7 @@ export namespace Prisma {
     scope?: boolean
     token?: boolean
     tokenExpiresAt?: boolean
+    authContext?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -6322,6 +6331,7 @@ export namespace Prisma {
     scope?: boolean
     token?: boolean
     tokenExpiresAt?: boolean
+    authContext?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -6338,12 +6348,13 @@ export namespace Prisma {
     scope?: boolean
     token?: boolean
     tokenExpiresAt?: boolean
+    authContext?: boolean
   }
 
-  export type TenantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerId" | "description" | "createdAt" | "modifiedAt" | "connectionId" | "grantType" | "clientId" | "clientSecret" | "scope" | "token" | "tokenExpiresAt", ExtArgs["result"]["tenant"]>
+  export type TenantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerId" | "description" | "createdAt" | "modifiedAt" | "connectionId" | "grantType" | "clientId" | "clientSecret" | "scope" | "token" | "tokenExpiresAt" | "authContext", ExtArgs["result"]["tenant"]>
   export type TenantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    customer?: boolean | CustomerDefaultArgs<ExtArgs>
     environments?: boolean | Tenant$environmentsArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TenantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6356,8 +6367,8 @@ export namespace Prisma {
   export type $TenantPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Tenant"
     objects: {
-      customer: Prisma.$CustomerPayload<ExtArgs>
       environments: Prisma.$EnvironmentPayload<ExtArgs>[]
+      customer: Prisma.$CustomerPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6372,6 +6383,7 @@ export namespace Prisma {
       scope: string | null
       token: string | null
       tokenExpiresAt: Date | null
+      authContext: string | null
     }, ExtArgs["result"]["tenant"]>
     composites: {}
   }
@@ -6766,8 +6778,8 @@ export namespace Prisma {
    */
   export interface Prisma__TenantClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     environments<T extends Tenant$environmentsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$environmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EnvironmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6809,6 +6821,7 @@ export namespace Prisma {
     readonly scope: FieldRef<"Tenant", 'String'>
     readonly token: FieldRef<"Tenant", 'String'>
     readonly tokenExpiresAt: FieldRef<"Tenant", 'DateTime'>
+    readonly authContext: FieldRef<"Tenant", 'String'>
   }
     
 
@@ -10559,7 +10572,6 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
-    isActive: 'isActive',
     githubToken: 'githubToken',
     githubAvatar: 'githubAvatar',
     createdAt: 'createdAt',
@@ -10567,7 +10579,8 @@ export namespace Prisma {
     canAccessRepos: 'canAccessRepos',
     canAccessCustomers: 'canAccessCustomers',
     allCustomers: 'allCustomers',
-    canAccessAdmin: 'canAccessAdmin'
+    canAccessAdmin: 'canAccessAdmin',
+    isActive: 'isActive'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -10617,7 +10630,8 @@ export namespace Prisma {
     clientSecret: 'clientSecret',
     scope: 'scope',
     token: 'token',
-    tokenExpiresAt: 'tokenExpiresAt'
+    tokenExpiresAt: 'tokenExpiresAt',
+    authContext: 'authContext'
   };
 
   export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
@@ -10729,13 +10743,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -10746,6 +10753,13 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -10802,7 +10816,6 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringNullableFilter<"User"> | string | null
-    isActive?: BoolFilter<"User"> | boolean
     githubToken?: StringNullableFilter<"User"> | string | null
     githubAvatar?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -10811,8 +10824,9 @@ export namespace Prisma {
     canAccessCustomers?: BoolFilter<"User"> | boolean
     allCustomers?: BoolFilter<"User"> | boolean
     canAccessAdmin?: BoolFilter<"User"> | boolean
-    allowedCustomers?: UserCustomerListRelationFilter
+    isActive?: BoolFilter<"User"> | boolean
     passwordSetupTokens?: PasswordSetupTokenListRelationFilter
+    allowedCustomers?: UserCustomerListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -10820,7 +10834,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrderInput | SortOrder
-    isActive?: SortOrder
     githubToken?: SortOrderInput | SortOrder
     githubAvatar?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -10829,8 +10842,9 @@ export namespace Prisma {
     canAccessCustomers?: SortOrder
     allCustomers?: SortOrder
     canAccessAdmin?: SortOrder
-    allowedCustomers?: UserCustomerOrderByRelationAggregateInput
+    isActive?: SortOrder
     passwordSetupTokens?: PasswordSetupTokenOrderByRelationAggregateInput
+    allowedCustomers?: UserCustomerOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -10841,7 +10855,6 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     password?: StringNullableFilter<"User"> | string | null
-    isActive?: BoolFilter<"User"> | boolean
     githubToken?: StringNullableFilter<"User"> | string | null
     githubAvatar?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -10850,8 +10863,9 @@ export namespace Prisma {
     canAccessCustomers?: BoolFilter<"User"> | boolean
     allCustomers?: BoolFilter<"User"> | boolean
     canAccessAdmin?: BoolFilter<"User"> | boolean
-    allowedCustomers?: UserCustomerListRelationFilter
+    isActive?: BoolFilter<"User"> | boolean
     passwordSetupTokens?: PasswordSetupTokenListRelationFilter
+    allowedCustomers?: UserCustomerListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -10859,7 +10873,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrderInput | SortOrder
-    isActive?: SortOrder
     githubToken?: SortOrderInput | SortOrder
     githubAvatar?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -10868,6 +10881,7 @@ export namespace Prisma {
     canAccessCustomers?: SortOrder
     allCustomers?: SortOrder
     canAccessAdmin?: SortOrder
+    isActive?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -10881,7 +10895,6 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
-    isActive?: BoolWithAggregatesFilter<"User"> | boolean
     githubToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     githubAvatar?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -10890,6 +10903,7 @@ export namespace Prisma {
     canAccessCustomers?: BoolWithAggregatesFilter<"User"> | boolean
     allCustomers?: BoolWithAggregatesFilter<"User"> | boolean
     canAccessAdmin?: BoolWithAggregatesFilter<"User"> | boolean
+    isActive?: BoolWithAggregatesFilter<"User"> | boolean
   }
 
   export type PasswordSetupTokenWhereInput = {
@@ -11017,16 +11031,16 @@ export namespace Prisma {
     userId?: UuidFilter<"UserCustomer"> | string
     customerId?: UuidFilter<"UserCustomer"> | string
     assignedAt?: DateTimeFilter<"UserCustomer"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type UserCustomerOrderByWithRelationInput = {
     userId?: SortOrder
     customerId?: SortOrder
     assignedAt?: SortOrder
-    user?: UserOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type UserCustomerWhereUniqueInput = Prisma.AtLeast<{
@@ -11037,8 +11051,8 @@ export namespace Prisma {
     userId?: UuidFilter<"UserCustomer"> | string
     customerId?: UuidFilter<"UserCustomer"> | string
     assignedAt?: DateTimeFilter<"UserCustomer"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "userId_customerId">
 
   export type UserCustomerOrderByWithAggregationInput = {
@@ -11075,8 +11089,9 @@ export namespace Prisma {
     scope?: StringNullableFilter<"Tenant"> | string | null
     token?: StringNullableFilter<"Tenant"> | string | null
     tokenExpiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
-    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+    authContext?: StringNullableFilter<"Tenant"> | string | null
     environments?: EnvironmentListRelationFilter
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
   }
 
   export type TenantOrderByWithRelationInput = {
@@ -11092,8 +11107,9 @@ export namespace Prisma {
     scope?: SortOrderInput | SortOrder
     token?: SortOrderInput | SortOrder
     tokenExpiresAt?: SortOrderInput | SortOrder
-    customer?: CustomerOrderByWithRelationInput
+    authContext?: SortOrderInput | SortOrder
     environments?: EnvironmentOrderByRelationAggregateInput
+    customer?: CustomerOrderByWithRelationInput
   }
 
   export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -11112,8 +11128,9 @@ export namespace Prisma {
     scope?: StringNullableFilter<"Tenant"> | string | null
     token?: StringNullableFilter<"Tenant"> | string | null
     tokenExpiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
-    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+    authContext?: StringNullableFilter<"Tenant"> | string | null
     environments?: EnvironmentListRelationFilter
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
   }, "id">
 
   export type TenantOrderByWithAggregationInput = {
@@ -11129,6 +11146,7 @@ export namespace Prisma {
     scope?: SortOrderInput | SortOrder
     token?: SortOrderInput | SortOrder
     tokenExpiresAt?: SortOrderInput | SortOrder
+    authContext?: SortOrderInput | SortOrder
     _count?: TenantCountOrderByAggregateInput
     _max?: TenantMaxOrderByAggregateInput
     _min?: TenantMinOrderByAggregateInput
@@ -11150,6 +11168,7 @@ export namespace Prisma {
     scope?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
     token?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
     tokenExpiresAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
+    authContext?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
   }
 
   export type EnvironmentWhereInput = {
@@ -11384,7 +11403,6 @@ export namespace Prisma {
     name: string
     email: string
     password?: string | null
-    isActive?: boolean
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
@@ -11393,8 +11411,9 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
-    allowedCustomers?: UserCustomerCreateNestedManyWithoutUserInput
+    isActive?: boolean
     passwordSetupTokens?: PasswordSetupTokenCreateNestedManyWithoutUserInput
+    allowedCustomers?: UserCustomerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -11402,7 +11421,6 @@ export namespace Prisma {
     name: string
     email: string
     password?: string | null
-    isActive?: boolean
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
@@ -11411,8 +11429,9 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
-    allowedCustomers?: UserCustomerUncheckedCreateNestedManyWithoutUserInput
+    isActive?: boolean
     passwordSetupTokens?: PasswordSetupTokenUncheckedCreateNestedManyWithoutUserInput
+    allowedCustomers?: UserCustomerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -11420,7 +11439,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11429,8 +11447,9 @@ export namespace Prisma {
     canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
     allCustomers?: BoolFieldUpdateOperationsInput | boolean
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
-    allowedCustomers?: UserCustomerUpdateManyWithoutUserNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     passwordSetupTokens?: PasswordSetupTokenUpdateManyWithoutUserNestedInput
+    allowedCustomers?: UserCustomerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11438,7 +11457,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11447,8 +11465,9 @@ export namespace Prisma {
     canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
     allCustomers?: BoolFieldUpdateOperationsInput | boolean
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
-    allowedCustomers?: UserCustomerUncheckedUpdateManyWithoutUserNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     passwordSetupTokens?: PasswordSetupTokenUncheckedUpdateManyWithoutUserNestedInput
+    allowedCustomers?: UserCustomerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -11456,7 +11475,6 @@ export namespace Prisma {
     name: string
     email: string
     password?: string | null
-    isActive?: boolean
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
@@ -11465,6 +11483,7 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
+    isActive?: boolean
   }
 
   export type UserUpdateManyMutationInput = {
@@ -11472,7 +11491,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11481,6 +11499,7 @@ export namespace Prisma {
     canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
     allCustomers?: BoolFieldUpdateOperationsInput | boolean
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -11488,7 +11507,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11497,6 +11515,7 @@ export namespace Prisma {
     canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
     allCustomers?: BoolFieldUpdateOperationsInput | boolean
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PasswordSetupTokenCreateInput = {
@@ -11627,8 +11646,8 @@ export namespace Prisma {
 
   export type UserCustomerCreateInput = {
     assignedAt?: Date | string
-    user: UserCreateNestedOneWithoutAllowedCustomersInput
     customer: CustomerCreateNestedOneWithoutAllowedUsersInput
+    user: UserCreateNestedOneWithoutAllowedCustomersInput
   }
 
   export type UserCustomerUncheckedCreateInput = {
@@ -11639,8 +11658,8 @@ export namespace Prisma {
 
   export type UserCustomerUpdateInput = {
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutAllowedCustomersNestedInput
     customer?: CustomerUpdateOneRequiredWithoutAllowedUsersNestedInput
+    user?: UserUpdateOneRequiredWithoutAllowedCustomersNestedInput
   }
 
   export type UserCustomerUncheckedUpdateInput = {
@@ -11677,8 +11696,9 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
-    customer: CustomerCreateNestedOneWithoutTenantsInput
+    authContext?: string | null
     environments?: EnvironmentCreateNestedManyWithoutTenantInput
+    customer: CustomerCreateNestedOneWithoutTenantsInput
   }
 
   export type TenantUncheckedCreateInput = {
@@ -11694,6 +11714,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     environments?: EnvironmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
@@ -11709,8 +11730,9 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    customer?: CustomerUpdateOneRequiredWithoutTenantsNestedInput
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     environments?: EnvironmentUpdateManyWithoutTenantNestedInput
+    customer?: CustomerUpdateOneRequiredWithoutTenantsNestedInput
   }
 
   export type TenantUncheckedUpdateInput = {
@@ -11726,6 +11748,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     environments?: EnvironmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
@@ -11742,6 +11765,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
   }
 
   export type TenantUpdateManyMutationInput = {
@@ -11756,6 +11780,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TenantUncheckedUpdateManyInput = {
@@ -11771,6 +11796,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EnvironmentCreateInput = {
@@ -12066,11 +12092,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -12082,10 +12103,9 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type UserCustomerListRelationFilter = {
-    every?: UserCustomerWhereInput
-    some?: UserCustomerWhereInput
-    none?: UserCustomerWhereInput
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type PasswordSetupTokenListRelationFilter = {
@@ -12094,16 +12114,22 @@ export namespace Prisma {
     none?: PasswordSetupTokenWhereInput
   }
 
+  export type UserCustomerListRelationFilter = {
+    every?: UserCustomerWhereInput
+    some?: UserCustomerWhereInput
+    none?: UserCustomerWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
-  export type UserCustomerOrderByRelationAggregateInput = {
+  export type PasswordSetupTokenOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type PasswordSetupTokenOrderByRelationAggregateInput = {
+  export type UserCustomerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12112,7 +12138,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    isActive?: SortOrder
     githubToken?: SortOrder
     githubAvatar?: SortOrder
     createdAt?: SortOrder
@@ -12121,6 +12146,7 @@ export namespace Prisma {
     canAccessCustomers?: SortOrder
     allCustomers?: SortOrder
     canAccessAdmin?: SortOrder
+    isActive?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -12128,7 +12154,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    isActive?: SortOrder
     githubToken?: SortOrder
     githubAvatar?: SortOrder
     createdAt?: SortOrder
@@ -12137,6 +12162,7 @@ export namespace Prisma {
     canAccessCustomers?: SortOrder
     allCustomers?: SortOrder
     canAccessAdmin?: SortOrder
+    isActive?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -12144,7 +12170,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    isActive?: SortOrder
     githubToken?: SortOrder
     githubAvatar?: SortOrder
     createdAt?: SortOrder
@@ -12153,6 +12178,7 @@ export namespace Prisma {
     canAccessCustomers?: SortOrder
     allCustomers?: SortOrder
     canAccessAdmin?: SortOrder
+    isActive?: SortOrder
   }
 
   export type UuidWithAggregatesFilter<$PrismaModel = never> = {
@@ -12206,14 +12232,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -12226,6 +12244,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -12399,6 +12425,7 @@ export namespace Prisma {
     scope?: SortOrder
     token?: SortOrder
     tokenExpiresAt?: SortOrder
+    authContext?: SortOrder
   }
 
   export type TenantMaxOrderByAggregateInput = {
@@ -12414,6 +12441,7 @@ export namespace Prisma {
     scope?: SortOrder
     token?: SortOrder
     tokenExpiresAt?: SortOrder
+    authContext?: SortOrder
   }
 
   export type TenantMinOrderByAggregateInput = {
@@ -12429,6 +12457,7 @@ export namespace Prisma {
     scope?: SortOrder
     token?: SortOrder
     tokenExpiresAt?: SortOrder
+    authContext?: SortOrder
   }
 
   export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -12632,13 +12661,6 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
-  export type UserCustomerCreateNestedManyWithoutUserInput = {
-    create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
-    createMany?: UserCustomerCreateManyUserInputEnvelope
-    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
-  }
-
   export type PasswordSetupTokenCreateNestedManyWithoutUserInput = {
     create?: XOR<PasswordSetupTokenCreateWithoutUserInput, PasswordSetupTokenUncheckedCreateWithoutUserInput> | PasswordSetupTokenCreateWithoutUserInput[] | PasswordSetupTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasswordSetupTokenCreateOrConnectWithoutUserInput | PasswordSetupTokenCreateOrConnectWithoutUserInput[]
@@ -12646,7 +12668,7 @@ export namespace Prisma {
     connect?: PasswordSetupTokenWhereUniqueInput | PasswordSetupTokenWhereUniqueInput[]
   }
 
-  export type UserCustomerUncheckedCreateNestedManyWithoutUserInput = {
+  export type UserCustomerCreateNestedManyWithoutUserInput = {
     create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
     connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
     createMany?: UserCustomerCreateManyUserInputEnvelope
@@ -12660,6 +12682,13 @@ export namespace Prisma {
     connect?: PasswordSetupTokenWhereUniqueInput | PasswordSetupTokenWhereUniqueInput[]
   }
 
+  export type UserCustomerUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
+    createMany?: UserCustomerCreateManyUserInputEnvelope
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -12668,26 +12697,12 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
 
-  export type UserCustomerUpdateManyWithoutUserNestedInput = {
-    create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
-    upsert?: UserCustomerUpsertWithWhereUniqueWithoutUserInput | UserCustomerUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: UserCustomerCreateManyUserInputEnvelope
-    set?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
-    disconnect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
-    delete?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
-    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
-    update?: UserCustomerUpdateWithWhereUniqueWithoutUserInput | UserCustomerUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: UserCustomerUpdateManyWithWhereWithoutUserInput | UserCustomerUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type PasswordSetupTokenUpdateManyWithoutUserNestedInput = {
@@ -12704,7 +12719,7 @@ export namespace Prisma {
     deleteMany?: PasswordSetupTokenScalarWhereInput | PasswordSetupTokenScalarWhereInput[]
   }
 
-  export type UserCustomerUncheckedUpdateManyWithoutUserNestedInput = {
+  export type UserCustomerUpdateManyWithoutUserNestedInput = {
     create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
     connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
     upsert?: UserCustomerUpsertWithWhereUniqueWithoutUserInput | UserCustomerUpsertWithWhereUniqueWithoutUserInput[]
@@ -12730,6 +12745,20 @@ export namespace Prisma {
     update?: PasswordSetupTokenUpdateWithWhereUniqueWithoutUserInput | PasswordSetupTokenUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: PasswordSetupTokenUpdateManyWithWhereWithoutUserInput | PasswordSetupTokenUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: PasswordSetupTokenScalarWhereInput | PasswordSetupTokenScalarWhereInput[]
+  }
+
+  export type UserCustomerUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput> | UserCustomerCreateWithoutUserInput[] | UserCustomerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
+    upsert?: UserCustomerUpsertWithWhereUniqueWithoutUserInput | UserCustomerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserCustomerCreateManyUserInputEnvelope
+    set?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    disconnect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    delete?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+    update?: UserCustomerUpdateWithWhereUniqueWithoutUserInput | UserCustomerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserCustomerUpdateManyWithWhereWithoutUserInput | UserCustomerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutPasswordSetupTokensInput = {
@@ -12838,24 +12867,16 @@ export namespace Prisma {
     deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutAllowedCustomersInput = {
-    create?: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAllowedCustomersInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type CustomerCreateNestedOneWithoutAllowedUsersInput = {
     create?: XOR<CustomerCreateWithoutAllowedUsersInput, CustomerUncheckedCreateWithoutAllowedUsersInput>
     connectOrCreate?: CustomerCreateOrConnectWithoutAllowedUsersInput
     connect?: CustomerWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutAllowedCustomersNestedInput = {
+  export type UserCreateNestedOneWithoutAllowedCustomersInput = {
     create?: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
     connectOrCreate?: UserCreateOrConnectWithoutAllowedCustomersInput
-    upsert?: UserUpsertWithoutAllowedCustomersInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAllowedCustomersInput, UserUpdateWithoutAllowedCustomersInput>, UserUncheckedUpdateWithoutAllowedCustomersInput>
   }
 
   export type CustomerUpdateOneRequiredWithoutAllowedUsersNestedInput = {
@@ -12866,10 +12887,12 @@ export namespace Prisma {
     update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutAllowedUsersInput, CustomerUpdateWithoutAllowedUsersInput>, CustomerUncheckedUpdateWithoutAllowedUsersInput>
   }
 
-  export type CustomerCreateNestedOneWithoutTenantsInput = {
-    create?: XOR<CustomerCreateWithoutTenantsInput, CustomerUncheckedCreateWithoutTenantsInput>
-    connectOrCreate?: CustomerCreateOrConnectWithoutTenantsInput
-    connect?: CustomerWhereUniqueInput
+  export type UserUpdateOneRequiredWithoutAllowedCustomersNestedInput = {
+    create?: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAllowedCustomersInput
+    upsert?: UserUpsertWithoutAllowedCustomersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAllowedCustomersInput, UserUpdateWithoutAllowedCustomersInput>, UserUncheckedUpdateWithoutAllowedCustomersInput>
   }
 
   export type EnvironmentCreateNestedManyWithoutTenantInput = {
@@ -12879,19 +12902,17 @@ export namespace Prisma {
     connect?: EnvironmentWhereUniqueInput | EnvironmentWhereUniqueInput[]
   }
 
+  export type CustomerCreateNestedOneWithoutTenantsInput = {
+    create?: XOR<CustomerCreateWithoutTenantsInput, CustomerUncheckedCreateWithoutTenantsInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutTenantsInput
+    connect?: CustomerWhereUniqueInput
+  }
+
   export type EnvironmentUncheckedCreateNestedManyWithoutTenantInput = {
     create?: XOR<EnvironmentCreateWithoutTenantInput, EnvironmentUncheckedCreateWithoutTenantInput> | EnvironmentCreateWithoutTenantInput[] | EnvironmentUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: EnvironmentCreateOrConnectWithoutTenantInput | EnvironmentCreateOrConnectWithoutTenantInput[]
     createMany?: EnvironmentCreateManyTenantInputEnvelope
     connect?: EnvironmentWhereUniqueInput | EnvironmentWhereUniqueInput[]
-  }
-
-  export type CustomerUpdateOneRequiredWithoutTenantsNestedInput = {
-    create?: XOR<CustomerCreateWithoutTenantsInput, CustomerUncheckedCreateWithoutTenantsInput>
-    connectOrCreate?: CustomerCreateOrConnectWithoutTenantsInput
-    upsert?: CustomerUpsertWithoutTenantsInput
-    connect?: CustomerWhereUniqueInput
-    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutTenantsInput, CustomerUpdateWithoutTenantsInput>, CustomerUncheckedUpdateWithoutTenantsInput>
   }
 
   export type EnvironmentUpdateManyWithoutTenantNestedInput = {
@@ -12906,6 +12927,14 @@ export namespace Prisma {
     update?: EnvironmentUpdateWithWhereUniqueWithoutTenantInput | EnvironmentUpdateWithWhereUniqueWithoutTenantInput[]
     updateMany?: EnvironmentUpdateManyWithWhereWithoutTenantInput | EnvironmentUpdateManyWithWhereWithoutTenantInput[]
     deleteMany?: EnvironmentScalarWhereInput | EnvironmentScalarWhereInput[]
+  }
+
+  export type CustomerUpdateOneRequiredWithoutTenantsNestedInput = {
+    create?: XOR<CustomerCreateWithoutTenantsInput, CustomerUncheckedCreateWithoutTenantsInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutTenantsInput
+    upsert?: CustomerUpsertWithoutTenantsInput
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutTenantsInput, CustomerUpdateWithoutTenantsInput>, CustomerUncheckedUpdateWithoutTenantsInput>
   }
 
   export type EnvironmentUncheckedUpdateManyWithoutTenantNestedInput = {
@@ -13031,11 +13060,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13045,6 +13069,11 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
@@ -13117,14 +13146,6 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13137,6 +13158,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -13229,26 +13258,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type UserCustomerCreateWithoutUserInput = {
-    assignedAt?: Date | string
-    customer: CustomerCreateNestedOneWithoutAllowedUsersInput
-  }
-
-  export type UserCustomerUncheckedCreateWithoutUserInput = {
-    customerId: string
-    assignedAt?: Date | string
-  }
-
-  export type UserCustomerCreateOrConnectWithoutUserInput = {
-    where: UserCustomerWhereUniqueInput
-    create: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput>
-  }
-
-  export type UserCustomerCreateManyUserInputEnvelope = {
-    data: UserCustomerCreateManyUserInput | UserCustomerCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
   export type PasswordSetupTokenCreateWithoutUserInput = {
     id?: string
     token: string
@@ -13275,29 +13284,24 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserCustomerUpsertWithWhereUniqueWithoutUserInput = {
+  export type UserCustomerCreateWithoutUserInput = {
+    assignedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutAllowedUsersInput
+  }
+
+  export type UserCustomerUncheckedCreateWithoutUserInput = {
+    customerId: string
+    assignedAt?: Date | string
+  }
+
+  export type UserCustomerCreateOrConnectWithoutUserInput = {
     where: UserCustomerWhereUniqueInput
-    update: XOR<UserCustomerUpdateWithoutUserInput, UserCustomerUncheckedUpdateWithoutUserInput>
     create: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput>
   }
 
-  export type UserCustomerUpdateWithWhereUniqueWithoutUserInput = {
-    where: UserCustomerWhereUniqueInput
-    data: XOR<UserCustomerUpdateWithoutUserInput, UserCustomerUncheckedUpdateWithoutUserInput>
-  }
-
-  export type UserCustomerUpdateManyWithWhereWithoutUserInput = {
-    where: UserCustomerScalarWhereInput
-    data: XOR<UserCustomerUpdateManyMutationInput, UserCustomerUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type UserCustomerScalarWhereInput = {
-    AND?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
-    OR?: UserCustomerScalarWhereInput[]
-    NOT?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
-    userId?: UuidFilter<"UserCustomer"> | string
-    customerId?: UuidFilter<"UserCustomer"> | string
-    assignedAt?: DateTimeFilter<"UserCustomer"> | Date | string
+  export type UserCustomerCreateManyUserInputEnvelope = {
+    data: UserCustomerCreateManyUserInput | UserCustomerCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type PasswordSetupTokenUpsertWithWhereUniqueWithoutUserInput = {
@@ -13328,12 +13332,36 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PasswordSetupToken"> | Date | string
   }
 
+  export type UserCustomerUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserCustomerWhereUniqueInput
+    update: XOR<UserCustomerUpdateWithoutUserInput, UserCustomerUncheckedUpdateWithoutUserInput>
+    create: XOR<UserCustomerCreateWithoutUserInput, UserCustomerUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserCustomerUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserCustomerWhereUniqueInput
+    data: XOR<UserCustomerUpdateWithoutUserInput, UserCustomerUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserCustomerUpdateManyWithWhereWithoutUserInput = {
+    where: UserCustomerScalarWhereInput
+    data: XOR<UserCustomerUpdateManyMutationInput, UserCustomerUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserCustomerScalarWhereInput = {
+    AND?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+    OR?: UserCustomerScalarWhereInput[]
+    NOT?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+    userId?: UuidFilter<"UserCustomer"> | string
+    customerId?: UuidFilter<"UserCustomer"> | string
+    assignedAt?: DateTimeFilter<"UserCustomer"> | Date | string
+  }
+
   export type UserCreateWithoutPasswordSetupTokensInput = {
     id?: string
     name: string
     email: string
     password?: string | null
-    isActive?: boolean
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
@@ -13342,6 +13370,7 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
+    isActive?: boolean
     allowedCustomers?: UserCustomerCreateNestedManyWithoutUserInput
   }
 
@@ -13350,7 +13379,6 @@ export namespace Prisma {
     name: string
     email: string
     password?: string | null
-    isActive?: boolean
     githubToken?: string | null
     githubAvatar?: string | null
     createdAt?: Date | string
@@ -13359,6 +13387,7 @@ export namespace Prisma {
     canAccessCustomers?: boolean
     allCustomers?: boolean
     canAccessAdmin?: boolean
+    isActive?: boolean
     allowedCustomers?: UserCustomerUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -13383,7 +13412,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13392,6 +13420,7 @@ export namespace Prisma {
     canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
     allCustomers?: BoolFieldUpdateOperationsInput | boolean
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     allowedCustomers?: UserCustomerUpdateManyWithoutUserNestedInput
   }
 
@@ -13400,7 +13429,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
     githubToken?: NullableStringFieldUpdateOperationsInput | string | null
     githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13409,6 +13437,7 @@ export namespace Prisma {
     canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
     allCustomers?: BoolFieldUpdateOperationsInput | boolean
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     allowedCustomers?: UserCustomerUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -13424,6 +13453,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     environments?: EnvironmentCreateNestedManyWithoutTenantInput
   }
 
@@ -13439,6 +13469,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     environments?: EnvironmentUncheckedCreateNestedManyWithoutTenantInput
   }
 
@@ -13504,6 +13535,7 @@ export namespace Prisma {
     scope?: StringNullableFilter<"Tenant"> | string | null
     token?: StringNullableFilter<"Tenant"> | string | null
     tokenExpiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    authContext?: StringNullableFilter<"Tenant"> | string | null
   }
 
   export type UserCustomerUpsertWithWhereUniqueWithoutCustomerInput = {
@@ -13520,45 +13552,6 @@ export namespace Prisma {
   export type UserCustomerUpdateManyWithWhereWithoutCustomerInput = {
     where: UserCustomerScalarWhereInput
     data: XOR<UserCustomerUpdateManyMutationInput, UserCustomerUncheckedUpdateManyWithoutCustomerInput>
-  }
-
-  export type UserCreateWithoutAllowedCustomersInput = {
-    id?: string
-    name: string
-    email: string
-    password?: string | null
-    isActive?: boolean
-    githubToken?: string | null
-    githubAvatar?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    canAccessRepos?: boolean
-    canAccessCustomers?: boolean
-    allCustomers?: boolean
-    canAccessAdmin?: boolean
-    passwordSetupTokens?: PasswordSetupTokenCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutAllowedCustomersInput = {
-    id?: string
-    name: string
-    email: string
-    password?: string | null
-    isActive?: boolean
-    githubToken?: string | null
-    githubAvatar?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    canAccessRepos?: boolean
-    canAccessCustomers?: boolean
-    allCustomers?: boolean
-    canAccessAdmin?: boolean
-    passwordSetupTokens?: PasswordSetupTokenUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutAllowedCustomersInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
   }
 
   export type CustomerCreateWithoutAllowedUsersInput = {
@@ -13584,49 +13577,43 @@ export namespace Prisma {
     create: XOR<CustomerCreateWithoutAllowedUsersInput, CustomerUncheckedCreateWithoutAllowedUsersInput>
   }
 
-  export type UserUpsertWithoutAllowedCustomersInput = {
-    update: XOR<UserUpdateWithoutAllowedCustomersInput, UserUncheckedUpdateWithoutAllowedCustomersInput>
+  export type UserCreateWithoutAllowedCustomersInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string | null
+    githubToken?: string | null
+    githubAvatar?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
+    isActive?: boolean
+    passwordSetupTokens?: PasswordSetupTokenCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAllowedCustomersInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string | null
+    githubToken?: string | null
+    githubAvatar?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
+    isActive?: boolean
+    passwordSetupTokens?: PasswordSetupTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAllowedCustomersInput = {
+    where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutAllowedCustomersInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutAllowedCustomersInput, UserUncheckedUpdateWithoutAllowedCustomersInput>
-  }
-
-  export type UserUpdateWithoutAllowedCustomersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    githubToken?: NullableStringFieldUpdateOperationsInput | string | null
-    githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
-    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
-    allCustomers?: BoolFieldUpdateOperationsInput | boolean
-    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
-    passwordSetupTokens?: PasswordSetupTokenUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutAllowedCustomersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    githubToken?: NullableStringFieldUpdateOperationsInput | string | null
-    githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
-    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
-    allCustomers?: BoolFieldUpdateOperationsInput | boolean
-    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
-    passwordSetupTokens?: PasswordSetupTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CustomerUpsertWithoutAllowedUsersInput = {
@@ -13658,27 +13645,49 @@ export namespace Prisma {
     tenants?: TenantUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
-  export type CustomerCreateWithoutTenantsInput = {
-    id?: string
-    customerName: string
-    imageBase64?: string | null
-    infraestructureType?: $Enums.InfrastructureType
-    description?: string | null
-    allowedUsers?: UserCustomerCreateNestedManyWithoutCustomerInput
+  export type UserUpsertWithoutAllowedCustomersInput = {
+    update: XOR<UserUpdateWithoutAllowedCustomersInput, UserUncheckedUpdateWithoutAllowedCustomersInput>
+    create: XOR<UserCreateWithoutAllowedCustomersInput, UserUncheckedCreateWithoutAllowedCustomersInput>
+    where?: UserWhereInput
   }
 
-  export type CustomerUncheckedCreateWithoutTenantsInput = {
-    id?: string
-    customerName: string
-    imageBase64?: string | null
-    infraestructureType?: $Enums.InfrastructureType
-    description?: string | null
-    allowedUsers?: UserCustomerUncheckedCreateNestedManyWithoutCustomerInput
+  export type UserUpdateToOneWithWhereWithoutAllowedCustomersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAllowedCustomersInput, UserUncheckedUpdateWithoutAllowedCustomersInput>
   }
 
-  export type CustomerCreateOrConnectWithoutTenantsInput = {
-    where: CustomerWhereUniqueInput
-    create: XOR<CustomerCreateWithoutTenantsInput, CustomerUncheckedCreateWithoutTenantsInput>
+  export type UserUpdateWithoutAllowedCustomersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    githubToken?: NullableStringFieldUpdateOperationsInput | string | null
+    githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    passwordSetupTokens?: PasswordSetupTokenUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAllowedCustomersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    githubToken?: NullableStringFieldUpdateOperationsInput | string | null
+    githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    passwordSetupTokens?: PasswordSetupTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type EnvironmentCreateWithoutTenantInput = {
@@ -13713,33 +13722,27 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CustomerUpsertWithoutTenantsInput = {
-    update: XOR<CustomerUpdateWithoutTenantsInput, CustomerUncheckedUpdateWithoutTenantsInput>
+  export type CustomerCreateWithoutTenantsInput = {
+    id?: string
+    customerName: string
+    imageBase64?: string | null
+    infraestructureType?: $Enums.InfrastructureType
+    description?: string | null
+    allowedUsers?: UserCustomerCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerUncheckedCreateWithoutTenantsInput = {
+    id?: string
+    customerName: string
+    imageBase64?: string | null
+    infraestructureType?: $Enums.InfrastructureType
+    description?: string | null
+    allowedUsers?: UserCustomerUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerCreateOrConnectWithoutTenantsInput = {
+    where: CustomerWhereUniqueInput
     create: XOR<CustomerCreateWithoutTenantsInput, CustomerUncheckedCreateWithoutTenantsInput>
-    where?: CustomerWhereInput
-  }
-
-  export type CustomerUpdateToOneWithWhereWithoutTenantsInput = {
-    where?: CustomerWhereInput
-    data: XOR<CustomerUpdateWithoutTenantsInput, CustomerUncheckedUpdateWithoutTenantsInput>
-  }
-
-  export type CustomerUpdateWithoutTenantsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    customerName?: StringFieldUpdateOperationsInput | string
-    imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
-    infraestructureType?: EnumInfrastructureTypeFieldUpdateOperationsInput | $Enums.InfrastructureType
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    allowedUsers?: UserCustomerUpdateManyWithoutCustomerNestedInput
-  }
-
-  export type CustomerUncheckedUpdateWithoutTenantsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    customerName?: StringFieldUpdateOperationsInput | string
-    imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
-    infraestructureType?: EnumInfrastructureTypeFieldUpdateOperationsInput | $Enums.InfrastructureType
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    allowedUsers?: UserCustomerUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type EnvironmentUpsertWithWhereUniqueWithoutTenantInput = {
@@ -13772,6 +13775,35 @@ export namespace Prisma {
     platformVersion?: StringNullableFilter<"Environment"> | string | null
   }
 
+  export type CustomerUpsertWithoutTenantsInput = {
+    update: XOR<CustomerUpdateWithoutTenantsInput, CustomerUncheckedUpdateWithoutTenantsInput>
+    create: XOR<CustomerCreateWithoutTenantsInput, CustomerUncheckedCreateWithoutTenantsInput>
+    where?: CustomerWhereInput
+  }
+
+  export type CustomerUpdateToOneWithWhereWithoutTenantsInput = {
+    where?: CustomerWhereInput
+    data: XOR<CustomerUpdateWithoutTenantsInput, CustomerUncheckedUpdateWithoutTenantsInput>
+  }
+
+  export type CustomerUpdateWithoutTenantsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    infraestructureType?: EnumInfrastructureTypeFieldUpdateOperationsInput | $Enums.InfrastructureType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedUsers?: UserCustomerUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutTenantsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    imageBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    infraestructureType?: EnumInfrastructureTypeFieldUpdateOperationsInput | $Enums.InfrastructureType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedUsers?: UserCustomerUncheckedUpdateManyWithoutCustomerNestedInput
+  }
+
   export type TenantCreateWithoutEnvironmentsInput = {
     id: string
     description?: string | null
@@ -13784,6 +13816,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
     customer: CustomerCreateNestedOneWithoutTenantsInput
   }
 
@@ -13800,6 +13833,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
   }
 
   export type TenantCreateOrConnectWithoutEnvironmentsInput = {
@@ -13858,6 +13892,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutTenantsNestedInput
   }
 
@@ -13874,6 +13909,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type InstalledAppUpsertWithWhereUniqueWithoutEnvironmentInput = {
@@ -13966,11 +14002,6 @@ export namespace Prisma {
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type UserCustomerCreateManyUserInput = {
-    customerId: string
-    assignedAt?: Date | string
-  }
-
   export type PasswordSetupTokenCreateManyUserInput = {
     id?: string
     token: string
@@ -13979,19 +14010,9 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type UserCustomerUpdateWithoutUserInput = {
-    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    customer?: CustomerUpdateOneRequiredWithoutAllowedUsersNestedInput
-  }
-
-  export type UserCustomerUncheckedUpdateWithoutUserInput = {
-    customerId?: StringFieldUpdateOperationsInput | string
-    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserCustomerUncheckedUpdateManyWithoutUserInput = {
-    customerId?: StringFieldUpdateOperationsInput | string
-    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type UserCustomerCreateManyUserInput = {
+    customerId: string
+    assignedAt?: Date | string
   }
 
   export type PasswordSetupTokenUpdateWithoutUserInput = {
@@ -14018,6 +14039,21 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserCustomerUpdateWithoutUserInput = {
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutAllowedUsersNestedInput
+  }
+
+  export type UserCustomerUncheckedUpdateWithoutUserInput = {
+    customerId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCustomerUncheckedUpdateManyWithoutUserInput = {
+    customerId?: StringFieldUpdateOperationsInput | string
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TenantCreateManyCustomerInput = {
     id: string
     description?: string | null
@@ -14030,6 +14066,7 @@ export namespace Prisma {
     scope?: string | null
     token?: string | null
     tokenExpiresAt?: Date | string | null
+    authContext?: string | null
   }
 
   export type UserCustomerCreateManyCustomerInput = {
@@ -14049,6 +14086,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     environments?: EnvironmentUpdateManyWithoutTenantNestedInput
   }
 
@@ -14064,6 +14102,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
     environments?: EnvironmentUncheckedUpdateManyWithoutTenantNestedInput
   }
 
@@ -14079,6 +14118,7 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     token?: NullableStringFieldUpdateOperationsInput | string | null
     tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authContext?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserCustomerUpdateWithoutCustomerInput = {

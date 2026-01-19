@@ -28,6 +28,8 @@ export interface Tenant {
   scope?: string | null;
   token?: string | null;
   tokenExpiresAt?: string | Date | null;
+  // Auth Context para deployments (BC PowerShell)
+  authContext?: string | null;
 }
 
 // ==================== ENVIRONMENT TYPES ====================
@@ -48,6 +50,7 @@ export interface EnvironmentWithCustomer extends Environment {
   customerName: string;
   customerImage?: string | null;
   tenantDescription?: string | null;
+  tenantAuthContext?: string | null; // Auth Context del tenant para deployments
   appsCount?: number;
   outdatedAppsCount?: number;
 }

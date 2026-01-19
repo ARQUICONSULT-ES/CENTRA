@@ -114,7 +114,7 @@ export function DeploymentProgressModal({
       case 'downloading': return '📥 Descargando desde GitHub...';
       case 'installing': return '⚙️ Instalando en Business Central...';
       case 'success': return '✅ Instalado correctamente';
-      case 'error': return '❌ Error en instalación';
+      case 'error': return 'Error en instalación';
       default: return '';
     }
   };
@@ -181,7 +181,7 @@ export function DeploymentProgressModal({
                 {successCount > 0 && <span className="text-green-600 dark:text-green-400">✅ {successCount} completadas</span>}
                 {processingCount > 0 && <span className="text-blue-600 dark:text-blue-400">⏳ {processingCount} en proceso</span>}
                 {pendingCount > 0 && <span className="text-gray-500">⏸️ {pendingCount} pendientes</span>}
-                {errorCount > 0 && <span className="text-red-600 dark:text-red-400">❌ {errorCount} fallidas</span>}
+                {errorCount > 0 && <span className="text-red-600 dark:text-red-400">{errorCount} fallidas</span>}
                 {abortedCount > 0 && <span className="text-orange-600 dark:text-orange-400">⏸️ {abortedCount} abortadas</span>}
               </div>
               <span className="font-medium">{Math.round((successCount / totalApps) * 100)}%</span>

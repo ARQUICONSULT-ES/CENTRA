@@ -36,7 +36,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { customerId, description, connectionId, grantType, clientId, clientSecret, scope, token, tokenExpiresAt } = body;
+    const { customerId, description, connectionId, grantType, clientId, clientSecret, scope, token, tokenExpiresAt, authContext } = body;
 
     const now = new Date();
 
@@ -80,6 +80,7 @@ export async function PUT(
         scope: scope || null,
         token: token || null,
         tokenExpiresAt: tokenExpiresAt ? new Date(tokenExpiresAt) : null,
+        authContext: authContext !== undefined ? (authContext || null) : undefined,
       },
       include: {
         customer: {

@@ -29,6 +29,7 @@ export default function TenantFormModal({
     scope: "https://api.businesscentral.dynamics.com/.default",
     token: "",
     tokenExpiresAt: "",
+    authContext: "",
   });
 
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -78,6 +79,7 @@ export default function TenantFormModal({
               ? tenant.tokenExpiresAt
               : tenant.tokenExpiresAt.toISOString()
             : "",
+          authContext: tenant.authContext || "",
         });
       } else {
         setFormData({
@@ -90,6 +92,7 @@ export default function TenantFormModal({
           scope: "https://api.businesscentral.dynamics.com/.default",
           token: "",
           tokenExpiresAt: "",
+          authContext: "",
         });
       }
       setError("");
@@ -178,7 +181,7 @@ export default function TenantFormModal({
         // Actualizar el formData con los datos frescos del servidor
         setFormData({
           ...formData,
-          token: updatedTenant.token || "Token actualizado ✓",
+          token: updatedTenant.token || "Token actualizado",
           tokenExpiresAt: updatedTenant.tokenExpiresAt
             ? typeof updatedTenant.tokenExpiresAt === "string"
               ? updatedTenant.tokenExpiresAt
@@ -189,7 +192,7 @@ export default function TenantFormModal({
         // Fallback a usar la respuesta del refresh si no se pudo recargar
         setFormData({
           ...formData,
-          token: result.token || "Token actualizado ✓",
+          token: result.token || "Token actualizado",
           tokenExpiresAt: result.tokenExpiresAt instanceof Date 
             ? result.tokenExpiresAt.toISOString() 
             : result.tokenExpiresAt,
@@ -371,7 +374,7 @@ export default function TenantFormModal({
               <div className="space-y-4 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                   {isExistingTenant && (!formData.grantType || !formData.clientId || !formData.clientSecret || !formData.scope) && (
                     <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded text-sm">
-                      <p className="font-medium">💡 Completa la configuración de conexión</p>
+                      <p className="font-medium">Completa la configuración de conexión</p>
                       <p className="mt-1">Necesitas configurar todos los campos para poder refrescar el token de autenticación con Business Central.</p>
                     </div>
                   )}
@@ -524,6 +527,56 @@ export default function TenantFormModal({
                     </div>
                   </div>
                 </div>
+            </div>
+
+            {/* Auth Context para Deployments */}
+            <div className="mb-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+              <h3 className="text-base font-semibold mb-4 text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                Auth Context para Deployments
+              </h3>
+
+              <div className="space-y-4 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 rounded text-sm">
+                  <p className="font-medium mb-2">¿Qué es el Auth Context?</p>
+                  <p className="mb-2">
+                    El Auth Context es necesario para realizar deployments automáticos en Business Central usando PowerShell. 
+                    Contiene las credenciales de autenticación encriptadas que permiten ejecutar comandos remotos en el ambiente.
+                  </p>
+                  <p className="font-medium mt-3 mb-1">Cómo obtenerlo:</p>
+                  <ol className="list-decimal list-inside space-y-1 ml-2">
+                    <li>Abre PowerShell como <strong>Administrador</strong></li>
+                    <li>Ejecuta los siguientes comandos:</li>
+                  </ol>
+                  <div className="mt-2 bg-gray-900 dark:bg-black text-green-400 p-3 rounded font-mono text-xs overflow-x-auto">
+                    <div>$AuthContext = New-BcAuthContext -includeDeviceLogin</div>
+                    <div>Get-ALGoAuthContext -bcAuthContext $AuthContext | Set-Clipboard</div>
+                  </div>
+                  <p className="mt-2 text-xs">
+                    El segundo comando copiará el Auth Context en tu portapapeles. Simplemente pégalo en el campo de abajo.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Auth Context (JSON)
+                  </label>
+                  <textarea
+                    value={formData.authContext}
+                    onChange={(e) =>
+                      setFormData({ ...formData, authContext: e.target.value })
+                    }
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-mono text-xs"
+                    placeholder='{"credential":{"..."},"bcContainerHelperVersion":"...","companyName":"..."}'
+                  />
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Pega aquí el JSON que copiaste desde PowerShell. Este campo es opcional pero necesario para deployments automáticos.
+                  </p>
+                </div>
+              </div>
             </div>
           </form>
         </div>

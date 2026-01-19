@@ -8,12 +8,14 @@ interface EnvironmentSelectorProps {
   environments: EnvironmentWithCustomer[];
   selectedEnvironment: DeploymentEnvironment | null;
   onSelectEnvironment: (env: DeploymentEnvironment) => void;
+  onConfigureTenant: (tenantId: string) => void;
 }
 
 export function EnvironmentSelector({
   environments,
   selectedEnvironment,
   onSelectEnvironment,
+  onConfigureTenant,
 }: EnvironmentSelectorProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -92,16 +94,20 @@ export function EnvironmentSelector({
             <p className="text-sm">No se encontraron entornos</p>
           </div>
         ) : (
-          Object.entries(filteredGroups).map(([customerName, envs]) => (
+          Object.entries(filteredGroups).map(([customerName, envs]) => {
+            // Verificar si el tenant tiene Auth Context configurado
+            const hasAuthContext = !!envs[0].tenantAuthContext;
+            
+            return (
             <div key={customerName}>
               {/* Customer Header */}
               <div className="flex items-center gap-2 mb-2">
-                {/* Customer Logo */}
+                {/* Customer Logo - Cuadrado con esquinas redondeadas */}
                 {envs[0].customerImage && (
                   <img
                     src={envs[0].customerImage}
                     alt={customerName}
-                    className="w-6 h-6 rounded object-contain"
+                    className="w-8 h-8 rounded-lg object-cover border border-gray-300 dark:border-gray-600"
                   />
                 )}
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -115,6 +121,33 @@ export function EnvironmentSelector({
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   ({envs.length})
                 </span>
+                
+                {/* Warning si no tiene Auth Context - Aparece antes de los entornos */}
+                {!hasAuthContext && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onConfigureTenant(envs[0].tenantId);
+                    }}
+                    className="inline-flex items-center gap-1 px-2 py-1 ml-auto hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded transition-colors"
+                    title="Este tenant no tiene configurado el Auth Context para deployments. Haz clic para configurarlo."
+                  >
+                    <svg 
+                      className="w-5 h-5 text-yellow-600 dark:text-yellow-400" 
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path 
+                        fillRule="evenodd" 
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" 
+                        clipRule="evenodd" 
+                      />
+                    </svg>
+                    <span className="text-xs font-medium text-yellow-700 dark:text-yellow-300">
+                      Configurar
+                    </span>
+                  </button>
+                )}
               </div>
 
               {/* Environments */}
@@ -122,13 +155,21 @@ export function EnvironmentSelector({
                 {envs.map((env) => {
                   const isSelected = selectedEnvironment?.tenantId === env.tenantId && 
                                     selectedEnvironment?.name === env.name;
+                  const isDisabled = !hasAuthContext;
                   
                   return (
                     <button
                       key={`${env.tenantId}-${env.name}`}
-                      onClick={() => onSelectEnvironment({ ...env, selected: true })}
+                      onClick={() => {
+                        if (!isDisabled) {
+                          onSelectEnvironment({ ...env, selected: true });
+                        }
+                      }}
+                      disabled={isDisabled}
                       className={`w-full text-left px-4 py-3 rounded-lg transition-all ${
-                        isSelected
+                        isDisabled
+                          ? "opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-800/50"
+                          : isSelected
                           ? "bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-500 dark:border-blue-600 shadow-sm"
                           : "hover:bg-gray-50 dark:hover:bg-gray-700/50 border-2 border-transparent hover:border-gray-200 dark:hover:border-gray-600"
                       }`}
@@ -137,7 +178,9 @@ export function EnvironmentSelector({
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <span className={`text-sm font-medium ${
-                              isSelected
+                              isDisabled
+                                ? "text-gray-400 dark:text-gray-600"
+                                : isSelected
                                 ? "text-blue-700 dark:text-blue-300"
                                 : "text-gray-900 dark:text-gray-100"
                             }`}>
@@ -154,31 +197,39 @@ export function EnvironmentSelector({
                             )}
                           </div>
                           {env.applicationVersion && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                            <p className={`text-xs mt-0.5 ${
+                              isDisabled 
+                                ? "text-gray-400 dark:text-gray-600"
+                                : "text-gray-500 dark:text-gray-400"
+                            }`}>
                               BC {env.applicationVersion}
                             </p>
                           )}
                         </div>
-                        {isSelected && (
-                          <svg
-                            className="w-5 h-5 text-blue-600 dark:text-blue-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {!isDisabled && isSelected && (
+                            <svg
+                              className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          )}
+                        </div>
                       </div>
                     </button>
                   );
                 })}
               </div>
             </div>
-          ))
+            );
+          })
+        
         )}
       </div>
     </div>
