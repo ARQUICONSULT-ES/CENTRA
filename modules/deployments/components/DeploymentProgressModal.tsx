@@ -22,6 +22,7 @@ interface DeploymentProgressModalProps {
   onClose: () => void;
   totalApps: number;
   progressData: DeploymentProgress[];
+  environmentName?: string;
 }
 
 export function DeploymentProgressModal({
@@ -29,6 +30,7 @@ export function DeploymentProgressModal({
   onClose,
   totalApps,
   progressData,
+  environmentName,
 }: DeploymentProgressModalProps) {
   const [isComplete, setIsComplete] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -109,10 +111,11 @@ export function DeploymentProgressModal({
     if (error?.includes('abortado')) {
       return '⏸️ Abortado';
     }
+    const envText = environmentName ? ` sobre ${environmentName}` : '';
     switch (status) {
       case 'pending': return '⏳ En espera';
-      case 'downloading': return '📥 Descargando desde GitHub...';
-      case 'installing': return '⚙️ Instalando en Business Central...';
+      case 'downloading': return `📥 Descargando desde GitHub${envText}...`;
+      case 'installing': return `⚙️ Desplegando${envText}...`;
       case 'success': return '✅ Instalado correctamente';
       case 'error': return 'Error en instalación';
       default: return '';

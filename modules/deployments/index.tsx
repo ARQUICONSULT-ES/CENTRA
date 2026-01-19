@@ -9,7 +9,10 @@ import { EnvironmentSelector } from "./components/EnvironmentSelector";
 import { ApplicationList } from "./components/ApplicationList";
 import { ApplicationSelectorModal } from "./components/ApplicationSelectorModal";
 import { DeploymentProgressModal, type DeploymentProgress } from "./components/DeploymentProgressModal";
+import { ConfirmModal } from "./components/ConfirmModal";
 import TenantFormModal from "@/modules/customers/components/TenantFormModal";
+import Toast from "@/modules/shared/components/Toast";
+import { useToast } from "./hooks/useToast";
 import type { Application } from "@/modules/applications/types";
 import type { VersionType } from "./types";
 import type { Tenant } from "@/modules/customers/types";
@@ -38,6 +41,14 @@ export function DeploymentsPage() {
   const [isDeploying, setIsDeploying] = useState(false);
   const [isTenantModalOpen, setIsTenantModalOpen] = useState(false);
   const [selectedTenantForEdit, setSelectedTenantForEdit] = useState<Tenant | undefined>();
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [confirmModalConfig, setConfirmModalConfig] = useState<{
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    isDangerous?: boolean;
+  } | null>(null);
+  const { toasts, showToast, removeToast } = useToast();
 
   // Initialize state from URL params
   useEffect(() => {
@@ -98,7 +109,7 @@ export function DeploymentsPage() {
       setIsTenantModalOpen(true);
     } catch (error) {
       console.error('Error loading tenant:', error);
-      alert('Error al cargar los datos del tenant');
+      showToast('Error al cargar los datos del tenant', 'error');
     }
   };
 
@@ -116,69 +127,87 @@ export function DeploymentsPage() {
 
   const handleDeploy = async () => {
     if (!selectedEnvironment) {
-      alert('Por favor selecciona un entorno primero');
+      showToast('Por favor selecciona un entorno primero', 'warning');
       return;
     }
     if (selectedApplications.length === 0) {
-      alert('Por favor agrega al menos una aplicación');
+      showToast('Por favor agrega al menos una aplicación', 'warning');
       return;
     }
 
-    // Solicitar AuthContext al usuario
-    const authContextInput = prompt(
-      'Ingresa el AuthContext de Business Central:\n\n' +
-      'El AuthContext es un objeto JSON que contiene la información de autenticación.\n' +
-      'Puedes obtenerlo de varias formas:\n' +
-      '• Desde la página de Business Central (sessionStorage["authContext"])\n' +
-      '• Desde el parámetro ?authContext= en la URL\n\n' +
-      'Formato esperado (JSON):\n' +
-      '{"TenantID":"...","RefreshToken":"...","ClientID":"...","Scopes":"..."}'
-    );
-
-    if (!authContextInput || authContextInput.trim() === '') {
-      alert('El AuthContext es obligatorio para realizar el despliegue.');
-      return;
-    }
-
-    // Limpiar el AuthContext si viene con el prefijo ?authContext=
-    let cleanAuthContextStr = authContextInput.replace(/^\?authContext=/, '').trim();
-    
-    // Validar que sea un JSON válido
-    let authContextObj;
+    // Obtener el authContext de la base de datos
+    let authContextStr: string;
     try {
-      // Si ya es un objeto JSON parseado (string JSON), parsearlo
-      authContextObj = JSON.parse(cleanAuthContextStr);
-      
-      // Validar que tenga los campos requeridos
-      if (!authContextObj.TenantID || !authContextObj.RefreshToken || !authContextObj.ClientID) {
-        throw new Error('El AuthContext debe contener: TenantID, RefreshToken, ClientID');
+      const response = await fetch(`/api/customers/tenants/${selectedEnvironment.tenantId}`);
+      if (!response.ok) {
+        throw new Error('Error al obtener el tenant');
       }
-    } catch (e) {
-      alert(
-        'El AuthContext no es válido.\n\n' +
-        'Debe ser un objeto JSON con los campos: TenantID, RefreshToken, ClientID, Scopes\n\n' +
-        'Error: ' + (e instanceof Error ? e.message : 'Formato JSON inválido')
+      const tenant = await response.json();
+      
+      if (!tenant.authContext) {
+        showToast('Este tenant no tiene configurado el AuthContext. Por favor configúralo primero.', 'error');
+        return;
+      }
+      
+      authContextStr = tenant.authContext;
+      
+      // Validar que sea un JSON válido
+      const authContextObj = JSON.parse(authContextStr);
+      if (!authContextObj.TenantID || !authContextObj.RefreshToken || !authContextObj.ClientID) {
+        throw new Error('El AuthContext no contiene los campos requeridos');
+      }
+      
+      // Construir la URL del entorno
+      const tenantId = authContextObj.TenantID || selectedEnvironment.tenantId;
+      const environmentUrl = `https://api.businesscentral.dynamics.com/v2.0/${tenantId}/${selectedEnvironment.name}`;
+      
+      console.log('Environment URL construida:', environmentUrl);
+      
+      // Función para iniciar el despliegue
+      const startDeployment = async () => {
+        setConfirmModalOpen(false);
+        await executeDeployment(environmentUrl, authContextStr);
+      };
+      
+      // Si es Production, mostrar doble confirmación
+      if (selectedEnvironment.type?.toLowerCase() === 'production') {
+        setConfirmModalConfig({
+          title: '⚠️ Confirmar Despliegue en PRODUCCIÓN',
+          message: `Estás a punto de desplegar ${selectedApplications.length} aplicaciones en un entorno de PRODUCCIÓN.\n\nEntorno: ${selectedEnvironment.name}\nURL: ${environmentUrl}\n\nEsta acción puede afectar a los usuarios finales.\n\n¿Estás seguro de que deseas continuar?`,
+          isDangerous: true,
+          onConfirm: () => {
+            // Segunda confirmación
+            setConfirmModalConfig({
+              title: '⚠️ ÚLTIMA CONFIRMACIÓN',
+              message: `CONFIRMA NUEVAMENTE:\n\nDesplegar ${selectedApplications.length} aplicaciones en PRODUCCIÓN (${selectedEnvironment.name})\n\nEsto puede tardar varios minutos y el proceso se detendrá si encuentra algún error.\n\n¿Proceder con el despliegue?`,
+              isDangerous: true,
+              onConfirm: startDeployment,
+            });
+            setConfirmModalOpen(true);
+          },
+        });
+      } else {
+        // Para entornos no-production, una sola confirmación
+        setConfirmModalConfig({
+          title: 'Confirmar Despliegue',
+          message: `¿Deseas desplegar ${selectedApplications.length} aplicaciones en ${selectedEnvironment.name}?\n\nEntorno: ${environmentUrl}\n\nEsto puede tardar varios minutos. El proceso se detendrá si encuentra algún error.`,
+          onConfirm: startDeployment,
+        });
+      }
+      
+      setConfirmModalOpen(true);
+      
+    } catch (error) {
+      console.error('Error al preparar el despliegue:', error);
+      showToast(
+        error instanceof Error ? error.message : 'Error al preparar el despliegue',
+        'error'
       );
       return;
     }
-    
-    // Convertir de vuelta a string para enviarlo
-    const cleanAuthContext = JSON.stringify(authContextObj);
+  };
 
-    // Construir la URL del entorno automáticamente
-    // Usar el TenantID del AuthContext (más confiable) o el del entorno
-    const tenantId = authContextObj.TenantID || selectedEnvironment.tenantId;
-    const environmentUrl = `https://api.businesscentral.dynamics.com/v2.0/${tenantId}/${selectedEnvironment.name}`;
-
-    console.log('Environment URL construida:', environmentUrl);
-
-    const confirmed = confirm(
-      `¿Deseas desplegar ${selectedApplications.length} aplicaciones en ${selectedEnvironment.name}?\n\n` +
-      `Entorno: ${environmentUrl}\n\n` +
-      `Esto puede tardar varios minutos. El proceso se detendrá si encuentra algún error.`
-    );
-
-    if (!confirmed) return;
+  const executeDeployment = async (environmentUrl: string, authContext: string) => {
 
     setIsDeploying(true);
     setProgressData([]);
@@ -229,7 +258,10 @@ export function DeploymentsPage() {
       
       if (appsWithoutOwner.length > 0) {
         console.error('Apps sin owner/repo válido:', appsWithoutOwner);
-        alert(`Las siguientes aplicaciones no tienen repositorio GitHub válido:\n${appsWithoutOwner.map(a => `${a.name} (${a.githubRepoName})`).join('\n')}`);
+        showToast(
+          `Las siguientes aplicaciones no tienen repositorio GitHub válido:\n${appsWithoutOwner.map(a => `${a.name} (${a.githubRepoName})`).join('\n')}`,
+          'error'
+        );
         setIsProgressModalOpen(false);
         setIsDeploying(false);
         return;
@@ -250,8 +282,8 @@ export function DeploymentsPage() {
         },
         body: JSON.stringify({
           environmentUrl,
-          authContext: cleanAuthContext, // Ya es un string JSON válido
-          environmentName: selectedEnvironment.name,
+          authContext, // Ya es un string JSON válido
+          environmentName: selectedEnvironment?.name || '',
           applications: appsWithRepoInfo,
         }),
       });
@@ -305,7 +337,10 @@ export function DeploymentsPage() {
 
     } catch (error) {
       console.error('Error al desplegar:', error);
-      alert(error instanceof Error ? error.message : 'Error desconocido al desplegar');
+      showToast(
+        error instanceof Error ? error.message : 'Error desconocido al desplegar',
+        'error'
+      );
       setIsProgressModalOpen(false);
     } finally {
       setIsDeploying(false);
@@ -401,6 +436,7 @@ export function DeploymentsPage() {
         }}
         totalApps={selectedApplications.length}
         progressData={progressData}
+        environmentName={selectedEnvironment?.name}
       />
 
       {/* Tenant Configuration Modal */}
@@ -410,6 +446,30 @@ export function DeploymentsPage() {
         tenant={selectedTenantForEdit}
         onSave={handleTenantSaved}
       />
+
+      {/* Confirm Modal */}
+      {confirmModalConfig && (
+        <ConfirmModal
+          isOpen={confirmModalOpen}
+          title={confirmModalConfig.title}
+          message={confirmModalConfig.message}
+          onConfirm={confirmModalConfig.onConfirm}
+          onCancel={() => setConfirmModalOpen(false)}
+          isDangerous={confirmModalConfig.isDangerous}
+        />
+      )}
+
+      {/* Toasts */}
+      <div className="fixed top-4 right-4 z-50 space-y-2">
+        {toasts.map((toast) => (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() => removeToast(toast.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
