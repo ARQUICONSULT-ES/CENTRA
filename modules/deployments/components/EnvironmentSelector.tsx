@@ -96,8 +96,21 @@ export function EnvironmentSelector({
             <div key={customerName}>
               {/* Customer Header */}
               <div className="flex items-center gap-2 mb-2">
+                {/* Customer Logo */}
+                {envs[0].customerImage && (
+                  <img
+                    src={envs[0].customerImage}
+                    alt={customerName}
+                    className="w-6 h-6 rounded object-contain"
+                  />
+                )}
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   {customerName}
+                  {envs[0].tenantId && (
+                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-2">
+                      - {envs[0].tenantId}
+                    </span>
+                  )}
                 </h3>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   ({envs.length})

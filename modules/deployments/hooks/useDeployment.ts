@@ -1,12 +1,17 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import type { DeploymentEnvironment, DeploymentApplication, VersionType } from "../types";
 import type { Application } from "@/modules/applications/types";
 
 export function useDeployment() {
   const [selectedEnvironment, setSelectedEnvironment] = useState<DeploymentEnvironment | null>(null);
   const [applications, setApplications] = useState<DeploymentApplication[]>([]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const addApplication = useCallback((app: Application, versionType: VersionType = 'release') => {
     setApplications(prev => {
@@ -79,6 +84,35 @@ export function useDeployment() {
     });
   }, []);
 
+  // Sync state with URL params
+  const updateUrlParams = useCallback(() => {
+    const params = new URLSearchParams();
+    
+    if (selectedEnvironment) {
+      params.set('tenantId', selectedEnvironment.tenantId);
+      params.set('environmentName', selectedEnvironment.name);
+    }
+    
+    if (applications.length > 0) {
+      // Store apps as JSON: [{id, versionType}]
+      const appsData = applications.map(app => ({
+        id: app.id,
+        versionType: app.versionType
+      }));
+      params.set('apps', JSON.stringify(appsData));
+    }
+    
+    const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(newUrl, { scroll: false });
+  }, [selectedEnvironment, applications, pathname, router]);
+
+  // Update URL when state changes (but only after initialization)
+  useEffect(() => {
+    if (isInitialized) {
+      updateUrlParams();
+    }
+  }, [selectedEnvironment, applications, isInitialized, updateUrlParams]);
+
   return {
     selectedEnvironment,
     setSelectedEnvironment,
@@ -89,5 +123,7 @@ export function useDeployment() {
     moveApplicationUp,
     moveApplicationDown,
     reorderApplications,
+    isInitialized,
+    setIsInitialized,
   };
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAllEnvironments } from "@/modules/customers/hooks/useAllEnvironments";
 import { useApplications } from "@/modules/applications/hooks/useApplications";
 import { useDeployment } from "./hooks/useDeployment";
@@ -9,10 +10,12 @@ import { ApplicationList } from "./components/ApplicationList";
 import { ApplicationSelectorModal } from "./components/ApplicationSelectorModal";
 import { DeploymentProgressModal, type DeploymentProgress } from "./components/DeploymentProgressModal";
 import type { Application } from "@/modules/applications/types";
+import type { VersionType } from "./types";
 
 export function DeploymentsPage() {
   const { environments, loading: loadingEnvs } = useAllEnvironments();
   const { applications, isLoading: loadingApps } = useApplications();
+  const searchParams = useSearchParams();
   const {
     selectedEnvironment,
     setSelectedEnvironment,
@@ -23,12 +26,54 @@ export function DeploymentsPage() {
     moveApplicationUp,
     moveApplicationDown,
     reorderApplications,
+    isInitialized,
+    setIsInitialized,
   } = useDeployment();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
   const [progressData, setProgressData] = useState<DeploymentProgress[]>([]);
   const [isDeploying, setIsDeploying] = useState(false);
+
+  // Initialize state from URL params
+  useEffect(() => {
+    if (!loadingEnvs && !loadingApps && environments.length > 0 && applications.length > 0 && !isInitialized) {
+      const tenantId = searchParams.get('tenantId');
+      const environmentName = searchParams.get('environmentName');
+      const appsParam = searchParams.get('apps');
+
+      // Restore selected environment
+      if (tenantId && environmentName) {
+        const env = environments.find(
+          e => e.tenantId === tenantId && e.name === environmentName
+        );
+        if (env) {
+          setSelectedEnvironment({ ...env, selected: true });
+        }
+      }
+
+      // Restore selected applications
+      if (appsParam) {
+        try {
+          const appsData: Array<{ id: string; versionType: VersionType }> = JSON.parse(appsParam);
+          const appsToAdd = appsData
+            .map(({ id, versionType }) => {
+              const app = applications.find(a => a.id === id);
+              return app ? { app, versionType } : null;
+            })
+            .filter(Boolean) as Array<{ app: Application; versionType: VersionType }>;
+          
+          if (appsToAdd.length > 0) {
+            addApplications(appsToAdd);
+          }
+        } catch (e) {
+          console.error('Error parsing apps from URL:', e);
+        }
+      }
+
+      setIsInitialized(true);
+    }
+  }, [loadingEnvs, loadingApps, environments, applications, searchParams, isInitialized, setSelectedEnvironment, addApplications, setIsInitialized]);
 
   // Filter active environments
   const activeEnvironments = environments.filter(
