@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import sodium from "libsodium-wrappers";
+import { getUserPermissions } from "@/lib/auth-permissions";
 
 /**
  * POST /api/github/create-environment
@@ -20,14 +21,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Obtener el token de GitHub de las cookies
-    const token = request.cookies.get("github_token")?.value;
-    if (!token) {
+    // Verificar permisos del usuario
+    const permissions = await getUserPermissions();
+    if (!permissions.isAuthenticated || !permissions.userId) {
       return NextResponse.json(
-        { error: "No se encontró token de GitHub" },
+        { error: "No autenticado" },
         { status: 401 }
       );
     }
+
+    // Obtener el token de GitHub del usuario
+    const user = await prisma.user.findUnique({
+      where: { id: permissions.userId },
+      select: { githubToken: true }
+    });
+
+    if (!user?.githubToken) {
+      return NextResponse.json(
+        { error: "No se encontró token de GitHub. Por favor, vincula tu cuenta de GitHub en la configuración." },
+        { status: 401 }
+      );
+    }
+
+    const token = user.githubToken;
 
     // Crear el entorno en GitHub (sin protection rules)
     const githubResponse = await fetch(
