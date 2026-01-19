@@ -25,6 +25,7 @@ export const config = {
     "/repos/:path*",
     "/environments/:path*",
     "/applications/:path*",
+    "/deployments/:path*",
     "/admin/:path*",
     "/api/customers/:path*",
     "/api/installedapps/:path*",
