@@ -9502,6 +9502,8 @@ export namespace Prisma {
     githubUrl: string | null
     latestReleaseVersion: string | null
     latestReleaseDate: Date | null
+    latestPrereleaseVersion: string | null
+    latestPrereleaseDate: Date | null
     logoBase64: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -9515,6 +9517,8 @@ export namespace Prisma {
     githubUrl: string | null
     latestReleaseVersion: string | null
     latestReleaseDate: Date | null
+    latestPrereleaseVersion: string | null
+    latestPrereleaseDate: Date | null
     logoBase64: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -9528,6 +9532,8 @@ export namespace Prisma {
     githubUrl: number
     latestReleaseVersion: number
     latestReleaseDate: number
+    latestPrereleaseVersion: number
+    latestPrereleaseDate: number
     logoBase64: number
     idRanges: number
     createdAt: number
@@ -9544,6 +9550,8 @@ export namespace Prisma {
     githubUrl?: true
     latestReleaseVersion?: true
     latestReleaseDate?: true
+    latestPrereleaseVersion?: true
+    latestPrereleaseDate?: true
     logoBase64?: true
     createdAt?: true
     updatedAt?: true
@@ -9557,6 +9565,8 @@ export namespace Prisma {
     githubUrl?: true
     latestReleaseVersion?: true
     latestReleaseDate?: true
+    latestPrereleaseVersion?: true
+    latestPrereleaseDate?: true
     logoBase64?: true
     createdAt?: true
     updatedAt?: true
@@ -9570,6 +9580,8 @@ export namespace Prisma {
     githubUrl?: true
     latestReleaseVersion?: true
     latestReleaseDate?: true
+    latestPrereleaseVersion?: true
+    latestPrereleaseDate?: true
     logoBase64?: true
     idRanges?: true
     createdAt?: true
@@ -9657,6 +9669,8 @@ export namespace Prisma {
     githubUrl: string | null
     latestReleaseVersion: string | null
     latestReleaseDate: Date | null
+    latestPrereleaseVersion: string | null
+    latestPrereleaseDate: Date | null
     logoBase64: string | null
     idRanges: JsonValue | null
     createdAt: Date
@@ -9688,6 +9702,8 @@ export namespace Prisma {
     githubUrl?: boolean
     latestReleaseVersion?: boolean
     latestReleaseDate?: boolean
+    latestPrereleaseVersion?: boolean
+    latestPrereleaseDate?: boolean
     logoBase64?: boolean
     idRanges?: boolean
     createdAt?: boolean
@@ -9702,6 +9718,8 @@ export namespace Prisma {
     githubUrl?: boolean
     latestReleaseVersion?: boolean
     latestReleaseDate?: boolean
+    latestPrereleaseVersion?: boolean
+    latestPrereleaseDate?: boolean
     logoBase64?: boolean
     idRanges?: boolean
     createdAt?: boolean
@@ -9716,6 +9734,8 @@ export namespace Prisma {
     githubUrl?: boolean
     latestReleaseVersion?: boolean
     latestReleaseDate?: boolean
+    latestPrereleaseVersion?: boolean
+    latestPrereleaseDate?: boolean
     logoBase64?: boolean
     idRanges?: boolean
     createdAt?: boolean
@@ -9730,13 +9750,15 @@ export namespace Prisma {
     githubUrl?: boolean
     latestReleaseVersion?: boolean
     latestReleaseDate?: boolean
+    latestPrereleaseVersion?: boolean
+    latestPrereleaseDate?: boolean
     logoBase64?: boolean
     idRanges?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "publisher" | "githubRepoName" | "githubUrl" | "latestReleaseVersion" | "latestReleaseDate" | "logoBase64" | "idRanges" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
+  export type ApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "publisher" | "githubRepoName" | "githubUrl" | "latestReleaseVersion" | "latestReleaseDate" | "latestPrereleaseVersion" | "latestPrereleaseDate" | "logoBase64" | "idRanges" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
 
   export type $ApplicationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Application"
@@ -9749,6 +9771,8 @@ export namespace Prisma {
       githubUrl: string | null
       latestReleaseVersion: string | null
       latestReleaseDate: Date | null
+      latestPrereleaseVersion: string | null
+      latestPrereleaseDate: Date | null
       logoBase64: string | null
       idRanges: Prisma.JsonValue | null
       createdAt: Date
@@ -10183,6 +10207,8 @@ export namespace Prisma {
     readonly githubUrl: FieldRef<"Application", 'String'>
     readonly latestReleaseVersion: FieldRef<"Application", 'String'>
     readonly latestReleaseDate: FieldRef<"Application", 'DateTime'>
+    readonly latestPrereleaseVersion: FieldRef<"Application", 'String'>
+    readonly latestPrereleaseDate: FieldRef<"Application", 'DateTime'>
     readonly logoBase64: FieldRef<"Application", 'String'>
     readonly idRanges: FieldRef<"Application", 'Json'>
     readonly createdAt: FieldRef<"Application", 'DateTime'>
@@ -10673,6 +10699,8 @@ export namespace Prisma {
     githubUrl: 'githubUrl',
     latestReleaseVersion: 'latestReleaseVersion',
     latestReleaseDate: 'latestReleaseDate',
+    latestPrereleaseVersion: 'latestPrereleaseVersion',
+    latestPrereleaseDate: 'latestPrereleaseDate',
     logoBase64: 'logoBase64',
     idRanges: 'idRanges',
     createdAt: 'createdAt',
@@ -11327,6 +11355,8 @@ export namespace Prisma {
     githubUrl?: StringNullableFilter<"Application"> | string | null
     latestReleaseVersion?: StringNullableFilter<"Application"> | string | null
     latestReleaseDate?: DateTimeNullableFilter<"Application"> | Date | string | null
+    latestPrereleaseVersion?: StringNullableFilter<"Application"> | string | null
+    latestPrereleaseDate?: DateTimeNullableFilter<"Application"> | Date | string | null
     logoBase64?: StringNullableFilter<"Application"> | string | null
     idRanges?: JsonNullableFilter<"Application">
     createdAt?: DateTimeFilter<"Application"> | Date | string
@@ -11341,6 +11371,8 @@ export namespace Prisma {
     githubUrl?: SortOrderInput | SortOrder
     latestReleaseVersion?: SortOrderInput | SortOrder
     latestReleaseDate?: SortOrderInput | SortOrder
+    latestPrereleaseVersion?: SortOrderInput | SortOrder
+    latestPrereleaseDate?: SortOrderInput | SortOrder
     logoBase64?: SortOrderInput | SortOrder
     idRanges?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -11358,6 +11390,8 @@ export namespace Prisma {
     githubUrl?: StringNullableFilter<"Application"> | string | null
     latestReleaseVersion?: StringNullableFilter<"Application"> | string | null
     latestReleaseDate?: DateTimeNullableFilter<"Application"> | Date | string | null
+    latestPrereleaseVersion?: StringNullableFilter<"Application"> | string | null
+    latestPrereleaseDate?: DateTimeNullableFilter<"Application"> | Date | string | null
     logoBase64?: StringNullableFilter<"Application"> | string | null
     idRanges?: JsonNullableFilter<"Application">
     createdAt?: DateTimeFilter<"Application"> | Date | string
@@ -11372,6 +11406,8 @@ export namespace Prisma {
     githubUrl?: SortOrderInput | SortOrder
     latestReleaseVersion?: SortOrderInput | SortOrder
     latestReleaseDate?: SortOrderInput | SortOrder
+    latestPrereleaseVersion?: SortOrderInput | SortOrder
+    latestPrereleaseDate?: SortOrderInput | SortOrder
     logoBase64?: SortOrderInput | SortOrder
     idRanges?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -11392,6 +11428,8 @@ export namespace Prisma {
     githubUrl?: StringNullableWithAggregatesFilter<"Application"> | string | null
     latestReleaseVersion?: StringNullableWithAggregatesFilter<"Application"> | string | null
     latestReleaseDate?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    latestPrereleaseVersion?: StringNullableWithAggregatesFilter<"Application"> | string | null
+    latestPrereleaseDate?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
     logoBase64?: StringNullableWithAggregatesFilter<"Application"> | string | null
     idRanges?: JsonNullableWithAggregatesFilter<"Application">
     createdAt?: DateTimeWithAggregatesFilter<"Application"> | Date | string
@@ -11960,6 +11998,8 @@ export namespace Prisma {
     githubUrl?: string | null
     latestReleaseVersion?: string | null
     latestReleaseDate?: Date | string | null
+    latestPrereleaseVersion?: string | null
+    latestPrereleaseDate?: Date | string | null
     logoBase64?: string | null
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -11974,6 +12014,8 @@ export namespace Prisma {
     githubUrl?: string | null
     latestReleaseVersion?: string | null
     latestReleaseDate?: Date | string | null
+    latestPrereleaseVersion?: string | null
+    latestPrereleaseDate?: Date | string | null
     logoBase64?: string | null
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -11988,6 +12030,8 @@ export namespace Prisma {
     githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     latestReleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
     latestReleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestPrereleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    latestPrereleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     logoBase64?: NullableStringFieldUpdateOperationsInput | string | null
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12002,6 +12046,8 @@ export namespace Prisma {
     githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     latestReleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
     latestReleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestPrereleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    latestPrereleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     logoBase64?: NullableStringFieldUpdateOperationsInput | string | null
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12016,6 +12062,8 @@ export namespace Prisma {
     githubUrl?: string | null
     latestReleaseVersion?: string | null
     latestReleaseDate?: Date | string | null
+    latestPrereleaseVersion?: string | null
+    latestPrereleaseDate?: Date | string | null
     logoBase64?: string | null
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -12030,6 +12078,8 @@ export namespace Prisma {
     githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     latestReleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
     latestReleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestPrereleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    latestPrereleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     logoBase64?: NullableStringFieldUpdateOperationsInput | string | null
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12044,6 +12094,8 @@ export namespace Prisma {
     githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     latestReleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
     latestReleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestPrereleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    latestPrereleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     logoBase64?: NullableStringFieldUpdateOperationsInput | string | null
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12603,6 +12655,8 @@ export namespace Prisma {
     githubUrl?: SortOrder
     latestReleaseVersion?: SortOrder
     latestReleaseDate?: SortOrder
+    latestPrereleaseVersion?: SortOrder
+    latestPrereleaseDate?: SortOrder
     logoBase64?: SortOrder
     idRanges?: SortOrder
     createdAt?: SortOrder
@@ -12617,6 +12671,8 @@ export namespace Prisma {
     githubUrl?: SortOrder
     latestReleaseVersion?: SortOrder
     latestReleaseDate?: SortOrder
+    latestPrereleaseVersion?: SortOrder
+    latestPrereleaseDate?: SortOrder
     logoBase64?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12630,6 +12686,8 @@ export namespace Prisma {
     githubUrl?: SortOrder
     latestReleaseVersion?: SortOrder
     latestReleaseDate?: SortOrder
+    latestPrereleaseVersion?: SortOrder
+    latestPrereleaseDate?: SortOrder
     logoBase64?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder

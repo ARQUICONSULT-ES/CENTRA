@@ -142,7 +142,7 @@ export function ApplicationSelectorModal({
                 const isReleaseSelected = selection?.versionType === 'release';
                 const isPrereleaseSelected = selection?.versionType === 'prerelease';
                 const hasRelease = !!app.latestReleaseVersion;
-                const hasPrerelease = false; // TODO: Añadir campo en el futuro
+                const hasPrerelease = !!app.latestPrereleaseVersion;
                 
                 return (
                   <div
@@ -185,18 +185,32 @@ export function ApplicationSelectorModal({
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           {app.publisher}
                         </p>
-                        {app.latestReleaseVersion && (
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded">
-                              v{app.latestReleaseVersion}
-                            </span>
-                            {app.latestReleaseDate && (
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {new Date(app.latestReleaseDate).toLocaleDateString()}
+                        <div className="flex items-center gap-2 mt-1">
+                          {app.latestReleaseVersion && (
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded">
+                                v{app.latestReleaseVersion}
                               </span>
-                            )}
-                          </div>
-                        )}
+                              {app.latestReleaseDate && (
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {new Date(app.latestReleaseDate).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          {app.latestPrereleaseVersion && (
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">
+                                v{app.latestPrereleaseVersion}
+                              </span>
+                              {app.latestPrereleaseDate && (
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {new Date(app.latestPrereleaseDate).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       {/* Version Selection Buttons */}
@@ -223,7 +237,7 @@ export function ApplicationSelectorModal({
                           Release {hasRelease ? app.latestReleaseVersion : "--"}
                         </button>
 
-                        {/* Prerelease Button (Placeholder) */}
+                        {/* Prerelease Button */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -242,7 +256,7 @@ export function ApplicationSelectorModal({
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                           </svg>
-                          Prerelease --
+                          Prerelease {hasPrerelease ? app.latestPrereleaseVersion : "--"}
                         </button>
                       </div>
                     </div>

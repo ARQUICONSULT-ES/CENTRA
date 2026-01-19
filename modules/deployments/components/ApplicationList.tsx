@@ -198,18 +198,14 @@ export function ApplicationList({
                       {app.publisher}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
-                      {app.latestReleaseVersion && (
-                        <span className={`inline-block text-xs px-2 py-0.5 rounded font-medium ${
-                          app.versionType === 'release'
-                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-                        }`}>
-                          {app.versionType === 'release' ? `Release ${app.latestReleaseVersion}` : `Release ${app.latestReleaseVersion}`}
+                      {app.versionType === 'release' && app.latestReleaseVersion && (
+                        <span className="inline-block text-xs px-2 py-0.5 rounded font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                          Release {app.latestReleaseVersion}
                         </span>
                       )}
-                      {app.versionType === 'prerelease' && (
+                      {app.versionType === 'prerelease' && app.latestPrereleaseVersion && (
                         <span className="inline-block text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded font-medium">
-                          Prerelease --
+                          Prerelease {app.latestPrereleaseVersion}
                         </span>
                       )}
                     </div>

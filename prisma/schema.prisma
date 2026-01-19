@@ -114,17 +114,19 @@ model InstalledApp {
 }
 
 model Application {
-  id                   String    @id @db.Uuid
-  name                 String    @db.VarChar(255)
-  publisher            String    @db.VarChar(255)
-  githubRepoName       String    @map("github_repo_name") @db.VarChar(255)
-  githubUrl            String?   @map("github_url") @db.VarChar(500)
-  latestReleaseVersion String?   @map("latest_release_version") @db.VarChar(100)
-  latestReleaseDate    DateTime? @map("latest_release_date")
-  logoBase64           String?   @map("logo_base64")
-  idRanges             Json?     @map("id_ranges")
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  id                      String    @id @db.Uuid
+  name                    String    @db.VarChar(255)
+  publisher               String    @db.VarChar(255)
+  githubRepoName          String    @map("github_repo_name") @db.VarChar(255)
+  githubUrl               String?   @map("github_url") @db.VarChar(500)
+  latestReleaseVersion    String?   @map("latest_release_version") @db.VarChar(100)
+  latestReleaseDate       DateTime? @map("latest_release_date")
+  latestPrereleaseVersion String?   @map("latest_prerelease_version") @db.VarChar(100)
+  latestPrereleaseDate    DateTime? @map("latest_prerelease_date")
+  logoBase64              String?   @map("logo_base64")
+  idRanges                Json?     @map("id_ranges")
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 
   @@map("applications")
 }

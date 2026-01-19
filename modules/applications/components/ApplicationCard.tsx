@@ -114,6 +114,27 @@ export default function ApplicationCard({ application, onClick }: ApplicationCar
         </div>
       )}
 
+      {/* Latest Prerelease */}
+      {application.latestPrereleaseVersion && (
+        <div className="flex items-center gap-1.5 text-sm mb-1.5">
+          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-medium">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            {application.latestPrereleaseVersion} (pre)
+          </span>
+          {application.latestPrereleaseDate && (
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {new Date(application.latestPrereleaseDate).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              })}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Instalaciones, clientes y obsoletas */}
       <div className="flex items-center gap-1.5 flex-wrap">
         {typeof application.totalCustomers === 'number' && application.totalCustomers > 0 && (

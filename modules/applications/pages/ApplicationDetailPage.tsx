@@ -193,6 +193,28 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
                 </div>
               )}
 
+              {/* Latest Prerelease */}
+              {application.latestPrereleaseVersion && (
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5">Última versión (Prerelease)</p>
+                    <p className="text-xs sm:text-sm text-gray-900 dark:text-white font-medium font-mono">{application.latestPrereleaseVersion}</p>
+                    {application.latestPrereleaseDate && (
+                      <p className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                        {new Date(application.latestPrereleaseDate).toLocaleDateString('es-ES', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* GitHub Repository */}
               {application.githubUrl && (
                 <div className="flex items-start gap-2 sm:gap-3">

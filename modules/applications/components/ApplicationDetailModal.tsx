@@ -173,6 +173,32 @@ export default function ApplicationDetailModal({
             </div>
           )}
 
+          {/* Latest Prerelease */}
+          {application.latestPrereleaseVersion && (
+            <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                Última Prerelease
+              </label>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-medium">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  {application.latestPrereleaseVersion}
+                </span>
+                {application.latestPrereleaseDate && (
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {new Date(application.latestPrereleaseDate).toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Timestamps */}
           <div className="grid grid-cols-2 gap-4">
             <div>
