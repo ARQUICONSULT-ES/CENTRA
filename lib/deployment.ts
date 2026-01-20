@@ -402,18 +402,59 @@ async function installAppInBC(
         } else if (status === 'Unknown') {
           // En BcContainerHelper esto lanza "Unknown Error"
           deploymentFailed = true;
-          failureReason = 'Unknown Error - La instalación falló con un error desconocido. Revisa Extension Deployment Status Details en Business Central.';
+          // Intentar obtener el mensaje de error de BC
+          const errorMsg = thisExtension.errorMessage || thisExtension.ErrorMessage || 
+                          thisExtension.message || thisExtension.Message || '';
+          console.log('');
+          console.log('═'.repeat(80));
+          console.log('❌ ERROR DE DEPLOYMENT EN BUSINESS CENTRAL');
+          console.log('═'.repeat(80));
+          console.log(`   Status: Unknown`);
+          if (errorMsg) {
+            console.log(`   Mensaje: ${errorMsg}`);
+          }
+          console.log('═'.repeat(80));
+          console.log('');
+          failureReason = errorMsg 
+            ? `Unknown Error: ${errorMsg}` 
+            : 'Unknown Error - La instalación falló con un error desconocido. Revisa Extension Deployment Status Details en Business Central.';
         } else {
           // CRÍTICO: Cualquier otro status (ej: "Failed", "Error", etc.) es un ERROR
           // BcContainerHelper hace: throw $_.status
-          // También puede tener un campo errorMessage
+          // BC puede devolver el mensaje de error en varios campos
           deploymentFailed = true;
-          const errorMessage = thisExtension.errorMessage || thisExtension.ErrorMessage || '';
-          if (errorMessage) {
-            failureReason = `Deployment falló con status: ${status}. Error: ${errorMessage}`;
-          } else {
-            failureReason = `Deployment falló con status: ${status}. Revisa Extension Deployment Status Details en Business Central para más información.`;
+          const errorMsg = thisExtension.errorMessage || thisExtension.ErrorMessage || 
+                          thisExtension.message || thisExtension.Message ||
+                          thisExtension.details || thisExtension.Details || '';
+          
+          // Mostrar el error de forma prominente como AL-Go
+          console.log('');
+          console.log('═'.repeat(80));
+          console.log('❌ ERROR DE DEPLOYMENT EN BUSINESS CENTRAL');
+          console.log('═'.repeat(80));
+          console.log(`   App: ${appPublisher}_${appName}_${appVersion}`);
+          console.log(`   Status: ${status}`);
+          if (errorMsg) {
+            console.log(`   Mensaje de Error:`);
+            // Dividir el mensaje en líneas si es muy largo
+            const errorLines = errorMsg.split(/[\r\n]+/).filter((line: string) => line.trim());
+            errorLines.forEach((line: string) => {
+              console.log(`      ${line}`);
+            });
           }
+          // Mostrar información adicional si está disponible
+          if (thisExtension.operationId || thisExtension.OperationId) {
+            console.log(`   Operation ID: ${thisExtension.operationId || thisExtension.OperationId}`);
+          }
+          if (thisExtension.startedOn || thisExtension.StartedOn) {
+            console.log(`   Iniciado: ${thisExtension.startedOn || thisExtension.StartedOn}`);
+          }
+          console.log('═'.repeat(80));
+          console.log('');
+          
+          failureReason = errorMsg 
+            ? `Deployment falló con status "${status}": ${errorMsg}`
+            : `Deployment falló con status: ${status}. Revisa Extension Deployment Status Details en Business Central para más información.`;
         }
       } catch (pollError) {
         consecutiveErrors++;
