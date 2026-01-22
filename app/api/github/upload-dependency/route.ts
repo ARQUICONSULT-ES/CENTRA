@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { getAuthenticatedUserGitHubToken } from "@/lib/auth-github";
 
 const GITHUB_API_URL = "https://api.github.com";
 
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("github_token")?.value;
+    const token = await getAuthenticatedUserGitHubToken();
 
     if (!token) {
       return NextResponse.json(
-        { error: "No GitHub token found. Please login first." },
+        { error: "No GitHub token found. Please add your GitHub token in your profile." },
         { status: 401 }
       );
     }
