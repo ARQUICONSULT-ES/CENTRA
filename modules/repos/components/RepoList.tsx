@@ -1,18 +1,11 @@
 "use client";
 
-import { forwardRef, useImperativeHandle } from "react";
 import { RepoCard } from "./RepoCard";
-import type { RepoListProps, RepoListHandle } from "@/modules/repos/types";
+import type { RepoListProps } from "@/modules/repos/types";
 import { useRepoExtraInfo } from "@/modules/repos/hooks/useRepoExtraInfo";
 
-export const RepoList = forwardRef<RepoListHandle, RepoListProps>(({ repos, allRepos }, ref) => {
-  const { extraInfo, isLoading, loadWorkflows } = useRepoExtraInfo(repos);
-
-  // Exponer la función y el estado al componente padre
-  useImperativeHandle(ref, () => ({
-    fetchWorkflows: loadWorkflows,
-    isLoadingWorkflows: isLoading,
-  }));
+export function RepoList({ repos, allRepos }: RepoListProps) {
+  const { extraInfo, isLoading } = useRepoExtraInfo(repos);
 
   if (repos.length === 0) {
     return (
@@ -56,6 +49,4 @@ export const RepoList = forwardRef<RepoListHandle, RepoListProps>(({ repos, allR
       </div>
     </div>
   );
-});
-
-RepoList.displayName = "RepoList";
+}
