@@ -56,3 +56,37 @@ export async function syncAllInstalledApps(): Promise<{
     throw error;
   }
 }
+
+/**
+ * Sincroniza las aplicaciones instaladas de un entorno específico con Business Central
+ */
+export async function syncEnvironmentInstalledApps(
+  tenantId: string,
+  environmentName: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const response = await fetch("/api/installedapps/sync-environment", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tenantId, environmentName }),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+      const errorMessage = errorData.error || `Error ${response.status}: ${response.statusText}`;
+      throw new Error(errorMessage);
+    }
+    
+    const data = await response.json();
+    
+    // Invalidar cache después de sincronizar
+    dataCache.invalidate(CACHE_KEYS.INSTALLED_APPS);
+    
+    return data;
+  } catch (error) {
+    console.error("Error syncing environment installed apps:", error);
+    throw error;
+  }
+}

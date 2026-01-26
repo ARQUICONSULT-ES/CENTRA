@@ -13,6 +13,7 @@ import { ConfirmModal } from "./components/ConfirmModal";
 import TenantFormModal from "@/modules/customers/components/TenantFormModal";
 import Toast from "@/modules/shared/components/Toast";
 import { useToast } from "./hooks/useToast";
+import { syncEnvironmentInstalledApps } from "@/modules/customers/services/installedAppService";
 import type { Application } from "@/modules/applications/types";
 import type { VersionType } from "./types";
 import type { Tenant } from "@/modules/customers/types";
@@ -340,6 +341,19 @@ export function DeploymentsPage() {
               console.error('Error parsing SSE data:', e);
             }
           }
+        }
+      }
+
+      // Sincronizar siempre las instalaciones del entorno después del despliegue
+      // Esto actualiza el estado real, incluso si algunas instalaciones fallaron
+      if (selectedEnvironment) {
+        showToast('Despliegue completado, sincronizando instalaciones del entorno...', 'info');
+        try {
+          await syncEnvironmentInstalledApps(selectedEnvironment.tenantId, selectedEnvironment.name);
+          showToast('Instalaciones sincronizadas correctamente', 'success');
+        } catch (syncError) {
+          console.error('Error al sincronizar instalaciones:', syncError);
+          showToast('Despliegue completado, pero hubo un error al sincronizar las instalaciones', 'warning');
         }
       }
 
