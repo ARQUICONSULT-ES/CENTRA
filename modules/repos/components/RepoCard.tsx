@@ -5,6 +5,7 @@ import Link from "next/link";
 import { GitHubRepository } from "@/types/github";
 import { DependenciesModal } from "./DependenciesModal";
 import { ReleaseModal } from "./ReleaseModal";
+import { WorkflowProgressModal } from "./WorkflowProgressModal";
 import type { 
   WorkflowStatus, 
   ReleaseInfo, 
@@ -34,6 +35,13 @@ export function RepoCard({
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [successMessage, setSuccessMessage] = useState("Workflow iniciado correctamente");
   const [countdown, setCountdown] = useState(3);
+  const [showWorkflowProgress, setShowWorkflowProgress] = useState(false);
+  const [workflowProgressData, setWorkflowProgressData] = useState<{
+    owner: string;
+    repo: string;
+    releaseName: string;
+    type: "release" | "prerelease";
+  } | null>(null);
   const [showDependenciesModal, setShowDependenciesModal] = useState(false);
   const [isCreatingRelease, setIsCreatingRelease] = useState(false);
   const [branches, setBranches] = useState<string[]>([]);
@@ -295,17 +303,14 @@ export function RepoCard({
       // Cerrar modal de release
       setShowReleaseModal(false);
 
-      // Mostrar banner y abrir ventana después de 3 segundos
-      setSuccessMessage(`Release v${newVersion} creada correctamente`);
-      setShowSuccessBanner(true);
-      setCountdown(3);
-      
-      setTimeout(() => setCountdown(2), 1000);
-      setTimeout(() => setCountdown(1), 2000);
-      setTimeout(() => {
-        setShowSuccessBanner(false);
-        window.open(`https://github.com/${repo.full_name}/actions`, "_blank");
-      }, 3000);
+      // Mostrar modal de progreso
+      setWorkflowProgressData({
+        owner,
+        repo: repoName,
+        releaseName: `v${newVersion}`,
+        type: "release",
+      });
+      setShowWorkflowProgress(true);
 
       // Refrescar el estado del workflow y release después de un momento
       setTimeout(() => {
@@ -348,17 +353,14 @@ export function RepoCard({
       // Cerrar modal de prerelease
       setShowPrereleaseModal(false);
 
-      // Mostrar banner y abrir ventana después de 3 segundos
-      setSuccessMessage(`Prerelease ${prereleaseName} creada correctamente`);
-      setShowSuccessBanner(true);
-      setCountdown(3);
-      
-      setTimeout(() => setCountdown(2), 1000);
-      setTimeout(() => setCountdown(1), 2000);
-      setTimeout(() => {
-        setShowSuccessBanner(false);
-        window.open(`https://github.com/${repo.full_name}/actions`, "_blank");
-      }, 3000);
+      // Mostrar modal de progreso
+      setWorkflowProgressData({
+        owner,
+        repo: repoName,
+        releaseName: prereleaseName,
+        type: "prerelease",
+      });
+      setShowWorkflowProgress(true);
 
       // Refrescar el estado del workflow y release después de un momento
       setTimeout(() => {
@@ -559,6 +561,21 @@ export function RepoCard({
         validationReason={canCreateRelease().reason}
         type="release"
       />
+
+      {/* Modal de progreso del workflow */}
+      {workflowProgressData && (
+        <WorkflowProgressModal
+          isOpen={showWorkflowProgress}
+          onClose={() => {
+            setShowWorkflowProgress(false);
+            setWorkflowProgressData(null);
+          }}
+          owner={workflowProgressData.owner}
+          repo={workflowProgressData.repo}
+          releaseName={workflowProgressData.releaseName}
+          type={workflowProgressData.type}
+        />
+      )}
 
       {/* Banner de éxito con countdown */}
       {showSuccessBanner && (

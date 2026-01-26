@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const owner = searchParams.get("owner");
   const repo = searchParams.get("repo");
+  const workflow = searchParams.get("workflow") || "CICD.yaml";
 
   if (!owner || !repo) {
     return NextResponse.json(
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const res = await fetch(
-      `${GITHUB_API_URL}/repos/${owner}/${repo}/actions/workflows/CICD.yaml/runs?per_page=1&page=1`,
+      `${GITHUB_API_URL}/repos/${owner}/${repo}/actions/workflows/${workflow}/runs?per_page=1&page=1`,
       {
         headers: {
           Authorization: `token ${token}`,
