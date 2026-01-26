@@ -1,115 +1,92 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { GitHubRepository } from "@/types/github";
 import { RepoExtraInfo } from "@/modules/repos/types";
-import { fetchBatchReleases } from "@/modules/repos/services/releaseService";
-import { fetchBatchWorkflows } from "@/modules/repos/services/workflowService";
+import { fetchBatchRepoInfo } from "@/modules/repos/services/batchInfoService";
 import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 interface UseRepoExtraInfoReturn {
   extraInfo: Record<string, RepoExtraInfo>;
-  isLoadingReleases: boolean;
-  isLoadingWorkflows: boolean;
+  isLoading: boolean;
   loadWorkflows: () => Promise<void>;
   resetExtraInfo: () => void;
 }
 
 /**
  * Hook para gestionar la carga de información adicional de repositorios
- * (releases y workflows)
+ * (releases, workflows, PRs, branches)
  */
 export function useRepoExtraInfo(repos: GitHubRepository[]): UseRepoExtraInfoReturn {
   const [extraInfo, setExtraInfo] = useState<Record<string, RepoExtraInfo>>(() => {
     // Intentar cargar desde cache al inicializar
     return dataCache.get<Record<string, RepoExtraInfo>>(CACHE_KEYS.REPO_EXTRA_INFO) || {};
   });
-  const [isLoadingReleases, setIsLoadingReleases] = useState(false);
-  const [isLoadingWorkflows, setIsLoadingWorkflows] = useState(false);
-  const hasLoadedReleases = useRef<boolean>(dataCache.has(CACHE_KEYS.REPO_EXTRA_INFO));
+  const [isLoading, setIsLoading] = useState(false);
+  const hasLoadedData = useRef<boolean>(dataCache.has(CACHE_KEYS.REPO_EXTRA_INFO));
 
-  // Cargar releases automáticamente cuando se obtienen los repos
+  // Cargar toda la información automáticamente cuando se obtienen los repos
   useEffect(() => {
-    if (repos.length === 0 || hasLoadedReleases.current) return;
+    if (repos.length === 0 || hasLoadedData.current) return;
     
-    hasLoadedReleases.current = true;
-    setIsLoadingReleases(true);
+    hasLoadedData.current = true;
+    setIsLoading(true);
     
-    const loadReleases = async () => {
+    const loadRepoInfo = async () => {
       try {
         const repoRequests = repos.map((repo) => {
           const [owner, repoName] = repo.full_name.split("/");
           return { owner, repo: repoName };
         });
 
-        const releasesData = await fetchBatchReleases(repoRequests);
-        console.log('[useRepoExtraInfo] Batch releases response:', releasesData);
+        const repoInfoData = await fetchBatchRepoInfo(repoRequests);
+        console.log('[useRepoExtraInfo] Batch info response:', repoInfoData);
+        console.log('[useRepoExtraInfo] Total repos with data:', Object.keys(repoInfoData).length);
         
-        const updated: Record<string, RepoExtraInfo> = {};
-        
-        for (const [key, value] of Object.entries(releasesData)) {
-          updated[key] = {
-            release: value.release,
-            workflow: null,
-          };
-          console.log(`[useRepoExtraInfo] ${key}:`, value.release ? value.release.tag_name : 'No release');
-        }
-        
-        console.log('[useRepoExtraInfo] Total repos with data:', Object.keys(updated).length);
-        setExtraInfo(updated);
+        setExtraInfo(repoInfoData);
         // Guardar en cache
-        dataCache.set(CACHE_KEYS.REPO_EXTRA_INFO, updated);
+        dataCache.set(CACHE_KEYS.REPO_EXTRA_INFO, repoInfoData);
       } catch (error) {
-        console.error("Error fetching releases:", error);
+        console.error("Error fetching repo info:", error);
       } finally {
-        setIsLoadingReleases(false);
+        setIsLoading(false);
       }
     };
 
-    loadReleases();
+    loadRepoInfo();
   }, [repos]);
 
-  // Función para cargar workflows manualmente
+  // Función para recargar workflows manualmente (mantener compatibilidad)
   const loadWorkflows = useCallback(async () => {
     if (repos.length === 0) return;
     
-    setIsLoadingWorkflows(true);
+    setIsLoading(true);
     try {
       const repoRequests = repos.map((repo) => {
         const [owner, repoName] = repo.full_name.split("/");
         return { owner, repo: repoName };
       });
 
-      const workflowsData = await fetchBatchWorkflows(repoRequests);
+      const repoInfoData = await fetchBatchRepoInfo(repoRequests);
       
-      setExtraInfo((prev) => {
-        const updated = { ...prev };
-        for (const [key, value] of Object.entries(workflowsData)) {
-          updated[key] = {
-            ...updated[key],
-            workflow: value.workflow,
-          };
-        }
-        // Guardar en cache
-        dataCache.set(CACHE_KEYS.REPO_EXTRA_INFO, updated);
-        return updated;
-      });
+      setExtraInfo(repoInfoData);
+      // Guardar en cache
+      dataCache.set(CACHE_KEYS.REPO_EXTRA_INFO, repoInfoData);
     } catch (error) {
-      console.error("Error fetching workflows:", error);
+      console.error("Error fetching repo info:", error);
     } finally {
-      setIsLoadingWorkflows(false);
+      setIsLoading(false);
     }
   }, [repos]);
 
   const resetExtraInfo = useCallback(() => {
     setExtraInfo({});
-    hasLoadedReleases.current = false;
+    hasLoadedData.current = false;
     // Invalidar cache
     dataCache.invalidate(CACHE_KEYS.REPO_EXTRA_INFO);
   }, []);
 
   return {
     extraInfo,
-    isLoadingReleases,
-    isLoadingWorkflows,
+    isLoading,
     loadWorkflows,
     resetExtraInfo,
   };

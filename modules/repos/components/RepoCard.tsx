@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { GitHubRepository } from "@/types/github";
 import { DependenciesModal } from "./DependenciesModal";
+import { ReleaseModal } from "./ReleaseModal";
 import type { 
   WorkflowStatus, 
   ReleaseInfo, 
@@ -48,6 +49,9 @@ export function RepoCard({
   // Estados derivados de los hooks o preloadedInfo
   const workflowStatus: WorkflowStatus | null = preloadedInfo?.workflow ?? workflowHook.workflowStatus;
   const latestRelease: ReleaseInfo | null = preloadedInfo?.release ?? releaseHook.latestRelease;
+  const latestPrerelease: ReleaseInfo | null = preloadedInfo?.prerelease ?? null;
+  const openPRCount = preloadedInfo?.openPRCount ?? 0;
+  const branchCount = preloadedInfo?.branchCount ?? 0;
   const isLoading = !preloadedInfo && !skipIndividualFetch && (workflowHook.isLoading || releaseHook.isLoading);
   const isLoadingCommits = releaseHook.isLoadingCommits;
   const releaseCommits: Commit[] = releaseHook.commits;
@@ -524,227 +528,37 @@ export function RepoCard({
       )}
 
       {/* Modal de crear prerelease */}
-      {showPrereleaseModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg w-full shadow-xl border border-gray-200 dark:border-gray-700 max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Nueva prerelease v{getNextMinorVersion(latestRelease?.tag_name ?? null)}-preview
-              </h3>
-              <button
-                onClick={() => setShowPrereleaseModal(false)}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </div>
-            
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-              {latestPrereleaseTag 
-                ? `Cambios desde ${latestPrereleaseTag}:`
-                : "Commits a incluir en la primera prerelease:"}
-            </p>
-
-            <div className="flex-1 overflow-y-auto min-h-0 mb-4">
-              {isLoadingCommits ? (
-                <div className="flex items-center justify-center py-8">
-                  <svg className="w-6 h-6 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                </div>
-              ) : releaseCommits.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">
-                  {latestPrereleaseTag 
-                    ? `No hay cambios desde ${latestPrereleaseTag}`
-                    : "No hay commits disponibles"}
-                </p>
-              ) : (
-                <ul className="space-y-3">
-                  {releaseCommits.map((commit) => (
-                    <li key={commit.sha} className="flex items-start gap-2 text-sm">
-                      <span className="text-gray-400 dark:text-gray-500 font-mono shrink-0">
-                        {commit.sha.substring(0, 7)}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-gray-700 dark:text-gray-300 break-words">{commit.message}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">by {commit.author}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {/* Validación de CI/CD */}
-            {(() => {
-              const validation = canCreateRelease();
-              return !validation.canCreate && validation.reason ? (
-                <div className="flex items-center gap-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-md mb-4">
-                  <svg className="w-4 h-4 text-yellow-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  <p className="text-sm text-yellow-500">{validation.reason}</p>
-                </div>
-              ) : null;
-            })()}
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-              {/* Selector de rama */}
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="text-sm text-gray-600 dark:text-gray-400 shrink-0">Rama:</span>
-                <select
-                  value={selectedBranch}
-                  onChange={(e) => handleBranchChangeForPrerelease(e.target.value)}
-                  disabled={isLoadingBranches || isCreatingRelease}
-                  className="flex-1 min-w-0 px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed truncate"
-                >
-                  {isLoadingBranches ? (
-                    <option>Cargando...</option>
-                  ) : branches.length > 0 ? (
-                    branches.map((branch) => (
-                      <option key={branch} value={branch}>
-                        {branch}
-                      </option>
-                    ))
-                  ) : (
-                    <option>main</option>
-                  )}
-                </select>
-              </div>
-
-              <div className="flex gap-3 justify-end shrink-0">
-                <button
-                  onClick={() => setShowPrereleaseModal(false)}
-                  disabled={isCreatingRelease}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleCreatePrerelease}
-                  disabled={releaseCommits.length === 0 || isLoadingCommits || isCreatingRelease || !canCreateRelease().canCreate}
-                  className="px-4 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-500 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  title={!canCreateRelease().canCreate ? canCreateRelease().reason : ""}
-                >
-                  {isCreatingRelease ? (
-                    <>
-                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                      </svg>
-                      Creando...
-                    </>
-                  ) : (
-                    "Crear prerelease"
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <ReleaseModal
+        isOpen={showPrereleaseModal}
+        onClose={() => setShowPrereleaseModal(false)}
+        onCreateRelease={handleCreatePrerelease}
+        latestRelease={latestRelease}
+        commits={releaseCommits}
+        isLoadingCommits={isLoadingCommits}
+        isCreating={isCreatingRelease}
+        canCreate={canCreateRelease().canCreate}
+        validationReason={canCreateRelease().reason}
+        type="prerelease"
+        branches={branches}
+        selectedBranch={selectedBranch}
+        onBranchChange={handleBranchChangeForPrerelease}
+        isLoadingBranches={isLoadingBranches}
+        baseTag={latestPrereleaseTag}
+      />
 
       {/* Modal de crear release */}
-      {showReleaseModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg w-full shadow-xl border border-gray-200 dark:border-gray-700 max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Nueva release v{getNextMinorVersion(latestRelease?.tag_name ?? null)}
-              </h3>
-              <button
-                onClick={() => setShowReleaseModal(false)}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </div>
-            
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-              {latestRelease 
-                ? `Cambios desde ${latestRelease.tag_name}:`
-                : "Commits a incluir en la primera release:"}
-            </p>
-
-            <div className="flex-1 overflow-y-auto min-h-0 mb-4">
-              {isLoadingCommits ? (
-                <div className="flex items-center justify-center py-8">
-                  <svg className="w-6 h-6 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                </div>
-              ) : releaseCommits.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">
-                  {latestRelease 
-                    ? `No hay cambios desde ${latestRelease.tag_name}`
-                    : "No hay commits disponibles"}
-                </p>
-              ) : (
-                <ul className="space-y-3">
-                  {releaseCommits.map((commit) => (
-                    <li key={commit.sha} className="flex items-start gap-2 text-sm">
-                      <span className="text-gray-400 dark:text-gray-500 font-mono shrink-0">
-                        {commit.sha.substring(0, 7)}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-gray-700 dark:text-gray-300 break-words">{commit.message}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">by {commit.author}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {/* Validación de CI/CD */}
-            {(() => {
-              const validation = canCreateRelease();
-              return !validation.canCreate && validation.reason ? (
-                <div className="flex items-center gap-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-md mb-4">
-                  <svg className="w-4 h-4 text-yellow-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  <p className="text-sm text-yellow-500">{validation.reason}</p>
-                </div>
-              ) : null;
-            })()}
-
-            <div className="flex gap-3 justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
-              <button
-                onClick={() => setShowReleaseModal(false)}
-                disabled={isCreatingRelease}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleCreateRelease}
-                disabled={releaseCommits.length === 0 || isLoadingCommits || isCreatingRelease || !canCreateRelease().canCreate}
-                className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-500 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                title={!canCreateRelease().canCreate ? canCreateRelease().reason : ""}
-              >
-                {isCreatingRelease ? (
-                  <>
-                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    Creando...
-                  </>
-                ) : (
-                  "Crear release"
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ReleaseModal
+        isOpen={showReleaseModal}
+        onClose={() => setShowReleaseModal(false)}
+        onCreateRelease={handleCreateRelease}
+        latestRelease={latestRelease}
+        commits={releaseCommits}
+        isLoadingCommits={isLoadingCommits}
+        isCreating={isCreatingRelease}
+        canCreate={canCreateRelease().canCreate}
+        validationReason={canCreateRelease().reason}
+        type="release"
+      />
 
       {/* Banner de éxito con countdown */}
       {showSuccessBanner && (
@@ -805,7 +619,7 @@ export function RepoCard({
           )}
           
           {/* Separador */}
-          {repo.language && (externalIsLoadingRelease || latestRelease) && (
+          {repo.language && (externalIsLoadingRelease || latestRelease || openPRCount > 0 || branchCount > 0) && (
             <span className="text-gray-400 dark:text-gray-600">•</span>
           )}
           
@@ -831,10 +645,69 @@ export function RepoCard({
               </svg>
               {latestRelease.tag_name}
             </a>
-          ) : (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 border border-gray-200 dark:border-gray-700">
-              Sin release
-            </span>
+          ) : null}
+
+          {/* Separador si hay release y hay prerelease */}
+          {latestRelease && latestPrerelease && (
+            <span className="text-gray-400 dark:text-gray-600">•</span>
+          )}
+
+          {/* Prerelease badge */}
+          {latestPrerelease && (
+            <a
+              href={latestPrerelease.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 bg-orange-50 dark:bg-orange-500/10 hover:bg-orange-100 dark:hover:bg-orange-500/20 border border-orange-200 dark:border-orange-500/30 transition-colors"
+              title={`Prerelease: ${latestPrerelease.name || latestPrerelease.tag_name}`}
+            >
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 00.354 0l5.025-5.025a.25.25 0 000-.354l-6.25-6.25a.25.25 0 00-.177-.073H2.75a.25.25 0 00-.25.25v5.025zM6 5a1 1 0 110 2 1 1 0 010-2z" />
+              </svg>
+              {latestPrerelease.tag_name}
+            </a>
+          )}
+
+          {/* Separador si hay release/prerelease y hay PRs o branches */}
+          {(latestRelease || latestPrerelease) && (openPRCount > 0 || branchCount > 0) && (
+            <span className="text-gray-400 dark:text-gray-600">•</span>
+          )}
+
+          {/* Pull Requests badge */}
+          {openPRCount > 0 && (
+            <a
+              href={`${repo.html_url}/pulls`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-500 dark:hover:text-green-300 bg-green-50 dark:bg-green-500/10 hover:bg-green-100 dark:hover:bg-green-500/20 border border-green-200 dark:border-green-500/30 transition-colors"
+              title={`${openPRCount} Pull Request${openPRCount !== 1 ? 's' : ''} abierto${openPRCount !== 1 ? 's' : ''}`}
+            >
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"/>
+              </svg>
+              {openPRCount}
+            </a>
+          )}
+
+          {/* Separador entre PRs y branches */}
+          {openPRCount > 0 && branchCount > 0 && (
+            <span className="text-gray-400 dark:text-gray-600">•</span>
+          )}
+
+          {/* Branches badge */}
+          {branchCount > 0 && (
+            <a
+              href={`${repo.html_url}/branches`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 bg-purple-50 dark:bg-purple-500/10 hover:bg-purple-100 dark:hover:bg-purple-500/20 border border-purple-200 dark:border-purple-500/30 transition-colors"
+              title={`${branchCount} Rama${branchCount !== 1 ? 's' : ''}`}
+            >
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.493 2.493 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Zm-6 0a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Zm8.25-.75a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM4.25 12a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z"/>
+              </svg>
+              {branchCount}
+            </a>
           )}
         </div>
 

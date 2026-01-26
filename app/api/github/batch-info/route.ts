@@ -24,6 +24,9 @@ interface ReleaseInfo {
 interface RepoInfo {
   workflow: WorkflowInfo | null;
   release: ReleaseInfo | null;
+  prerelease: ReleaseInfo | null;
+  openPRCount: number;
+  branchCount: number;
 }
 
 // Función para obtener el estado del workflow de un repo
@@ -65,6 +68,84 @@ async function fetchWorkflowStatus(
   }
 }
 
+// Función para obtener el número de PRs abiertos
+async function fetchOpenPRCount(
+  token: string,
+  owner: string,
+  repo: string
+): Promise<number> {
+  try {
+    const res = await fetch(
+      `${GITHUB_API_URL}/repos/${owner}/${repo}/pulls?state=open&per_page=1`,
+      {
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!res.ok) {
+      return 0;
+    }
+
+    // GitHub devuelve el total en el header Link
+    const linkHeader = res.headers.get("link");
+    if (linkHeader) {
+      const match = linkHeader.match(/page=(\d+)>; rel="last"/);
+      if (match) {
+        return parseInt(match[1], 10);
+      }
+    }
+
+    // Si no hay paginación, contar los elementos del array
+    const data = await res.json();
+    return data.length;
+  } catch {
+    return 0;
+  }
+}
+
+// Función para obtener el número de branches
+async function fetchBranchCount(
+  token: string,
+  owner: string,
+  repo: string
+): Promise<number> {
+  try {
+    const res = await fetch(
+      `${GITHUB_API_URL}/repos/${owner}/${repo}/branches?per_page=1`,
+      {
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!res.ok) {
+      return 0;
+    }
+
+    // GitHub devuelve el total en el header Link
+    const linkHeader = res.headers.get("link");
+    if (linkHeader) {
+      const match = linkHeader.match(/page=(\d+)>; rel="last"/);
+      if (match) {
+        return parseInt(match[1], 10);
+      }
+    }
+
+    // Si no hay paginación, contar los elementos del array
+    const data = await res.json();
+    return data.length;
+  } catch {
+    return 0;
+  }
+}
+
 // Función para obtener la última release de un repo
 async function fetchLatestRelease(
   token: string,
@@ -94,6 +175,48 @@ async function fetchLatestRelease(
       name: data.name,
       html_url: data.html_url,
       published_at: data.published_at,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Función para obtener la última prerelease de un repo
+async function fetchLatestPrerelease(
+  token: string,
+  owner: string,
+  repo: string
+): Promise<ReleaseInfo | null> {
+  try {
+    const res = await fetch(
+      `${GITHUB_API_URL}/repos/${owner}/${repo}/releases?per_page=1`,
+      {
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!res.ok) {
+      return null;
+    }
+
+    const data = await res.json();
+
+    // Buscar la primera prerelease
+    const prerelease = data.find((r: any) => r.prerelease === true);
+
+    if (!prerelease) {
+      return null;
+    }
+
+    return {
+      tag_name: prerelease.tag_name,
+      name: prerelease.name,
+      html_url: prerelease.html_url,
+      published_at: prerelease.published_at,
     };
   } catch {
     return null;
@@ -134,19 +257,22 @@ export async function POST(request: NextRequest) {
         chunk.map(async ({ owner, repo }) => {
           const key = `${owner}/${repo}`;
 
-          // Ejecutar ambas llamadas en paralelo para cada repo
-          const [workflow, release] = await Promise.all([
+          // Ejecutar todas las llamadas en paralelo para cada repo
+          const [workflow, release, prerelease, openPRCount, branchCount] = await Promise.all([
             fetchWorkflowStatus(token, owner, repo),
             fetchLatestRelease(token, owner, repo),
+            fetchLatestPrerelease(token, owner, repo),
+            fetchOpenPRCount(token, owner, repo),
+            fetchBranchCount(token, owner, repo),
           ]);
 
-          return { key, workflow, release };
+          return { key, workflow, release, prerelease, openPRCount, branchCount };
         })
       );
 
       // Agregar resultados al objeto
-      for (const { key, workflow, release } of chunkResults) {
-        results[key] = { workflow, release };
+      for (const { key, workflow, release, prerelease, openPRCount, branchCount } of chunkResults) {
+        results[key] = { workflow, release, prerelease, openPRCount, branchCount };
       }
     }
 

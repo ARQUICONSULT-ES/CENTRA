@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { RepoList } from "@/modules/repos/components/RepoList";
 import { GitHubTokenModal } from "@/modules/repos/components/GitHubTokenModal";
-import type { RepoListHandle } from "@/modules/repos/types";
 import { useRepos } from "@/modules/repos/hooks/useRepos";
 import { useRepoFilter } from "@/modules/repos/hooks/useRepoFilter";
 import { useToast } from "@/modules/shared/hooks/useToast";
@@ -33,7 +32,6 @@ export function ReposPage() {
     searchQuery, 
     setSearchQuery,
   } = useRepoFilter(repos);
-  const repoListRef = useRef<RepoListHandle>(null);
   const [showTokenModal, setShowTokenModal] = useState(false);
 
   // Mostrar modal si se necesita el token
@@ -65,14 +63,6 @@ export function ReposPage() {
       throw error;
     }
   };
-
-  const handleLoadCICD = async () => {
-    if (repoListRef.current) {
-      await repoListRef.current.fetchWorkflows();
-    }
-  };
-
-  const isLoadingCICD = repoListRef.current?.isLoadingWorkflows ?? false;
 
   // Si se necesita token, mostrar solo el modal (sin otros errores)
   if (needsToken) {
@@ -205,54 +195,33 @@ export function ReposPage() {
         </p>
       </div>
 
-      {/* Buscador y botón CI/CD */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar repositorios..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
-          />
-        </div>
-        
-        <button
-          onClick={handleLoadCICD}
-          disabled={isLoadingCICD}
-          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-wait rounded-lg transition-colors whitespace-nowrap justify-center"
-          title="Cargar estado CI/CD de los repositorios"
+      {/* Buscador */}
+      <div className="relative">
+        <svg
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          {isLoadingCICD ? (
-            <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-          ) : (
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          )}
-          CI/CD
-        </button>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Buscar repositorios..."
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"
+        />
       </div>
 
       {/* Lista de repositorios */}
       {filteredAndSortedRepos.length > 0 ? (
-        <RepoList ref={repoListRef} repos={filteredAndSortedRepos} allRepos={repos} />
+        <RepoList repos={filteredAndSortedRepos} allRepos={repos} />
       ) : (
         <div className="text-center py-12">
           <svg
