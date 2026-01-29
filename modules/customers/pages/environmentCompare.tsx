@@ -60,6 +60,7 @@ export function EnvironmentComparePage({
   const [environments, setEnvironments] = useState<EnvironmentDetail[]>([]);
   const [loading, setLoading] = useState(true);
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
+  const [latestVersions, setLatestVersions] = useState<Record<string, string>>({});
   
   // Inicializar filtros desde URL
   const [hideMicrosoftApps, setHideMicrosoftApps] = useState(() => {
@@ -115,6 +116,29 @@ export function EnvironmentComparePage({
   useEffect(() => {
     loadEnvironments();
   }, [JSON.stringify(initialEnvironments)]);
+
+  // Cargar aplicaciones del catálogo para obtener las últimas versiones
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const response = await fetch('/api/applications');
+        if (response.ok) {
+          const applications: Application[] = await response.json();
+          const versionsMap: Record<string, string> = {};
+          applications.forEach(app => {
+            if (app.latestReleaseVersion) {
+              versionsMap[app.id] = app.latestReleaseVersion;
+            }
+          });
+          setLatestVersions(versionsMap);
+        }
+      } catch (error) {
+        console.error('Error fetching applications:', error);
+      }
+    };
+
+    fetchApplications();
+  }, []);
 
   const loadEnvironments = async () => {
     setLoading(true);
@@ -369,12 +393,28 @@ export function EnvironmentComparePage({
       );
     }
 
+    // Verificar si la instalación está desactualizada
+    const isOutdated = isVersionOutdated(app.version, latestVersions[app.id]);
+
     return (
       <div 
-        className={`p-2 rounded ${
+        className={`relative p-2 rounded border ${
+          isOutdated 
+            ? 'border-orange-300 dark:border-orange-600' 
+            : 'border-transparent'
+        } ${
           highlightColor || 'bg-white dark:bg-gray-900'
         }`}
       >
+        {/* Indicador de obsolescencia */}
+        {isOutdated && (
+          <div className="absolute -top-2.5 -right-1 flex items-center gap-0.5 px-1 py-0.5 bg-orange-500 text-white text-[8px] font-semibold rounded-full shadow-sm" title="Versión desactualizada">
+            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span className="hidden sm:inline">Desact.</span>
+          </div>
+        )}
         <div className="flex items-center justify-between gap-2 mb-1">
           <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${
             hasDiff?.publishedAs ? 'bg-orange-200 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300' : getPublishedAsColor(app.publishedAs)
