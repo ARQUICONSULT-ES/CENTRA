@@ -94,6 +94,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Verificar si ya existe un cliente con el mismo nombre
+    const existingCustomer = await prisma.customer.findFirst({
+      where: {
+        customerName: {
+          equals: customerName.trim(),
+          mode: 'insensitive', // Ignorar mayúsculas/minúsculas
+        },
+      },
+    });
+
+    if (existingCustomer) {
+      return NextResponse.json(
+        { error: "Ya existe un cliente con este nombre" },
+        { status: 409 } // Conflict
+      );
+    }
+
     const customer = await prisma.customer.create({
       data: {
         customerName: customerName.trim(),
@@ -104,8 +121,17 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(customer, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating customer:", error);
+    
+    // Manejar error de unique constraint de Prisma
+    if (error.code === 'P2002') {
+      return NextResponse.json(
+        { error: "Ya existe un cliente con este nombre" },
+        { status: 409 }
+      );
+    }
+    
     return NextResponse.json(
       { error: "Error al crear el cliente" },
       { status: 500 }

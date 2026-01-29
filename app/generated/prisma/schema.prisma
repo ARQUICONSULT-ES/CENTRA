@@ -41,7 +41,7 @@ model PasswordSetupToken {
 
 model Customer {
   id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  customerName        String             @db.VarChar(50)
+  customerName        String             @unique @db.VarChar(50)
   imageBase64         String?
   infraestructureType InfrastructureType @default(Saas)
   description         String?

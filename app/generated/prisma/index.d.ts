@@ -11019,16 +11019,16 @@ export namespace Prisma {
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    customerName?: string
     AND?: CustomerWhereInput | CustomerWhereInput[]
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
-    customerName?: StringFilter<"Customer"> | string
     imageBase64?: StringNullableFilter<"Customer"> | string | null
     infraestructureType?: EnumInfrastructureTypeFilter<"Customer"> | $Enums.InfrastructureType
     description?: StringNullableFilter<"Customer"> | string | null
     tenants?: TenantListRelationFilter
     allowedUsers?: UserCustomerListRelationFilter
-  }, "id">
+  }, "id" | "customerName">
 
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder
