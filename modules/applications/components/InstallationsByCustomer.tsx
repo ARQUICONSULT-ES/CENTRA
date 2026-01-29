@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { InstalledAppWithEnvironment } from "@/modules/customers/types";
 import { isVersionOutdated } from "@/modules/applications/utils/versionComparison";
@@ -36,6 +36,11 @@ export function InstallationsByCustomer({
   // Inicializar todos los clientes como expandidos
   const allCustomerIds = Object.values(groupedByCustomer).map(data => data.customerId);
   const [expandedCustomers, setExpandedCustomers] = useState<Set<string>>(new Set(allCustomerIds));
+
+  // Actualizar clientes expandidos cuando cambian las instalaciones
+  useEffect(() => {
+    setExpandedCustomers(new Set(allCustomerIds));
+  }, [installations.length]);
   
   const toggleCustomer = (customerId: string) => {
     setExpandedCustomers(prev => {
