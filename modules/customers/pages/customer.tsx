@@ -27,8 +27,8 @@ export function CustomersPage() {
         const response = await fetch('/api/users/me');
         if (response.ok) {
           const { user } = await response.json();
-          // Solo puede crear clientes si tiene acceso a todos los clientes
-          setCanCreateCustomer(user.allCustomers === true);
+          // CUALQUIER usuario autenticado puede crear clientes
+          setCanCreateCustomer(true);
         }
       } catch (error) {
         console.error('Error al obtener permisos:', error);
