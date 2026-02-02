@@ -353,11 +353,6 @@ export function ApplicationDetailPage({ applicationId }: ApplicationDetailPagePr
             </div>
             <div className="p-3 sm:p-4 md:p-5 space-y-3 sm:space-y-4">
               <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 sm:p-4">
-                <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1">Total instalaciones</p>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{installations.length}</p>
-              </div>
-              
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 sm:p-4">
                 <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1">Clientes</p>
                 <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                   {new Set(installations.map(i => i.customerId)).size}

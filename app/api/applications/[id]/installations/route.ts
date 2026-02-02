@@ -15,10 +15,13 @@ export async function GET(
 
     const { id: applicationId } = await params;
 
-    // Obtener todas las instalaciones de esta aplicación
+    // Obtener todas las instalaciones de esta aplicación (excluyendo SoftDeleted)
     const installations = await prisma.installedApp.findMany({
       where: {
         id: applicationId,
+        state: {
+          not: "SoftDeleted",
+        },
       },
       include: {
         environment: {

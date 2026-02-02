@@ -30,9 +30,14 @@ export async function GET(request: NextRequest) {
     // Enriquecer con contadores de instalaciones
     const enrichedApplications = await Promise.all(
       applications.map(async (app) => {
-        // Obtener todas las instalaciones de esta aplicación
+        // Obtener todas las instalaciones de esta aplicación (excluyendo SoftDeleted)
         const installations = await prisma.installedApp.findMany({
-          where: { id: app.id },
+          where: { 
+            id: app.id,
+            state: {
+              not: "SoftDeleted",
+            },
+          },
           select: { 
             version: true,
             environment: {

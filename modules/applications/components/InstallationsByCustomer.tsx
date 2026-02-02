@@ -148,78 +148,81 @@ export function InstallationsByCustomer({
             
             {/* Grid de instalaciones (entornos como tarjetas) */}
             {isExpanded && (
-              <div className="p-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5">
-                {data.installations.map((installation) => {
-                  const isOutdated = latestVersion && isVersionOutdated(installation.version, latestVersion);
-                  const envTypeColor = installation.environmentType?.toLowerCase() === 'production' 
-                    ? 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30' 
-                    : 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30';
-                  
-                  return (
-                    <Link
-                      key={`${installation.tenantId}-${installation.environmentName}`}
-                      href={`/environments/${installation.tenantId}/${installation.environmentName}`}
-                      className="flex flex-col p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-md transition-all group"
-                    >
-                      {/* Header de la tarjeta con tipo de entorno */}
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-1.5">
-                          <svg className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                          </svg>
-                          {installation.environmentType && (
-                            <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${envTypeColor}`}>
-                              {installation.environmentType}
+              <div className="p-4">
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {data.installations.map((installation) => {
+                    const isOutdated = latestVersion && isVersionOutdated(installation.version, latestVersion);
+                    
+                    // Badge de tipo de entorno (Production=Verde, Sandbox=Azul)
+                    const getEnvTypeBadgeColor = (envType?: string | null) => {
+                      const typeLower = envType?.toLowerCase();
+                      if (typeLower === "production") {
+                        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+                      }
+                      if (typeLower === "sandbox") {
+                        return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
+                      }
+                      return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
+                    };
+                    
+                    return (
+                      <Link
+                        key={`${installation.tenantId}-${installation.environmentName}`}
+                        href={`/environments/${installation.tenantId}/${installation.environmentName}`}
+                        className={`group relative inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 border rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all shadow-sm hover:shadow-md cursor-pointer ${
+                          isOutdated 
+                            ? 'border-orange-300 dark:border-orange-600 hover:border-orange-400 dark:hover:border-orange-500' 
+                            : 'border-gray-200 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
+                        }`}
+                      >
+                        {/* Badge de "Desactualizada" si aplica */}
+                        {isOutdated && (
+                          <div className="absolute -top-2 -right-2 flex items-center gap-1 px-2 py-0.5 bg-orange-500 text-white text-[10px] font-semibold rounded-full shadow-md z-10">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            Desactualizada
+                          </div>
+                        )}
+                        
+                        {/* Información básica */}
+                        <div className="flex flex-col gap-1 min-w-0 flex-1">
+                          {/* Header: Nombre del entorno (izquierda) + Tipo (derecha) */}
+                          <div className="flex items-start justify-between gap-2">
+                            <span className="text-sm font-medium text-gray-900 dark:text-white break-words flex-1">
+                              {installation.environmentName}
                             </span>
-                          )}
+                            {installation.environmentType && (
+                              <span className={`text-[10px] px-2 py-0.5 rounded font-medium whitespace-nowrap flex-shrink-0 ${getEnvTypeBadgeColor(installation.environmentType)}`}>
+                                {installation.environmentType}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Footer: Estado (izquierda) + Versión (derecha) */}
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs text-gray-500 dark:text-gray-400 truncate flex-1">
+                              {installation.environmentStatus || 'Unknown'}
+                            </span>
+                            <span className="text-xs font-mono text-gray-600 dark:text-gray-400 flex-shrink-0">
+                              v{installation.version}
+                            </span>
+                          </div>
                         </div>
+                        
+                        {/* Icono de navegación */}
                         <svg 
-                          className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" 
+                          className="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" 
                           fill="none" 
                           stroke="currentColor" 
                           viewBox="0 0 24 24"
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                      </div>
-
-                      {/* Nombre del entorno */}
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
-                        {installation.environmentName}
-                      </h4>
-                        
-                      {/* Versión instalada */}
-                      <div className="mt-auto space-y-1.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] text-gray-500 dark:text-gray-400">Versión:</span>
-                          <span className="font-mono text-xs font-semibold text-gray-900 dark:text-white">
-                            v{installation.version}
-                          </span>
-                        </div>
-                        
-                        {/* Badges de estado */}
-                        {(isOutdated || (installation.environmentStatus && installation.environmentStatus.toLowerCase() !== 'active')) && (
-                          <div className="flex flex-wrap gap-1.5">
-                            {isOutdated && (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 rounded">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                                Desactualizada
-                              </span>
-                            )}
-
-                            {installation.environmentStatus && installation.environmentStatus.toLowerCase() !== 'active' && (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded">
-                                {installation.environmentStatus}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-                  );
-                })}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
