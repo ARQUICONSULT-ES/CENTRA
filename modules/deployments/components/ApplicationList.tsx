@@ -206,12 +206,12 @@ export function ApplicationList({
                         </span>
                       )}
                       {app.versionType === 'prerelease' && app.latestPrereleaseVersion && (
-                        <span className="inline-block text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded font-medium">
+                        <span className="inline-block text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded font-medium">
                           Prerelease {app.latestPrereleaseVersion}
                         </span>
                       )}
                       {app.versionType === 'pullrequest' && app.prNumber && (
-                        <span className="inline-block text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded font-medium">
+                        <span className="inline-block text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded font-medium">
                           PR #{app.prNumber}
                         </span>
                       )}

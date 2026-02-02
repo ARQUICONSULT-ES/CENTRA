@@ -318,7 +318,7 @@ export function ApplicationSelectorModal({
                         <div className="flex items-center gap-2 mt-1">
                           {app.latestReleaseVersion && (
                             <div className="flex items-center gap-1">
-                              <span className="text-xs px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded">
+                              <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded">
                                 v{app.latestReleaseVersion}
                               </span>
                               {app.latestReleaseDate && (
@@ -330,7 +330,7 @@ export function ApplicationSelectorModal({
                           )}
                           {app.latestPrereleaseVersion && (
                             <div className="flex items-center gap-1">
-                              <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">
+                              <span className="text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded">
                                 v{app.latestPrereleaseVersion}
                               </span>
                               {app.latestPrereleaseDate && (
@@ -376,9 +376,9 @@ export function ApplicationSelectorModal({
                           disabled={!hasPrerelease}
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                             isPrereleaseSelected
-                              ? "bg-purple-600 text-white shadow-sm"
+                              ? "bg-orange-600 text-white shadow-sm"
                               : hasPrerelease
-                              ? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-700 dark:hover:text-purple-300"
+                              ? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-orange-100 dark:hover:bg-orange-900/40 hover:text-orange-700 dark:hover:text-orange-300"
                               : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-50"
                           }`}
                           title={!hasPrerelease ? "No hay prerelease disponible" : "Seleccionar prerelease"}
@@ -398,9 +398,9 @@ export function ApplicationSelectorModal({
                           disabled={!hasGithubRepo}
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                             isPRSelected
-                              ? "bg-orange-600 text-white shadow-sm"
+                              ? "bg-purple-600 text-white shadow-sm"
                               : hasGithubRepo
-                              ? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-orange-100 dark:hover:bg-orange-900/40 hover:text-orange-700 dark:hover:text-orange-300"
+                              ? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-700 dark:hover:text-purple-300"
                               : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-50"
                           }`}
                           title={!hasGithubRepo ? "No hay repositorio configurado" : "Seleccionar Pull Request"}
