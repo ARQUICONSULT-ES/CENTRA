@@ -165,6 +165,21 @@ export function InstallationsByCustomer({
                       return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
                     };
                     
+                    // Badge de publishedAs (Global=Verde, Tenant=Azul)
+                    const getPublishedAsBadgeColor = (publishedAs: string) => {
+                      const typeLower = publishedAs.toLowerCase();
+                      if (typeLower === "global") {
+                        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+                      }
+                      if (typeLower === "tenant") {
+                        return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
+                      }
+                      if (typeLower === "dev") {
+                        return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+                      }
+                      return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
+                    };
+                    
                     return (
                       <Link
                         key={`${installation.tenantId}-${installation.environmentName}`}
@@ -192,11 +207,16 @@ export function InstallationsByCustomer({
                             <span className="text-sm font-medium text-gray-900 dark:text-white break-words flex-1">
                               {installation.environmentName}
                             </span>
-                            {installation.environmentType && (
-                              <span className={`text-[10px] px-2 py-0.5 rounded font-medium whitespace-nowrap flex-shrink-0 ${getEnvTypeBadgeColor(installation.environmentType)}`}>
-                                {installation.environmentType}
+                            <div className="flex gap-1 flex-shrink-0">
+                              {installation.environmentType && (
+                                <span className={`text-[10px] px-2 py-0.5 rounded font-medium whitespace-nowrap ${getEnvTypeBadgeColor(installation.environmentType)}`}>
+                                  {installation.environmentType}
+                                </span>
+                              )}
+                              <span className={`text-[10px] px-2 py-0.5 rounded font-medium whitespace-nowrap ${getPublishedAsBadgeColor(installation.publishedAs)}`}>
+                                {installation.publishedAs}
                               </span>
-                            )}
+                            </div>
                           </div>
                           
                           {/* Footer: Estado (izquierda) + Versión (derecha) */}
