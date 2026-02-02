@@ -523,15 +523,118 @@ interface DeploymentBatchResult {
 }
 
 /**
+ * Obtiene el artifact de un Pull Request desde GitHub Actions
+ */
+async function getPullRequestArtifact(
+  owner: string,
+  repo: string,
+  token: string,
+  prNumber: number
+): Promise<{ downloadUrl: string; version: string; assetId?: number } | null> {
+  try {
+    console.log(`Obteniendo artifacts del PR #${prNumber}...`);
+
+    // 1. Obtener los workflows runs del PR
+    const runsUrl = `https://api.github.com/repos/${owner}/${repo}/actions/runs?event=pull_request&per_page=100`;
+    const runsRes = await fetch(runsUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    });
+
+    if (!runsRes.ok) {
+      console.error(`Error obteniendo workflow runs: ${runsRes.status}`);
+      return null;
+    }
+
+    const runsData = await runsRes.json();
+    
+    // Filtrar runs que correspondan al PR
+    const prRuns = runsData.workflow_runs.filter((run: any) => {
+      return run.pull_requests?.some((pr: any) => pr.number === prNumber);
+    });
+
+    if (prRuns.length === 0) {
+      console.error(`No se encontraron workflow runs para PR #${prNumber}`);
+      return null;
+    }
+
+    // Ordenar por fecha y obtener el más reciente exitoso
+    const successfulRun = prRuns
+      .filter((run: any) => run.status === 'completed' && run.conclusion === 'success')
+      .sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
+
+    if (!successfulRun) {
+      console.error(`No se encontró un workflow run exitoso para PR #${prNumber}`);
+      return null;
+    }
+
+    console.log(`Workflow run encontrado: ${successfulRun.id} (${successfulRun.name})`);
+
+    // 2. Obtener los artifacts de ese run
+    const artifactsUrl = `https://api.github.com/repos/${owner}/${repo}/actions/runs/${successfulRun.id}/artifacts`;
+    const artifactsRes = await fetch(artifactsUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    });
+
+    if (!artifactsRes.ok) {
+      console.error(`Error obteniendo artifacts: ${artifactsRes.status}`);
+      return null;
+    }
+
+    const artifactsData = await artifactsRes.json();
+
+    if (artifactsData.artifacts.length === 0) {
+      console.error(`No se encontraron artifacts en el workflow run ${successfulRun.id}`);
+      return null;
+    }
+
+    // Buscar el artifact .app o .zip
+    const artifact = artifactsData.artifacts.find((a: any) => 
+      a.name.toLowerCase().includes('app') || 
+      a.name.toLowerCase().endsWith('.app') ||
+      a.name.toLowerCase().endsWith('.zip')
+    );
+
+    if (!artifact) {
+      console.error(`No se encontró artifact .app en el workflow run`);
+      console.error(`Artifacts disponibles: ${artifactsData.artifacts.map((a: any) => a.name).join(', ')}`);
+      return null;
+    }
+
+    console.log(`Artifact encontrado: ${artifact.name}`);
+    
+    return {
+      downloadUrl: artifact.archive_download_url,
+      version: `PR${prNumber}`,
+      assetId: artifact.id,
+    };
+  } catch (error) {
+    console.error('Error obteniendo artifact del PR:', error);
+    return null;
+  }
+}
+
+/**
  * Obtiene la URL de descarga del último release de GitHub
  */
 async function getLatestReleaseAsset(
   owner: string,
   repo: string,
   token: string,
-  versionType: 'release' | 'prerelease' = 'release'
+  versionType: 'release' | 'prerelease' | 'pullrequest' = 'release',
+  prNumber?: number
 ): Promise<{ downloadUrl: string; version: string; assetId?: number } | null> {
   try {
+    // Si es un Pull Request, obtener artifacts
+    if (versionType === 'pullrequest' && prNumber) {
+      return await getPullRequestArtifact(owner, repo, token, prNumber);
+    }
+
     let url: string;
     let release: any;
 
@@ -705,7 +808,8 @@ export async function deployApplications(
     publisher: string;
     version: string;
     githubRepoName: string;
-    versionType: 'release' | 'prerelease';
+    versionType: 'release' | 'prerelease' | 'pullrequest';
+    prNumber?: number;
     installMode?: 'Add' | 'ForceSync';
   }>,
   githubToken: string,
@@ -821,9 +925,12 @@ export async function deployApplications(
         steps: [...steps],
       });
       
-      const releaseInfo = await getLatestReleaseAsset(owner, repo, githubToken, app.versionType);
+      const releaseInfo = await getLatestReleaseAsset(owner, repo, githubToken, app.versionType, app.prNumber);
       if (!releaseInfo) {
-        const error = `No se encontró ${app.versionType === 'prerelease' ? 'prerelease' : 'release'} disponible en GitHub`;
+        const versionLabel = app.versionType === 'pullrequest' 
+          ? `Pull Request #${app.prNumber}` 
+          : (app.versionType === 'prerelease' ? 'prerelease' : 'release');
+        const error = `No se encontró ${versionLabel} disponible en GitHub`;
         console.error(`   ❌ ${error}`);
         steps[1].status = 'error';
         steps[1].message = error;

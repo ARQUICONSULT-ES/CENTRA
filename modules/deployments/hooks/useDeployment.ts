@@ -25,7 +25,7 @@ export function useDeployment() {
     });
   }, []);
 
-  const addApplications = useCallback((apps: Array<{ app: Application; versionType: VersionType; installMode?: 'Add' | 'ForceSync' }>) => {
+  const addApplications = useCallback((apps: Array<{ app: Application; versionType: VersionType; prNumber?: number; installMode?: 'Add' | 'ForceSync' }>) => {
     setApplications(prev => {
       const existingIds = new Set(prev.map(a => a.id));
       const newApps = apps.filter(item => !existingIds.has(item.app.id));
@@ -37,6 +37,7 @@ export function useDeployment() {
         ...item.app,
         order: maxOrder + 1 + idx,
         versionType: item.versionType,
+        prNumber: item.prNumber, // Store PR number if available
         installMode: (item.installMode || 'Add') as 'Add' | 'ForceSync'
       }));
       
@@ -105,7 +106,13 @@ export function useDeployment() {
     if (applications.length > 0) {
       // Store apps as comma-separated values for cleaner URLs
       const appIds = applications.map(app => app.id).join(',');
-      const versionTypes = applications.map(app => app.versionType).join(',');
+      const versionTypes = applications.map(app => {
+        // Si es pullrequest, usar formato "PR{number}"
+        if (app.versionType === 'pullrequest' && app.prNumber) {
+          return `PR${app.prNumber}`;
+        }
+        return app.versionType;
+      }).join(',');
       const installModes = applications.map(app => app.installMode || 'Add').join(',');
       
       params.set('appIds', appIds);

@@ -210,6 +210,11 @@ export function ApplicationList({
                           Prerelease {app.latestPrereleaseVersion}
                         </span>
                       )}
+                      {app.versionType === 'pullrequest' && app.prNumber && (
+                        <span className="inline-block text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded font-medium">
+                          PR #{app.prNumber}
+                        </span>
+                      )}
                       {/* Install Mode Toggle Buttons */}
                       <div className="flex items-center gap-0.5 bg-gray-100 dark:bg-gray-700/50 rounded p-0.5">
                         <button

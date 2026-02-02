@@ -83,11 +83,24 @@ export function DeploymentsPage() {
           const appsToAdd = appIds
             .map((id, index) => {
               const app = applications.find(a => a.id === id);
-              const versionType = (versionTypes[index] || 'release') as VersionType;
+              const versionTypeStr = versionTypes[index] || 'release';
               const installMode = (installModes[index] || 'Add') as 'Add' | 'ForceSync';
-              return app ? { app, versionType, installMode } : null;
+              
+              // Parse version type and PR number
+              let versionType: VersionType = 'release';
+              let prNumber: number | undefined;
+              
+              if (versionTypeStr.startsWith('PR')) {
+                // Formato: PR64
+                versionType = 'pullrequest';
+                prNumber = parseInt(versionTypeStr.substring(2), 10);
+              } else {
+                versionType = versionTypeStr as VersionType;
+              }
+              
+              return app ? { app, versionType, prNumber, installMode } : null;
             })
-            .filter(Boolean) as Array<{ app: Application; versionType: VersionType; installMode: 'Add' | 'ForceSync' }>;
+            .filter(Boolean) as Array<{ app: Application; versionType: VersionType; prNumber?: number; installMode: 'Add' | 'ForceSync' }>;
           
           if (appsToAdd.length > 0) {
             addApplications(appsToAdd);

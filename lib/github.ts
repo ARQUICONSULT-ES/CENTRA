@@ -1,4 +1,4 @@
-import { GitHubRepository, GitHubUser } from "@/types/github";
+import { GitHubRepository, GitHubUser, GitHubPullRequest } from "@/types/github";
 
 const GITHUB_API_URL = "https://api.github.com";
 
@@ -65,6 +65,42 @@ export async function getAuthenticatedUser(token: string): Promise<GitHubUser> {
     return res.json();
   } catch (error) {
     console.error("Error fetching authenticated user:", error);
+    throw error;
+  }
+}
+
+/**
+ * Obtiene los pull requests abiertos de un repositorio
+ */
+export async function getPullRequests(
+  token: string,
+  owner: string,
+  repo: string
+): Promise<GitHubPullRequest[]> {
+  try {
+    const url = `${GITHUB_API_URL}/repos/${owner}/${repo}/pulls?state=open&per_page=100`;
+    console.log(`[getPullRequests] Fetching PRs from: ${url}`);
+    console.log(`[getPullRequests] Owner: ${owner}, Repo: ${repo}`);
+    
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      const errorBody = await res.text();
+      console.error(`[getPullRequests] Error response:`, errorBody);
+      throw new Error(`GitHub API error: ${res.status} ${res.statusText} - ${errorBody}`);
+    }
+
+    const prs = await res.json();
+    console.log(`[getPullRequests] Found ${prs.length} open PRs`);
+    return prs;
+  } catch (error) {
+    console.error("Error fetching pull requests:", error);
     throw error;
   }
 }
