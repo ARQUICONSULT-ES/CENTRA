@@ -13,6 +13,7 @@ import { EnvironmentListSkeleton } from "@/modules/customers/components/Environm
 import { ApplicationsList } from "@/modules/customers/components/ApplicationsList";
 import { ApplicationListSkeleton } from "@/modules/customers/components/ApplicationCardSkeleton";
 import { useToast } from "@/modules/shared/hooks/useToast";
+import RelatedLinksList from "@/modules/customers/components/RelatedLinksList";
 import ToastContainer from "@/modules/shared/components/ToastContainer";
 import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 import { isVersionOutdated } from "@/modules/applications/utils/versionComparison";
@@ -717,6 +718,13 @@ export function CustomerFormPage({ customerId }: CustomerFormPageProps) {
           )}
         </div>
       </form>
+
+      {/* Sección de Enlaces Relacionados - Solo en modo edición */}
+      {isEditMode && customerId && (
+        <div className="mt-3 sm:mt-4 md:mt-6">
+          <RelatedLinksList customerId={customerId} />
+        </div>
+      )}
 
       {/* Sección de Entornos - Solo en modo edición */}
       {isEditMode && (

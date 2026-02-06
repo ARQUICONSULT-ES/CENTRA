@@ -10,6 +10,27 @@ export interface Customer {
   activeEnvironmentsCount?: number;
 }
 
+// ==================== RELATED LINKS TYPES ====================
+
+export type RelationType = "Customer";
+
+export interface RelatedLink {
+  relationType: RelationType;
+  relationId: string;
+  name: string;
+  url: string;
+  favicon?: string | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+}
+
+export interface RelatedLinkFormData {
+  name: string;
+  url: string;
+  favicon?: string | null;
+}
+
+
 // ==================== TENANT TYPES ====================
 
 export interface Tenant {

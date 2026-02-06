@@ -213,6 +213,16 @@ exports.Prisma.ApplicationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.RelatedLinkScalarFieldEnum = {
+  relationType: 'relationType',
+  relationId: 'relationId',
+  name: 'name',
+  url: 'url',
+  favicon: 'favicon',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -243,6 +253,10 @@ exports.InfrastructureType = exports.$Enums.InfrastructureType = {
   OnPremise: 'OnPremise'
 };
 
+exports.RelationType = exports.$Enums.RelationType = {
+  Customer: 'Customer'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   PasswordSetupToken: 'PasswordSetupToken',
@@ -251,7 +265,8 @@ exports.Prisma.ModelName = {
   Tenant: 'Tenant',
   Environment: 'Environment',
   InstalledApp: 'InstalledApp',
-  Application: 'Application'
+  Application: 'Application',
+  RelatedLink: 'RelatedLink'
 };
 
 /**
