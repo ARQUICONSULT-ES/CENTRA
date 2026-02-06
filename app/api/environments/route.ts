@@ -87,6 +87,19 @@ export async function GET(request: NextRequest) {
       ],
     });
 
+    // Crear mapa de clientes únicos para evitar duplicar imageBase64
+    const customersMap = new Map<string, { id: string; name: string; image: string | null }>();
+    environments.forEach(env => {
+      const customer = env.tenant.customer;
+      if (!customersMap.has(customer.id)) {
+        customersMap.set(customer.id, {
+          id: customer.id,
+          name: customer.customerName,
+          image: customer.imageBase64,
+        });
+      }
+    });
+
     // Obtener todas las aplicaciones del catálogo para comparar versiones
     const catalogApplications = await prisma.application.findMany({
       select: {
@@ -111,6 +124,9 @@ export async function GET(request: NextRequest) {
         return latestVersion && isVersionOutdated(app.version, latestVersion);
       }).length;
 
+      const customerId = env.tenant.customer.id;
+      const customer = customersMap.get(customerId)!;
+
       return {
         tenantId: env.tenantId,
         name: env.name,
@@ -120,9 +136,9 @@ export async function GET(request: NextRequest) {
         locationName: env.locationName,
         applicationVersion: env.applicationVersion,
         platformVersion: env.platformVersion,
-        customerId: env.tenant.customer.id,
-        customerName: env.tenant.customer.customerName,
-        customerImage: env.tenant.customer.imageBase64,
+        customerId: customer.id,
+        customerName: customer.name,
+        customerImage: customer.image,
         tenantDescription: env.tenant.description,
         tenantAuthContext: env.tenant.authContext,
         appsCount: env.installedApps.length,

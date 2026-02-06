@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
               select: {
                 id: true,
                 customerName: true,
-                // NO incluir imageBase64 - es demasiado pesado
+                imageBase64: true,
               },
             },
           },
@@ -85,7 +85,20 @@ export async function GET(request: NextRequest) {
       ],
     });
 
-    // Paso 2: Procesar entornos en lotes para evitar sobrecarga de memoria
+    // Paso 2: Crear mapa de clientes únicos para evitar duplicar imageBase64
+    const customersMap = new Map<string, { id: string; name: string; image: string | null }>();
+    environments.forEach(env => {
+      const customer = env.tenant.customer;
+      if (!customersMap.has(customer.id)) {
+        customersMap.set(customer.id, {
+          id: customer.id,
+          name: customer.customerName,
+          image: customer.imageBase64,
+        });
+      }
+    });
+
+    // Paso 3: Procesar entornos en lotes para evitar sobrecarga de memoria
     const BATCH_SIZE = 10; // Procesar 10 entornos a la vez
     const allApplications: any[] = [];
 
@@ -122,7 +135,10 @@ export async function GET(request: NextRequest) {
           ORDER BY ia.name ASC
         `;
 
-        // Transformar las apps agregando información del entorno (sin imagen base64)
+        const customerId = env.tenant.customer.id;
+        const customer = customersMap.get(customerId)!;
+
+        // Transformar las apps agregando información del entorno y cliente
         return apps.map((app) => ({
           tenantId: app.tenantId,
           environmentName: app.environmentName,
@@ -133,8 +149,9 @@ export async function GET(request: NextRequest) {
           publishedAs: app.publishedAs,
           state: app.state,
           latestReleaseVersion: app.latestReleaseVersion,
-          customerId: env.tenant.customer.id,
-          customerName: env.tenant.customer.customerName,
+          customerId: customer.id,
+          customerName: customer.name,
+          customerImage: customer.image,
           environmentType: env.type,
           environmentStatus: env.status,
         }));
