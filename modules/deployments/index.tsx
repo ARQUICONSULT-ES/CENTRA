@@ -601,20 +601,31 @@ export function DeploymentsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => window.history.back()}
-          className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-          title="Volver atrás"
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => window.history.back()}
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            title="Volver atrás"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver
+          </button>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Despliegues
+          </h1>
+        </div>
+        <a
+          href="/deployments/history"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          Volver
-        </button>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Despliegues
-        </h1>
+          Histórico
+        </a>
       </div>
 
       {/* Main Content - Two Panels */}

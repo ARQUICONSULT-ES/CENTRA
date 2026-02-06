@@ -19,3 +19,6 @@ export interface DeploymentState {
   selectedEnvironment: DeploymentEnvironment | null;
   applications: DeploymentApplication[];
 }
+
+// Export history types
+export * from './history';
