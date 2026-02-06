@@ -73,8 +73,17 @@ export async function POST(request: NextRequest) {
           errors: [] as Array<{ repo: string; error: string }>,
         };
 
-        // 2. Procesar cada repositorio para buscar app.json
-        for (const repo of repos) {
+        // 2. Procesar repositorios en lotes paralelos para mejorar rendimiento
+        const BATCH_SIZE = 5; // Procesar 5 repositorios simultáneamente
+        
+        // Función para procesar un repositorio individual
+        const processRepo = async (repo: typeof repos[0]): Promise<{
+          action: 'created' | 'updated' | 'skipped' | 'error';
+          name?: string;
+          repo: string;
+          reason?: string;
+          error?: string;
+        }> => {
           try {
             console.log(`Procesando repositorio: ${repo.full_name}`);
             sendEvent({ type: 'processing', repo: repo.full_name });
@@ -89,56 +98,45 @@ export async function POST(request: NextRequest) {
 
             if (!appJsonContent) {
               console.log(`  ⊘ No se encontró app.json en ${repo.name}`);
-              syncResults.skipped++;
-              syncResults.processed++;
-              sendEvent({ 
-                type: 'skipped', 
+              return { 
+                action: 'skipped', 
                 repo: repo.name,
                 reason: 'No se encontró app.json'
-              });
-              continue;
+              };
             }
 
             // Validar que tenga las propiedades requeridas
             if (!appJsonContent.id || !appJsonContent.name || !appJsonContent.publisher) {
               console.log(`  ⚠ app.json incompleto en ${repo.name}`);
               const error = "app.json no contiene id, name o publisher";
-              syncResults.errors.push({
+              return { 
+                action: 'skipped', 
                 repo: repo.name,
+                reason: error,
                 error
-              });
-              syncResults.skipped++;
-              syncResults.processed++;
-              sendEvent({ 
-                type: 'skipped', 
-                repo: repo.name,
-                reason: error
-              });
-              continue;
+              };
             }
 
-            // Intentar obtener el logo de la aplicación
-            const logoBase64 = await getAppLogoFromRepo(
-              githubToken,
-              repo.owner.login,
-              repo.name,
-              repo.default_branch,
-              appJsonContent
-            );
-
-            // Obtener la última release del repositorio
-            const latestRelease = await getLatestRelease(
-              githubToken,
-              repo.owner.login,
-              repo.name
-            );
-
-            // Obtener la última prerelease del repositorio
-            const latestPrerelease = await getLatestPrerelease(
-              githubToken,
-              repo.owner.login,
-              repo.name
-            );
+            // Obtener logo, release y prerelease en paralelo para cada repo
+            const [logoBase64, latestRelease, latestPrerelease] = await Promise.all([
+              getAppLogoFromRepo(
+                githubToken,
+                repo.owner.login,
+                repo.name,
+                repo.default_branch,
+                appJsonContent
+              ),
+              getLatestRelease(
+                githubToken,
+                repo.owner.login,
+                repo.name
+              ),
+              getLatestPrerelease(
+                githubToken,
+                repo.owner.login,
+                repo.name
+              )
+            ]);
 
             // Construir la URL del repositorio
             const githubUrl = repo.html_url;
@@ -167,12 +165,11 @@ export async function POST(request: NextRequest) {
                 },
               });
               console.log(`  ✓ Actualizada: ${appJsonContent.name}`);
-              syncResults.updated++;
-              sendEvent({ 
-                type: 'updated', 
+              return { 
+                action: 'updated', 
                 name: appJsonContent.name,
                 repo: repo.name
-              });
+              };
             } else {
               // Crear nueva aplicación
               await prisma.application.create({
@@ -191,28 +188,75 @@ export async function POST(request: NextRequest) {
                 },
               });
               console.log(`  ✓ Creada: ${appJsonContent.name}`);
-              syncResults.created++;
-              sendEvent({ 
-                type: 'created', 
+              return { 
+                action: 'created', 
                 name: appJsonContent.name,
                 repo: repo.name
-              });
+              };
             }
-
-            syncResults.processed++;
           } catch (error) {
             console.error(`Error procesando ${repo.name}:`, error);
             const errorMsg = error instanceof Error ? error.message : "Error desconocido";
-            syncResults.errors.push({
+            return { 
+              action: 'error', 
               repo: repo.name,
               error: errorMsg
-            });
+            };
+          }
+        };
+
+        // Procesar repositorios en lotes de BATCH_SIZE
+        for (let i = 0; i < repos.length; i += BATCH_SIZE) {
+          const batch = repos.slice(i, i + BATCH_SIZE);
+          const batchResults = await Promise.all(batch.map(processRepo));
+          
+          // Procesar resultados del lote
+          for (const result of batchResults) {
             syncResults.processed++;
-            sendEvent({ 
-              type: 'error', 
-              repo: repo.name,
-              error: errorMsg
-            });
+            
+            switch (result.action) {
+              case 'created':
+                syncResults.created++;
+                sendEvent({ 
+                  type: 'created', 
+                  name: result.name,
+                  repo: result.repo
+                });
+                break;
+              case 'updated':
+                syncResults.updated++;
+                sendEvent({ 
+                  type: 'updated', 
+                  name: result.name,
+                  repo: result.repo
+                });
+                break;
+              case 'skipped':
+                syncResults.skipped++;
+                if (result.error) {
+                  syncResults.errors.push({
+                    repo: result.repo,
+                    error: result.error
+                  });
+                }
+                sendEvent({ 
+                  type: 'skipped', 
+                  repo: result.repo,
+                  reason: result.reason
+                });
+                break;
+              case 'error':
+                syncResults.errors.push({
+                  repo: result.repo,
+                  error: result.error || 'Error desconocido'
+                });
+                sendEvent({ 
+                  type: 'error', 
+                  repo: result.repo,
+                  error: result.error
+                });
+                break;
+            }
           }
         }
 
