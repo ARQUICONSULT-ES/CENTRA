@@ -315,10 +315,10 @@ async function installAppInBC(
     let deploymentFailed = false;
     let failureReason = '';
     let attempts = 0;
-    const maxAttempts = 720; // 60 minutos máximo (5 segundos * 720 = 3600 segundos)
+    const maxAttempts = 180; // 30 minutos máximo (10 segundos * 180)
     let lastStatus = '';
     let consecutiveErrors = 0;
-    const maxConsecutiveErrors = 10; // Fallar después de 10 errores consecutivos de polling (más tolerante)
+    const maxConsecutiveErrors = 5; // Fallar después de 5 errores consecutivos de polling
     let sleepSeconds = 30; // Empezar con 30 segundos como BcContainerHelper
     
     while (!completed && !deploymentFailed && attempts < maxAttempts) {
@@ -485,7 +485,7 @@ async function installAppInBC(
     if (!completed) {
       return {
         success: false,
-        error: 'Timeout: La instalación no se completó en 60 minutos. Verifica el estado manualmente en Business Central → Extension Management.'
+        error: 'Timeout: La instalación no se completó en 30 minutos. Verifica el estado manualmente en Business Central → Extension Management.'
       };
     }
     

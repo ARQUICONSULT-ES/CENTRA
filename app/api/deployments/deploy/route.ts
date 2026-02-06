@@ -3,7 +3,7 @@ import { getToken } from "next-auth/jwt";
 import { deployApplications } from "@/lib/deployment";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 3600; // 60 minutos máximo para despliegues (permite múltiples apps en secuencia)
+export const maxDuration = 300; // 5 minutos máximo para despliegues
 
 export async function POST(request: NextRequest) {
   try {
