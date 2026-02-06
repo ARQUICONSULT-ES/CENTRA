@@ -223,6 +223,39 @@ exports.Prisma.RelatedLinkScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.DeploymentLogScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  tenantId: 'tenantId',
+  environmentName: 'environmentName',
+  status: 'status',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  totalApps: 'totalApps',
+  successfulApps: 'successfulApps',
+  failedApps: 'failedApps',
+  errorMessage: 'errorMessage'
+};
+
+exports.Prisma.DeploymentLogDetailScalarFieldEnum = {
+  id: 'id',
+  deploymentId: 'deploymentId',
+  applicationId: 'applicationId',
+  appName: 'appName',
+  appType: 'appType',
+  version: 'version',
+  status: 'status',
+  order: 'order',
+  prNumber: 'prNumber',
+  installMode: 'installMode',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  downloadedSizeKb: 'downloadedSizeKb',
+  errorMessage: 'errorMessage'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -257,6 +290,13 @@ exports.RelationType = exports.$Enums.RelationType = {
   Customer: 'Customer'
 };
 
+exports.DeploymentStatus = exports.$Enums.DeploymentStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   PasswordSetupToken: 'PasswordSetupToken',
@@ -266,7 +306,9 @@ exports.Prisma.ModelName = {
   Environment: 'Environment',
   InstalledApp: 'InstalledApp',
   Application: 'Application',
-  RelatedLink: 'RelatedLink'
+  RelatedLink: 'RelatedLink',
+  DeploymentLog: 'DeploymentLog',
+  DeploymentLogDetail: 'DeploymentLogDetail'
 };
 
 /**

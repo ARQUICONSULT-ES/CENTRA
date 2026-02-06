@@ -13,7 +13,7 @@ model User {
   email               String               @unique
   password            String?
   githubToken         String?              @map("github_token")
-  githubAvatar        String?              @map("github_avatar")
+  githubAvatar         String?              @map("github_avatar")
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   canAccessRepos      Boolean              @default(false) @map("can_access_repos")
@@ -23,6 +23,7 @@ model User {
   isActive            Boolean              @default(false) @map("is_active")
   passwordSetupTokens PasswordSetupToken[]
   allowedCustomers    UserCustomer[]
+  deployments         DeploymentLog[]
 }
 
 model PasswordSetupToken {
@@ -114,19 +115,20 @@ model InstalledApp {
 }
 
 model Application {
-  id                      String    @id @db.Uuid
-  name                    String    @db.VarChar(255)
-  publisher               String    @db.VarChar(255)
-  githubRepoName          String    @map("github_repo_name") @db.VarChar(255)
-  githubUrl               String?   @map("github_url") @db.VarChar(500)
-  latestReleaseVersion    String?   @map("latest_release_version") @db.VarChar(100)
-  latestReleaseDate       DateTime? @map("latest_release_date")
-  latestPrereleaseVersion String?   @map("latest_prerelease_version") @db.VarChar(100)
-  latestPrereleaseDate    DateTime? @map("latest_prerelease_date")
-  logoBase64              String?   @map("logo_base64")
-  idRanges                Json?     @map("id_ranges")
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
+  id                      String                @id @db.Uuid
+  name                    String                @db.VarChar(255)
+  publisher               String                @db.VarChar(255)
+  githubRepoName          String                @map("github_repo_name") @db.VarChar(255)
+  githubUrl               String?               @map("github_url") @db.VarChar(500)
+  latestReleaseVersion    String?               @map("latest_release_version") @db.VarChar(100)
+  latestReleaseDate       DateTime?             @map("latest_release_date")
+  latestPrereleaseVersion String?               @map("latest_prerelease_version") @db.VarChar(100)
+  latestPrereleaseDate    DateTime?             @map("latest_prerelease_date")
+  logoBase64              String?               @map("logo_base64")
+  idRanges                Json?                 @map("id_ranges")
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+  deploymentDetails       DeploymentLogDetail[]
 
   @@map("applications")
 }
@@ -140,6 +142,13 @@ enum RelationType {
   Customer
 }
 
+enum DeploymentStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
 model RelatedLink {
   relationType RelationType @map("relation_type")
   relationId   String       @map("relation_id") @db.Uuid
@@ -151,4 +160,51 @@ model RelatedLink {
 
   @@id([relationType, relationId, url])
   @@map("related_links")
+}
+
+model DeploymentLog {
+  id             String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId     String               @map("customer_id") @db.Uuid
+  tenantId       String               @map("tenant_id") @db.Uuid
+  environmentName String              @map("environment_name") @db.VarChar(50)
+  status         DeploymentStatus     @default(PENDING)
+  userId         String               @map("user_id") @db.Uuid
+  createdAt      DateTime             @default(now()) @map("created_at")
+  startedAt      DateTime?            @map("started_at")
+  completedAt    DateTime?            @map("completed_at")
+  totalApps      Int                  @map("total_apps")
+  successfulApps Int                  @default(0) @map("successful_apps")
+  failedApps     Int                  @default(0) @map("failed_apps")
+  errorMessage   String?              @map("error_message")
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Restrict)
+  details        DeploymentLogDetail[]
+
+  @@index([userId])
+  @@index([customerId])
+  @@index([tenantId, environmentName])
+  @@index([createdAt])
+  @@map("deployment_logs")
+}
+
+model DeploymentLogDetail {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  deploymentId     String           @map("deployment_id") @db.Uuid
+  applicationId    String?          @map("application_id") @db.Uuid
+  appName          String           @map("app_name") @db.VarChar(255)
+  appType          String           @map("app_type") @db.VarChar(20)
+  version          String           @db.VarChar(100)
+  status           DeploymentStatus @default(PENDING)
+  order            Int
+  prNumber         Int?             @map("pr_number")
+  installMode      String?          @map("install_mode") @db.VarChar(20)
+  startedAt        DateTime?        @map("started_at")
+  completedAt      DateTime?        @map("completed_at")
+  downloadedSizeKb Float?           @map("downloaded_size_kb")
+  errorMessage     String?          @map("error_message")
+  deployment       DeploymentLog    @relation(fields: [deploymentId], references: [id], onDelete: Cascade)
+  application      Application?     @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+
+  @@index([deploymentId])
+  @@index([applicationId])
+  @@map("deployment_log_details")
 }

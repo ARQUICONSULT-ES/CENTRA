@@ -58,6 +58,16 @@ export type Application = $Result.DefaultSelection<Prisma.$ApplicationPayload>
  * 
  */
 export type RelatedLink = $Result.DefaultSelection<Prisma.$RelatedLinkPayload>
+/**
+ * Model DeploymentLog
+ * 
+ */
+export type DeploymentLog = $Result.DefaultSelection<Prisma.$DeploymentLogPayload>
+/**
+ * Model DeploymentLogDetail
+ * 
+ */
+export type DeploymentLogDetail = $Result.DefaultSelection<Prisma.$DeploymentLogDetailPayload>
 
 /**
  * Enums
@@ -77,6 +87,16 @@ export const RelationType: {
 
 export type RelationType = (typeof RelationType)[keyof typeof RelationType]
 
+
+export const DeploymentStatus: {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type DeploymentStatus = (typeof DeploymentStatus)[keyof typeof DeploymentStatus]
+
 }
 
 export type InfrastructureType = $Enums.InfrastructureType
@@ -86,6 +106,10 @@ export const InfrastructureType: typeof $Enums.InfrastructureType
 export type RelationType = $Enums.RelationType
 
 export const RelationType: typeof $Enums.RelationType
+
+export type DeploymentStatus = $Enums.DeploymentStatus
+
+export const DeploymentStatus: typeof $Enums.DeploymentStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -293,6 +317,26 @@ export class PrismaClient<
     * ```
     */
   get relatedLink(): Prisma.RelatedLinkDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.deploymentLog`: Exposes CRUD operations for the **DeploymentLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeploymentLogs
+    * const deploymentLogs = await prisma.deploymentLog.findMany()
+    * ```
+    */
+  get deploymentLog(): Prisma.DeploymentLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.deploymentLogDetail`: Exposes CRUD operations for the **DeploymentLogDetail** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeploymentLogDetails
+    * const deploymentLogDetails = await prisma.deploymentLogDetail.findMany()
+    * ```
+    */
+  get deploymentLogDetail(): Prisma.DeploymentLogDetailDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -735,7 +779,9 @@ export namespace Prisma {
     Environment: 'Environment',
     InstalledApp: 'InstalledApp',
     Application: 'Application',
-    RelatedLink: 'RelatedLink'
+    RelatedLink: 'RelatedLink',
+    DeploymentLog: 'DeploymentLog',
+    DeploymentLogDetail: 'DeploymentLogDetail'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -751,7 +797,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "passwordSetupToken" | "customer" | "userCustomer" | "tenant" | "environment" | "installedApp" | "application" | "relatedLink"
+      modelProps: "user" | "passwordSetupToken" | "customer" | "userCustomer" | "tenant" | "environment" | "installedApp" | "application" | "relatedLink" | "deploymentLog" | "deploymentLogDetail"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1421,6 +1467,154 @@ export namespace Prisma {
           }
         }
       }
+      DeploymentLog: {
+        payload: Prisma.$DeploymentLogPayload<ExtArgs>
+        fields: Prisma.DeploymentLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DeploymentLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DeploymentLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>
+          }
+          findFirst: {
+            args: Prisma.DeploymentLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DeploymentLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>
+          }
+          findMany: {
+            args: Prisma.DeploymentLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>[]
+          }
+          create: {
+            args: Prisma.DeploymentLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>
+          }
+          createMany: {
+            args: Prisma.DeploymentLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DeploymentLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>[]
+          }
+          delete: {
+            args: Prisma.DeploymentLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>
+          }
+          update: {
+            args: Prisma.DeploymentLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.DeploymentLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DeploymentLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DeploymentLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.DeploymentLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogPayload>
+          }
+          aggregate: {
+            args: Prisma.DeploymentLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDeploymentLog>
+          }
+          groupBy: {
+            args: Prisma.DeploymentLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DeploymentLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DeploymentLogCountArgs<ExtArgs>
+            result: $Utils.Optional<DeploymentLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      DeploymentLogDetail: {
+        payload: Prisma.$DeploymentLogDetailPayload<ExtArgs>
+        fields: Prisma.DeploymentLogDetailFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DeploymentLogDetailFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DeploymentLogDetailFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>
+          }
+          findFirst: {
+            args: Prisma.DeploymentLogDetailFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DeploymentLogDetailFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>
+          }
+          findMany: {
+            args: Prisma.DeploymentLogDetailFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>[]
+          }
+          create: {
+            args: Prisma.DeploymentLogDetailCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>
+          }
+          createMany: {
+            args: Prisma.DeploymentLogDetailCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DeploymentLogDetailCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>[]
+          }
+          delete: {
+            args: Prisma.DeploymentLogDetailDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>
+          }
+          update: {
+            args: Prisma.DeploymentLogDetailUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>
+          }
+          deleteMany: {
+            args: Prisma.DeploymentLogDetailDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DeploymentLogDetailUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DeploymentLogDetailUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>[]
+          }
+          upsert: {
+            args: Prisma.DeploymentLogDetailUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeploymentLogDetailPayload>
+          }
+          aggregate: {
+            args: Prisma.DeploymentLogDetailAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDeploymentLogDetail>
+          }
+          groupBy: {
+            args: Prisma.DeploymentLogDetailGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DeploymentLogDetailGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DeploymentLogDetailCountArgs<ExtArgs>
+            result: $Utils.Optional<DeploymentLogDetailCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1538,6 +1732,8 @@ export namespace Prisma {
     installedApp?: InstalledAppOmit
     application?: ApplicationOmit
     relatedLink?: RelatedLinkOmit
+    deploymentLog?: DeploymentLogOmit
+    deploymentLogDetail?: DeploymentLogDetailOmit
   }
 
   /* Types for Logging */
@@ -1620,11 +1816,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     passwordSetupTokens: number
     allowedCustomers: number
+    deployments: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     passwordSetupTokens?: boolean | UserCountOutputTypeCountPasswordSetupTokensArgs
     allowedCustomers?: boolean | UserCountOutputTypeCountAllowedCustomersArgs
+    deployments?: boolean | UserCountOutputTypeCountDeploymentsArgs
   }
 
   // Custom InputTypes
@@ -1650,6 +1848,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAllowedCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserCustomerWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDeploymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeploymentLogWhereInput
   }
 
 
@@ -1752,6 +1957,68 @@ export namespace Prisma {
    */
   export type EnvironmentCountOutputTypeCountInstalledAppsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InstalledAppWhereInput
+  }
+
+
+  /**
+   * Count Type ApplicationCountOutputType
+   */
+
+  export type ApplicationCountOutputType = {
+    deploymentDetails: number
+  }
+
+  export type ApplicationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deploymentDetails?: boolean | ApplicationCountOutputTypeCountDeploymentDetailsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ApplicationCountOutputType without action
+   */
+  export type ApplicationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationCountOutputType
+     */
+    select?: ApplicationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ApplicationCountOutputType without action
+   */
+  export type ApplicationCountOutputTypeCountDeploymentDetailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeploymentLogDetailWhereInput
+  }
+
+
+  /**
+   * Count Type DeploymentLogCountOutputType
+   */
+
+  export type DeploymentLogCountOutputType = {
+    details: number
+  }
+
+  export type DeploymentLogCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    details?: boolean | DeploymentLogCountOutputTypeCountDetailsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DeploymentLogCountOutputType without action
+   */
+  export type DeploymentLogCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogCountOutputType
+     */
+    select?: DeploymentLogCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DeploymentLogCountOutputType without action
+   */
+  export type DeploymentLogCountOutputTypeCountDetailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeploymentLogDetailWhereInput
   }
 
 
@@ -1989,6 +2256,7 @@ export namespace Prisma {
     isActive?: boolean
     passwordSetupTokens?: boolean | User$passwordSetupTokensArgs<ExtArgs>
     allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
+    deployments?: boolean | User$deploymentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2044,6 +2312,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     passwordSetupTokens?: boolean | User$passwordSetupTokensArgs<ExtArgs>
     allowedCustomers?: boolean | User$allowedCustomersArgs<ExtArgs>
+    deployments?: boolean | User$deploymentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2054,6 +2323,7 @@ export namespace Prisma {
     objects: {
       passwordSetupTokens: Prisma.$PasswordSetupTokenPayload<ExtArgs>[]
       allowedCustomers: Prisma.$UserCustomerPayload<ExtArgs>[]
+      deployments: Prisma.$DeploymentLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2465,6 +2735,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     passwordSetupTokens<T extends User$passwordSetupTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$passwordSetupTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordSetupTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     allowedCustomers<T extends User$allowedCustomersArgs<ExtArgs> = {}>(args?: Subset<T, User$allowedCustomersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    deployments<T extends User$deploymentsArgs<ExtArgs> = {}>(args?: Subset<T, User$deploymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2940,6 +3211,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserCustomerScalarFieldEnum | UserCustomerScalarFieldEnum[]
+  }
+
+  /**
+   * User.deployments
+   */
+  export type User$deploymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    where?: DeploymentLogWhereInput
+    orderBy?: DeploymentLogOrderByWithRelationInput | DeploymentLogOrderByWithRelationInput[]
+    cursor?: DeploymentLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DeploymentLogScalarFieldEnum | DeploymentLogScalarFieldEnum[]
   }
 
   /**
@@ -9810,6 +10105,8 @@ export namespace Prisma {
     idRanges?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deploymentDetails?: boolean | Application$deploymentDetailsArgs<ExtArgs>
+    _count?: boolean | ApplicationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["application"]>
 
   export type ApplicationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9861,10 +10158,18 @@ export namespace Prisma {
   }
 
   export type ApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "publisher" | "githubRepoName" | "githubUrl" | "latestReleaseVersion" | "latestReleaseDate" | "latestPrereleaseVersion" | "latestPrereleaseDate" | "logoBase64" | "idRanges" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
+  export type ApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deploymentDetails?: boolean | Application$deploymentDetailsArgs<ExtArgs>
+    _count?: boolean | ApplicationCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ApplicationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ApplicationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $ApplicationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Application"
-    objects: {}
+    objects: {
+      deploymentDetails: Prisma.$DeploymentLogDetailPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
@@ -10273,6 +10578,7 @@ export namespace Prisma {
    */
   export interface Prisma__ApplicationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    deploymentDetails<T extends Application$deploymentDetailsArgs<ExtArgs> = {}>(args?: Subset<T, Application$deploymentDetailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10332,6 +10638,10 @@ export namespace Prisma {
      */
     omit?: ApplicationOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
+    /**
      * Filter, which Application to fetch.
      */
     where: ApplicationWhereUniqueInput
@@ -10350,6 +10660,10 @@ export namespace Prisma {
      */
     omit?: ApplicationOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
+    /**
      * Filter, which Application to fetch.
      */
     where: ApplicationWhereUniqueInput
@@ -10367,6 +10681,10 @@ export namespace Prisma {
      * Omit specific fields from the Application
      */
     omit?: ApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
     /**
      * Filter, which Application to fetch.
      */
@@ -10416,6 +10734,10 @@ export namespace Prisma {
      */
     omit?: ApplicationOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
+    /**
      * Filter, which Application to fetch.
      */
     where?: ApplicationWhereInput
@@ -10464,6 +10786,10 @@ export namespace Prisma {
      */
     omit?: ApplicationOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
+    /**
      * Filter, which Applications to fetch.
      */
     where?: ApplicationWhereInput
@@ -10506,6 +10832,10 @@ export namespace Prisma {
      * Omit specific fields from the Application
      */
     omit?: ApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
     /**
      * The data needed to create a Application.
      */
@@ -10554,6 +10884,10 @@ export namespace Prisma {
      * Omit specific fields from the Application
      */
     omit?: ApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
     /**
      * The data needed to update a Application.
      */
@@ -10621,6 +10955,10 @@ export namespace Prisma {
      */
     omit?: ApplicationOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
+    /**
      * The filter to search for the Application to update in case it exists.
      */
     where: ApplicationWhereUniqueInput
@@ -10647,6 +10985,10 @@ export namespace Prisma {
      */
     omit?: ApplicationOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
+    /**
      * Filter which Application to delete.
      */
     where: ApplicationWhereUniqueInput
@@ -10667,6 +11009,30 @@ export namespace Prisma {
   }
 
   /**
+   * Application.deploymentDetails
+   */
+  export type Application$deploymentDetailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    where?: DeploymentLogDetailWhereInput
+    orderBy?: DeploymentLogDetailOrderByWithRelationInput | DeploymentLogDetailOrderByWithRelationInput[]
+    cursor?: DeploymentLogDetailWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DeploymentLogDetailScalarFieldEnum | DeploymentLogDetailScalarFieldEnum[]
+  }
+
+  /**
    * Application without action
    */
   export type ApplicationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10678,6 +11044,10 @@ export namespace Prisma {
      * Omit specific fields from the Application
      */
     omit?: ApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
   }
 
 
@@ -11703,6 +12073,2484 @@ export namespace Prisma {
 
 
   /**
+   * Model DeploymentLog
+   */
+
+  export type AggregateDeploymentLog = {
+    _count: DeploymentLogCountAggregateOutputType | null
+    _avg: DeploymentLogAvgAggregateOutputType | null
+    _sum: DeploymentLogSumAggregateOutputType | null
+    _min: DeploymentLogMinAggregateOutputType | null
+    _max: DeploymentLogMaxAggregateOutputType | null
+  }
+
+  export type DeploymentLogAvgAggregateOutputType = {
+    totalApps: number | null
+    successfulApps: number | null
+    failedApps: number | null
+  }
+
+  export type DeploymentLogSumAggregateOutputType = {
+    totalApps: number | null
+    successfulApps: number | null
+    failedApps: number | null
+  }
+
+  export type DeploymentLogMinAggregateOutputType = {
+    id: string | null
+    customerId: string | null
+    tenantId: string | null
+    environmentName: string | null
+    status: $Enums.DeploymentStatus | null
+    userId: string | null
+    createdAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+    totalApps: number | null
+    successfulApps: number | null
+    failedApps: number | null
+    errorMessage: string | null
+  }
+
+  export type DeploymentLogMaxAggregateOutputType = {
+    id: string | null
+    customerId: string | null
+    tenantId: string | null
+    environmentName: string | null
+    status: $Enums.DeploymentStatus | null
+    userId: string | null
+    createdAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+    totalApps: number | null
+    successfulApps: number | null
+    failedApps: number | null
+    errorMessage: string | null
+  }
+
+  export type DeploymentLogCountAggregateOutputType = {
+    id: number
+    customerId: number
+    tenantId: number
+    environmentName: number
+    status: number
+    userId: number
+    createdAt: number
+    startedAt: number
+    completedAt: number
+    totalApps: number
+    successfulApps: number
+    failedApps: number
+    errorMessage: number
+    _all: number
+  }
+
+
+  export type DeploymentLogAvgAggregateInputType = {
+    totalApps?: true
+    successfulApps?: true
+    failedApps?: true
+  }
+
+  export type DeploymentLogSumAggregateInputType = {
+    totalApps?: true
+    successfulApps?: true
+    failedApps?: true
+  }
+
+  export type DeploymentLogMinAggregateInputType = {
+    id?: true
+    customerId?: true
+    tenantId?: true
+    environmentName?: true
+    status?: true
+    userId?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+    totalApps?: true
+    successfulApps?: true
+    failedApps?: true
+    errorMessage?: true
+  }
+
+  export type DeploymentLogMaxAggregateInputType = {
+    id?: true
+    customerId?: true
+    tenantId?: true
+    environmentName?: true
+    status?: true
+    userId?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+    totalApps?: true
+    successfulApps?: true
+    failedApps?: true
+    errorMessage?: true
+  }
+
+  export type DeploymentLogCountAggregateInputType = {
+    id?: true
+    customerId?: true
+    tenantId?: true
+    environmentName?: true
+    status?: true
+    userId?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+    totalApps?: true
+    successfulApps?: true
+    failedApps?: true
+    errorMessage?: true
+    _all?: true
+  }
+
+  export type DeploymentLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeploymentLog to aggregate.
+     */
+    where?: DeploymentLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeploymentLogs to fetch.
+     */
+    orderBy?: DeploymentLogOrderByWithRelationInput | DeploymentLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeploymentLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeploymentLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeploymentLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DeploymentLogs
+    **/
+    _count?: true | DeploymentLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DeploymentLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DeploymentLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeploymentLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeploymentLogMaxAggregateInputType
+  }
+
+  export type GetDeploymentLogAggregateType<T extends DeploymentLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateDeploymentLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDeploymentLog[P]>
+      : GetScalarType<T[P], AggregateDeploymentLog[P]>
+  }
+
+
+
+
+  export type DeploymentLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeploymentLogWhereInput
+    orderBy?: DeploymentLogOrderByWithAggregationInput | DeploymentLogOrderByWithAggregationInput[]
+    by: DeploymentLogScalarFieldEnum[] | DeploymentLogScalarFieldEnum
+    having?: DeploymentLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeploymentLogCountAggregateInputType | true
+    _avg?: DeploymentLogAvgAggregateInputType
+    _sum?: DeploymentLogSumAggregateInputType
+    _min?: DeploymentLogMinAggregateInputType
+    _max?: DeploymentLogMaxAggregateInputType
+  }
+
+  export type DeploymentLogGroupByOutputType = {
+    id: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status: $Enums.DeploymentStatus
+    userId: string
+    createdAt: Date
+    startedAt: Date | null
+    completedAt: Date | null
+    totalApps: number
+    successfulApps: number
+    failedApps: number
+    errorMessage: string | null
+    _count: DeploymentLogCountAggregateOutputType | null
+    _avg: DeploymentLogAvgAggregateOutputType | null
+    _sum: DeploymentLogSumAggregateOutputType | null
+    _min: DeploymentLogMinAggregateOutputType | null
+    _max: DeploymentLogMaxAggregateOutputType | null
+  }
+
+  type GetDeploymentLogGroupByPayload<T extends DeploymentLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DeploymentLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeploymentLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeploymentLogGroupByOutputType[P]>
+            : GetScalarType<T[P], DeploymentLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeploymentLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    customerId?: boolean
+    tenantId?: boolean
+    environmentName?: boolean
+    status?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    totalApps?: boolean
+    successfulApps?: boolean
+    failedApps?: boolean
+    errorMessage?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    details?: boolean | DeploymentLog$detailsArgs<ExtArgs>
+    _count?: boolean | DeploymentLogCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deploymentLog"]>
+
+  export type DeploymentLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    customerId?: boolean
+    tenantId?: boolean
+    environmentName?: boolean
+    status?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    totalApps?: boolean
+    successfulApps?: boolean
+    failedApps?: boolean
+    errorMessage?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deploymentLog"]>
+
+  export type DeploymentLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    customerId?: boolean
+    tenantId?: boolean
+    environmentName?: boolean
+    status?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    totalApps?: boolean
+    successfulApps?: boolean
+    failedApps?: boolean
+    errorMessage?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deploymentLog"]>
+
+  export type DeploymentLogSelectScalar = {
+    id?: boolean
+    customerId?: boolean
+    tenantId?: boolean
+    environmentName?: boolean
+    status?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    totalApps?: boolean
+    successfulApps?: boolean
+    failedApps?: boolean
+    errorMessage?: boolean
+  }
+
+  export type DeploymentLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerId" | "tenantId" | "environmentName" | "status" | "userId" | "createdAt" | "startedAt" | "completedAt" | "totalApps" | "successfulApps" | "failedApps" | "errorMessage", ExtArgs["result"]["deploymentLog"]>
+  export type DeploymentLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    details?: boolean | DeploymentLog$detailsArgs<ExtArgs>
+    _count?: boolean | DeploymentLogCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DeploymentLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DeploymentLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $DeploymentLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DeploymentLog"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      details: Prisma.$DeploymentLogDetailPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      customerId: string
+      tenantId: string
+      environmentName: string
+      status: $Enums.DeploymentStatus
+      userId: string
+      createdAt: Date
+      startedAt: Date | null
+      completedAt: Date | null
+      totalApps: number
+      successfulApps: number
+      failedApps: number
+      errorMessage: string | null
+    }, ExtArgs["result"]["deploymentLog"]>
+    composites: {}
+  }
+
+  type DeploymentLogGetPayload<S extends boolean | null | undefined | DeploymentLogDefaultArgs> = $Result.GetResult<Prisma.$DeploymentLogPayload, S>
+
+  type DeploymentLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DeploymentLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DeploymentLogCountAggregateInputType | true
+    }
+
+  export interface DeploymentLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DeploymentLog'], meta: { name: 'DeploymentLog' } }
+    /**
+     * Find zero or one DeploymentLog that matches the filter.
+     * @param {DeploymentLogFindUniqueArgs} args - Arguments to find a DeploymentLog
+     * @example
+     * // Get one DeploymentLog
+     * const deploymentLog = await prisma.deploymentLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DeploymentLogFindUniqueArgs>(args: SelectSubset<T, DeploymentLogFindUniqueArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DeploymentLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DeploymentLogFindUniqueOrThrowArgs} args - Arguments to find a DeploymentLog
+     * @example
+     * // Get one DeploymentLog
+     * const deploymentLog = await prisma.deploymentLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DeploymentLogFindUniqueOrThrowArgs>(args: SelectSubset<T, DeploymentLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeploymentLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogFindFirstArgs} args - Arguments to find a DeploymentLog
+     * @example
+     * // Get one DeploymentLog
+     * const deploymentLog = await prisma.deploymentLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DeploymentLogFindFirstArgs>(args?: SelectSubset<T, DeploymentLogFindFirstArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeploymentLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogFindFirstOrThrowArgs} args - Arguments to find a DeploymentLog
+     * @example
+     * // Get one DeploymentLog
+     * const deploymentLog = await prisma.deploymentLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DeploymentLogFindFirstOrThrowArgs>(args?: SelectSubset<T, DeploymentLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DeploymentLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DeploymentLogs
+     * const deploymentLogs = await prisma.deploymentLog.findMany()
+     * 
+     * // Get first 10 DeploymentLogs
+     * const deploymentLogs = await prisma.deploymentLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deploymentLogWithIdOnly = await prisma.deploymentLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DeploymentLogFindManyArgs>(args?: SelectSubset<T, DeploymentLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DeploymentLog.
+     * @param {DeploymentLogCreateArgs} args - Arguments to create a DeploymentLog.
+     * @example
+     * // Create one DeploymentLog
+     * const DeploymentLog = await prisma.deploymentLog.create({
+     *   data: {
+     *     // ... data to create a DeploymentLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends DeploymentLogCreateArgs>(args: SelectSubset<T, DeploymentLogCreateArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DeploymentLogs.
+     * @param {DeploymentLogCreateManyArgs} args - Arguments to create many DeploymentLogs.
+     * @example
+     * // Create many DeploymentLogs
+     * const deploymentLog = await prisma.deploymentLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DeploymentLogCreateManyArgs>(args?: SelectSubset<T, DeploymentLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DeploymentLogs and returns the data saved in the database.
+     * @param {DeploymentLogCreateManyAndReturnArgs} args - Arguments to create many DeploymentLogs.
+     * @example
+     * // Create many DeploymentLogs
+     * const deploymentLog = await prisma.deploymentLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DeploymentLogs and only return the `id`
+     * const deploymentLogWithIdOnly = await prisma.deploymentLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DeploymentLogCreateManyAndReturnArgs>(args?: SelectSubset<T, DeploymentLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DeploymentLog.
+     * @param {DeploymentLogDeleteArgs} args - Arguments to delete one DeploymentLog.
+     * @example
+     * // Delete one DeploymentLog
+     * const DeploymentLog = await prisma.deploymentLog.delete({
+     *   where: {
+     *     // ... filter to delete one DeploymentLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DeploymentLogDeleteArgs>(args: SelectSubset<T, DeploymentLogDeleteArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DeploymentLog.
+     * @param {DeploymentLogUpdateArgs} args - Arguments to update one DeploymentLog.
+     * @example
+     * // Update one DeploymentLog
+     * const deploymentLog = await prisma.deploymentLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DeploymentLogUpdateArgs>(args: SelectSubset<T, DeploymentLogUpdateArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DeploymentLogs.
+     * @param {DeploymentLogDeleteManyArgs} args - Arguments to filter DeploymentLogs to delete.
+     * @example
+     * // Delete a few DeploymentLogs
+     * const { count } = await prisma.deploymentLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DeploymentLogDeleteManyArgs>(args?: SelectSubset<T, DeploymentLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeploymentLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DeploymentLogs
+     * const deploymentLog = await prisma.deploymentLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DeploymentLogUpdateManyArgs>(args: SelectSubset<T, DeploymentLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeploymentLogs and returns the data updated in the database.
+     * @param {DeploymentLogUpdateManyAndReturnArgs} args - Arguments to update many DeploymentLogs.
+     * @example
+     * // Update many DeploymentLogs
+     * const deploymentLog = await prisma.deploymentLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DeploymentLogs and only return the `id`
+     * const deploymentLogWithIdOnly = await prisma.deploymentLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DeploymentLogUpdateManyAndReturnArgs>(args: SelectSubset<T, DeploymentLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DeploymentLog.
+     * @param {DeploymentLogUpsertArgs} args - Arguments to update or create a DeploymentLog.
+     * @example
+     * // Update or create a DeploymentLog
+     * const deploymentLog = await prisma.deploymentLog.upsert({
+     *   create: {
+     *     // ... data to create a DeploymentLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DeploymentLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DeploymentLogUpsertArgs>(args: SelectSubset<T, DeploymentLogUpsertArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DeploymentLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogCountArgs} args - Arguments to filter DeploymentLogs to count.
+     * @example
+     * // Count the number of DeploymentLogs
+     * const count = await prisma.deploymentLog.count({
+     *   where: {
+     *     // ... the filter for the DeploymentLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeploymentLogCountArgs>(
+      args?: Subset<T, DeploymentLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeploymentLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DeploymentLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeploymentLogAggregateArgs>(args: Subset<T, DeploymentLogAggregateArgs>): Prisma.PrismaPromise<GetDeploymentLogAggregateType<T>>
+
+    /**
+     * Group by DeploymentLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeploymentLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeploymentLogGroupByArgs['orderBy'] }
+        : { orderBy?: DeploymentLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeploymentLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeploymentLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DeploymentLog model
+   */
+  readonly fields: DeploymentLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DeploymentLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DeploymentLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    details<T extends DeploymentLog$detailsArgs<ExtArgs> = {}>(args?: Subset<T, DeploymentLog$detailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DeploymentLog model
+   */
+  interface DeploymentLogFieldRefs {
+    readonly id: FieldRef<"DeploymentLog", 'String'>
+    readonly customerId: FieldRef<"DeploymentLog", 'String'>
+    readonly tenantId: FieldRef<"DeploymentLog", 'String'>
+    readonly environmentName: FieldRef<"DeploymentLog", 'String'>
+    readonly status: FieldRef<"DeploymentLog", 'DeploymentStatus'>
+    readonly userId: FieldRef<"DeploymentLog", 'String'>
+    readonly createdAt: FieldRef<"DeploymentLog", 'DateTime'>
+    readonly startedAt: FieldRef<"DeploymentLog", 'DateTime'>
+    readonly completedAt: FieldRef<"DeploymentLog", 'DateTime'>
+    readonly totalApps: FieldRef<"DeploymentLog", 'Int'>
+    readonly successfulApps: FieldRef<"DeploymentLog", 'Int'>
+    readonly failedApps: FieldRef<"DeploymentLog", 'Int'>
+    readonly errorMessage: FieldRef<"DeploymentLog", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DeploymentLog findUnique
+   */
+  export type DeploymentLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLog to fetch.
+     */
+    where: DeploymentLogWhereUniqueInput
+  }
+
+  /**
+   * DeploymentLog findUniqueOrThrow
+   */
+  export type DeploymentLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLog to fetch.
+     */
+    where: DeploymentLogWhereUniqueInput
+  }
+
+  /**
+   * DeploymentLog findFirst
+   */
+  export type DeploymentLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLog to fetch.
+     */
+    where?: DeploymentLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeploymentLogs to fetch.
+     */
+    orderBy?: DeploymentLogOrderByWithRelationInput | DeploymentLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeploymentLogs.
+     */
+    cursor?: DeploymentLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeploymentLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeploymentLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeploymentLogs.
+     */
+    distinct?: DeploymentLogScalarFieldEnum | DeploymentLogScalarFieldEnum[]
+  }
+
+  /**
+   * DeploymentLog findFirstOrThrow
+   */
+  export type DeploymentLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLog to fetch.
+     */
+    where?: DeploymentLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeploymentLogs to fetch.
+     */
+    orderBy?: DeploymentLogOrderByWithRelationInput | DeploymentLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeploymentLogs.
+     */
+    cursor?: DeploymentLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeploymentLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeploymentLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeploymentLogs.
+     */
+    distinct?: DeploymentLogScalarFieldEnum | DeploymentLogScalarFieldEnum[]
+  }
+
+  /**
+   * DeploymentLog findMany
+   */
+  export type DeploymentLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLogs to fetch.
+     */
+    where?: DeploymentLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeploymentLogs to fetch.
+     */
+    orderBy?: DeploymentLogOrderByWithRelationInput | DeploymentLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DeploymentLogs.
+     */
+    cursor?: DeploymentLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeploymentLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeploymentLogs.
+     */
+    skip?: number
+    distinct?: DeploymentLogScalarFieldEnum | DeploymentLogScalarFieldEnum[]
+  }
+
+  /**
+   * DeploymentLog create
+   */
+  export type DeploymentLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DeploymentLog.
+     */
+    data: XOR<DeploymentLogCreateInput, DeploymentLogUncheckedCreateInput>
+  }
+
+  /**
+   * DeploymentLog createMany
+   */
+  export type DeploymentLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DeploymentLogs.
+     */
+    data: DeploymentLogCreateManyInput | DeploymentLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeploymentLog createManyAndReturn
+   */
+  export type DeploymentLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many DeploymentLogs.
+     */
+    data: DeploymentLogCreateManyInput | DeploymentLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeploymentLog update
+   */
+  export type DeploymentLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DeploymentLog.
+     */
+    data: XOR<DeploymentLogUpdateInput, DeploymentLogUncheckedUpdateInput>
+    /**
+     * Choose, which DeploymentLog to update.
+     */
+    where: DeploymentLogWhereUniqueInput
+  }
+
+  /**
+   * DeploymentLog updateMany
+   */
+  export type DeploymentLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DeploymentLogs.
+     */
+    data: XOR<DeploymentLogUpdateManyMutationInput, DeploymentLogUncheckedUpdateManyInput>
+    /**
+     * Filter which DeploymentLogs to update
+     */
+    where?: DeploymentLogWhereInput
+    /**
+     * Limit how many DeploymentLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeploymentLog updateManyAndReturn
+   */
+  export type DeploymentLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * The data used to update DeploymentLogs.
+     */
+    data: XOR<DeploymentLogUpdateManyMutationInput, DeploymentLogUncheckedUpdateManyInput>
+    /**
+     * Filter which DeploymentLogs to update
+     */
+    where?: DeploymentLogWhereInput
+    /**
+     * Limit how many DeploymentLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeploymentLog upsert
+   */
+  export type DeploymentLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DeploymentLog to update in case it exists.
+     */
+    where: DeploymentLogWhereUniqueInput
+    /**
+     * In case the DeploymentLog found by the `where` argument doesn't exist, create a new DeploymentLog with this data.
+     */
+    create: XOR<DeploymentLogCreateInput, DeploymentLogUncheckedCreateInput>
+    /**
+     * In case the DeploymentLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeploymentLogUpdateInput, DeploymentLogUncheckedUpdateInput>
+  }
+
+  /**
+   * DeploymentLog delete
+   */
+  export type DeploymentLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+    /**
+     * Filter which DeploymentLog to delete.
+     */
+    where: DeploymentLogWhereUniqueInput
+  }
+
+  /**
+   * DeploymentLog deleteMany
+   */
+  export type DeploymentLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeploymentLogs to delete
+     */
+    where?: DeploymentLogWhereInput
+    /**
+     * Limit how many DeploymentLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeploymentLog.details
+   */
+  export type DeploymentLog$detailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    where?: DeploymentLogDetailWhereInput
+    orderBy?: DeploymentLogDetailOrderByWithRelationInput | DeploymentLogDetailOrderByWithRelationInput[]
+    cursor?: DeploymentLogDetailWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DeploymentLogDetailScalarFieldEnum | DeploymentLogDetailScalarFieldEnum[]
+  }
+
+  /**
+   * DeploymentLog without action
+   */
+  export type DeploymentLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLog
+     */
+    select?: DeploymentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLog
+     */
+    omit?: DeploymentLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DeploymentLogDetail
+   */
+
+  export type AggregateDeploymentLogDetail = {
+    _count: DeploymentLogDetailCountAggregateOutputType | null
+    _avg: DeploymentLogDetailAvgAggregateOutputType | null
+    _sum: DeploymentLogDetailSumAggregateOutputType | null
+    _min: DeploymentLogDetailMinAggregateOutputType | null
+    _max: DeploymentLogDetailMaxAggregateOutputType | null
+  }
+
+  export type DeploymentLogDetailAvgAggregateOutputType = {
+    order: number | null
+    prNumber: number | null
+    downloadedSizeKb: number | null
+  }
+
+  export type DeploymentLogDetailSumAggregateOutputType = {
+    order: number | null
+    prNumber: number | null
+    downloadedSizeKb: number | null
+  }
+
+  export type DeploymentLogDetailMinAggregateOutputType = {
+    id: string | null
+    deploymentId: string | null
+    applicationId: string | null
+    appName: string | null
+    appType: string | null
+    version: string | null
+    status: $Enums.DeploymentStatus | null
+    order: number | null
+    prNumber: number | null
+    installMode: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    downloadedSizeKb: number | null
+    errorMessage: string | null
+  }
+
+  export type DeploymentLogDetailMaxAggregateOutputType = {
+    id: string | null
+    deploymentId: string | null
+    applicationId: string | null
+    appName: string | null
+    appType: string | null
+    version: string | null
+    status: $Enums.DeploymentStatus | null
+    order: number | null
+    prNumber: number | null
+    installMode: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    downloadedSizeKb: number | null
+    errorMessage: string | null
+  }
+
+  export type DeploymentLogDetailCountAggregateOutputType = {
+    id: number
+    deploymentId: number
+    applicationId: number
+    appName: number
+    appType: number
+    version: number
+    status: number
+    order: number
+    prNumber: number
+    installMode: number
+    startedAt: number
+    completedAt: number
+    downloadedSizeKb: number
+    errorMessage: number
+    _all: number
+  }
+
+
+  export type DeploymentLogDetailAvgAggregateInputType = {
+    order?: true
+    prNumber?: true
+    downloadedSizeKb?: true
+  }
+
+  export type DeploymentLogDetailSumAggregateInputType = {
+    order?: true
+    prNumber?: true
+    downloadedSizeKb?: true
+  }
+
+  export type DeploymentLogDetailMinAggregateInputType = {
+    id?: true
+    deploymentId?: true
+    applicationId?: true
+    appName?: true
+    appType?: true
+    version?: true
+    status?: true
+    order?: true
+    prNumber?: true
+    installMode?: true
+    startedAt?: true
+    completedAt?: true
+    downloadedSizeKb?: true
+    errorMessage?: true
+  }
+
+  export type DeploymentLogDetailMaxAggregateInputType = {
+    id?: true
+    deploymentId?: true
+    applicationId?: true
+    appName?: true
+    appType?: true
+    version?: true
+    status?: true
+    order?: true
+    prNumber?: true
+    installMode?: true
+    startedAt?: true
+    completedAt?: true
+    downloadedSizeKb?: true
+    errorMessage?: true
+  }
+
+  export type DeploymentLogDetailCountAggregateInputType = {
+    id?: true
+    deploymentId?: true
+    applicationId?: true
+    appName?: true
+    appType?: true
+    version?: true
+    status?: true
+    order?: true
+    prNumber?: true
+    installMode?: true
+    startedAt?: true
+    completedAt?: true
+    downloadedSizeKb?: true
+    errorMessage?: true
+    _all?: true
+  }
+
+  export type DeploymentLogDetailAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeploymentLogDetail to aggregate.
+     */
+    where?: DeploymentLogDetailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeploymentLogDetails to fetch.
+     */
+    orderBy?: DeploymentLogDetailOrderByWithRelationInput | DeploymentLogDetailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeploymentLogDetailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeploymentLogDetails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeploymentLogDetails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DeploymentLogDetails
+    **/
+    _count?: true | DeploymentLogDetailCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DeploymentLogDetailAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DeploymentLogDetailSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeploymentLogDetailMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeploymentLogDetailMaxAggregateInputType
+  }
+
+  export type GetDeploymentLogDetailAggregateType<T extends DeploymentLogDetailAggregateArgs> = {
+        [P in keyof T & keyof AggregateDeploymentLogDetail]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDeploymentLogDetail[P]>
+      : GetScalarType<T[P], AggregateDeploymentLogDetail[P]>
+  }
+
+
+
+
+  export type DeploymentLogDetailGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeploymentLogDetailWhereInput
+    orderBy?: DeploymentLogDetailOrderByWithAggregationInput | DeploymentLogDetailOrderByWithAggregationInput[]
+    by: DeploymentLogDetailScalarFieldEnum[] | DeploymentLogDetailScalarFieldEnum
+    having?: DeploymentLogDetailScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeploymentLogDetailCountAggregateInputType | true
+    _avg?: DeploymentLogDetailAvgAggregateInputType
+    _sum?: DeploymentLogDetailSumAggregateInputType
+    _min?: DeploymentLogDetailMinAggregateInputType
+    _max?: DeploymentLogDetailMaxAggregateInputType
+  }
+
+  export type DeploymentLogDetailGroupByOutputType = {
+    id: string
+    deploymentId: string
+    applicationId: string | null
+    appName: string
+    appType: string
+    version: string
+    status: $Enums.DeploymentStatus
+    order: number
+    prNumber: number | null
+    installMode: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    downloadedSizeKb: number | null
+    errorMessage: string | null
+    _count: DeploymentLogDetailCountAggregateOutputType | null
+    _avg: DeploymentLogDetailAvgAggregateOutputType | null
+    _sum: DeploymentLogDetailSumAggregateOutputType | null
+    _min: DeploymentLogDetailMinAggregateOutputType | null
+    _max: DeploymentLogDetailMaxAggregateOutputType | null
+  }
+
+  type GetDeploymentLogDetailGroupByPayload<T extends DeploymentLogDetailGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DeploymentLogDetailGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeploymentLogDetailGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeploymentLogDetailGroupByOutputType[P]>
+            : GetScalarType<T[P], DeploymentLogDetailGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeploymentLogDetailSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deploymentId?: boolean
+    applicationId?: boolean
+    appName?: boolean
+    appType?: boolean
+    version?: boolean
+    status?: boolean
+    order?: boolean
+    prNumber?: boolean
+    installMode?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    downloadedSizeKb?: boolean
+    errorMessage?: boolean
+    deployment?: boolean | DeploymentLogDefaultArgs<ExtArgs>
+    application?: boolean | DeploymentLogDetail$applicationArgs<ExtArgs>
+  }, ExtArgs["result"]["deploymentLogDetail"]>
+
+  export type DeploymentLogDetailSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deploymentId?: boolean
+    applicationId?: boolean
+    appName?: boolean
+    appType?: boolean
+    version?: boolean
+    status?: boolean
+    order?: boolean
+    prNumber?: boolean
+    installMode?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    downloadedSizeKb?: boolean
+    errorMessage?: boolean
+    deployment?: boolean | DeploymentLogDefaultArgs<ExtArgs>
+    application?: boolean | DeploymentLogDetail$applicationArgs<ExtArgs>
+  }, ExtArgs["result"]["deploymentLogDetail"]>
+
+  export type DeploymentLogDetailSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deploymentId?: boolean
+    applicationId?: boolean
+    appName?: boolean
+    appType?: boolean
+    version?: boolean
+    status?: boolean
+    order?: boolean
+    prNumber?: boolean
+    installMode?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    downloadedSizeKb?: boolean
+    errorMessage?: boolean
+    deployment?: boolean | DeploymentLogDefaultArgs<ExtArgs>
+    application?: boolean | DeploymentLogDetail$applicationArgs<ExtArgs>
+  }, ExtArgs["result"]["deploymentLogDetail"]>
+
+  export type DeploymentLogDetailSelectScalar = {
+    id?: boolean
+    deploymentId?: boolean
+    applicationId?: boolean
+    appName?: boolean
+    appType?: boolean
+    version?: boolean
+    status?: boolean
+    order?: boolean
+    prNumber?: boolean
+    installMode?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    downloadedSizeKb?: boolean
+    errorMessage?: boolean
+  }
+
+  export type DeploymentLogDetailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "deploymentId" | "applicationId" | "appName" | "appType" | "version" | "status" | "order" | "prNumber" | "installMode" | "startedAt" | "completedAt" | "downloadedSizeKb" | "errorMessage", ExtArgs["result"]["deploymentLogDetail"]>
+  export type DeploymentLogDetailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deployment?: boolean | DeploymentLogDefaultArgs<ExtArgs>
+    application?: boolean | DeploymentLogDetail$applicationArgs<ExtArgs>
+  }
+  export type DeploymentLogDetailIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deployment?: boolean | DeploymentLogDefaultArgs<ExtArgs>
+    application?: boolean | DeploymentLogDetail$applicationArgs<ExtArgs>
+  }
+  export type DeploymentLogDetailIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deployment?: boolean | DeploymentLogDefaultArgs<ExtArgs>
+    application?: boolean | DeploymentLogDetail$applicationArgs<ExtArgs>
+  }
+
+  export type $DeploymentLogDetailPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DeploymentLogDetail"
+    objects: {
+      deployment: Prisma.$DeploymentLogPayload<ExtArgs>
+      application: Prisma.$ApplicationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      deploymentId: string
+      applicationId: string | null
+      appName: string
+      appType: string
+      version: string
+      status: $Enums.DeploymentStatus
+      order: number
+      prNumber: number | null
+      installMode: string | null
+      startedAt: Date | null
+      completedAt: Date | null
+      downloadedSizeKb: number | null
+      errorMessage: string | null
+    }, ExtArgs["result"]["deploymentLogDetail"]>
+    composites: {}
+  }
+
+  type DeploymentLogDetailGetPayload<S extends boolean | null | undefined | DeploymentLogDetailDefaultArgs> = $Result.GetResult<Prisma.$DeploymentLogDetailPayload, S>
+
+  type DeploymentLogDetailCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DeploymentLogDetailFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DeploymentLogDetailCountAggregateInputType | true
+    }
+
+  export interface DeploymentLogDetailDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DeploymentLogDetail'], meta: { name: 'DeploymentLogDetail' } }
+    /**
+     * Find zero or one DeploymentLogDetail that matches the filter.
+     * @param {DeploymentLogDetailFindUniqueArgs} args - Arguments to find a DeploymentLogDetail
+     * @example
+     * // Get one DeploymentLogDetail
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DeploymentLogDetailFindUniqueArgs>(args: SelectSubset<T, DeploymentLogDetailFindUniqueArgs<ExtArgs>>): Prisma__DeploymentLogDetailClient<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DeploymentLogDetail that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DeploymentLogDetailFindUniqueOrThrowArgs} args - Arguments to find a DeploymentLogDetail
+     * @example
+     * // Get one DeploymentLogDetail
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DeploymentLogDetailFindUniqueOrThrowArgs>(args: SelectSubset<T, DeploymentLogDetailFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DeploymentLogDetailClient<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeploymentLogDetail that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogDetailFindFirstArgs} args - Arguments to find a DeploymentLogDetail
+     * @example
+     * // Get one DeploymentLogDetail
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DeploymentLogDetailFindFirstArgs>(args?: SelectSubset<T, DeploymentLogDetailFindFirstArgs<ExtArgs>>): Prisma__DeploymentLogDetailClient<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeploymentLogDetail that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogDetailFindFirstOrThrowArgs} args - Arguments to find a DeploymentLogDetail
+     * @example
+     * // Get one DeploymentLogDetail
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DeploymentLogDetailFindFirstOrThrowArgs>(args?: SelectSubset<T, DeploymentLogDetailFindFirstOrThrowArgs<ExtArgs>>): Prisma__DeploymentLogDetailClient<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DeploymentLogDetails that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogDetailFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DeploymentLogDetails
+     * const deploymentLogDetails = await prisma.deploymentLogDetail.findMany()
+     * 
+     * // Get first 10 DeploymentLogDetails
+     * const deploymentLogDetails = await prisma.deploymentLogDetail.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deploymentLogDetailWithIdOnly = await prisma.deploymentLogDetail.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DeploymentLogDetailFindManyArgs>(args?: SelectSubset<T, DeploymentLogDetailFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DeploymentLogDetail.
+     * @param {DeploymentLogDetailCreateArgs} args - Arguments to create a DeploymentLogDetail.
+     * @example
+     * // Create one DeploymentLogDetail
+     * const DeploymentLogDetail = await prisma.deploymentLogDetail.create({
+     *   data: {
+     *     // ... data to create a DeploymentLogDetail
+     *   }
+     * })
+     * 
+     */
+    create<T extends DeploymentLogDetailCreateArgs>(args: SelectSubset<T, DeploymentLogDetailCreateArgs<ExtArgs>>): Prisma__DeploymentLogDetailClient<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DeploymentLogDetails.
+     * @param {DeploymentLogDetailCreateManyArgs} args - Arguments to create many DeploymentLogDetails.
+     * @example
+     * // Create many DeploymentLogDetails
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DeploymentLogDetailCreateManyArgs>(args?: SelectSubset<T, DeploymentLogDetailCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DeploymentLogDetails and returns the data saved in the database.
+     * @param {DeploymentLogDetailCreateManyAndReturnArgs} args - Arguments to create many DeploymentLogDetails.
+     * @example
+     * // Create many DeploymentLogDetails
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DeploymentLogDetails and only return the `id`
+     * const deploymentLogDetailWithIdOnly = await prisma.deploymentLogDetail.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DeploymentLogDetailCreateManyAndReturnArgs>(args?: SelectSubset<T, DeploymentLogDetailCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DeploymentLogDetail.
+     * @param {DeploymentLogDetailDeleteArgs} args - Arguments to delete one DeploymentLogDetail.
+     * @example
+     * // Delete one DeploymentLogDetail
+     * const DeploymentLogDetail = await prisma.deploymentLogDetail.delete({
+     *   where: {
+     *     // ... filter to delete one DeploymentLogDetail
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DeploymentLogDetailDeleteArgs>(args: SelectSubset<T, DeploymentLogDetailDeleteArgs<ExtArgs>>): Prisma__DeploymentLogDetailClient<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DeploymentLogDetail.
+     * @param {DeploymentLogDetailUpdateArgs} args - Arguments to update one DeploymentLogDetail.
+     * @example
+     * // Update one DeploymentLogDetail
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DeploymentLogDetailUpdateArgs>(args: SelectSubset<T, DeploymentLogDetailUpdateArgs<ExtArgs>>): Prisma__DeploymentLogDetailClient<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DeploymentLogDetails.
+     * @param {DeploymentLogDetailDeleteManyArgs} args - Arguments to filter DeploymentLogDetails to delete.
+     * @example
+     * // Delete a few DeploymentLogDetails
+     * const { count } = await prisma.deploymentLogDetail.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DeploymentLogDetailDeleteManyArgs>(args?: SelectSubset<T, DeploymentLogDetailDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeploymentLogDetails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogDetailUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DeploymentLogDetails
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DeploymentLogDetailUpdateManyArgs>(args: SelectSubset<T, DeploymentLogDetailUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeploymentLogDetails and returns the data updated in the database.
+     * @param {DeploymentLogDetailUpdateManyAndReturnArgs} args - Arguments to update many DeploymentLogDetails.
+     * @example
+     * // Update many DeploymentLogDetails
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DeploymentLogDetails and only return the `id`
+     * const deploymentLogDetailWithIdOnly = await prisma.deploymentLogDetail.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DeploymentLogDetailUpdateManyAndReturnArgs>(args: SelectSubset<T, DeploymentLogDetailUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DeploymentLogDetail.
+     * @param {DeploymentLogDetailUpsertArgs} args - Arguments to update or create a DeploymentLogDetail.
+     * @example
+     * // Update or create a DeploymentLogDetail
+     * const deploymentLogDetail = await prisma.deploymentLogDetail.upsert({
+     *   create: {
+     *     // ... data to create a DeploymentLogDetail
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DeploymentLogDetail we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DeploymentLogDetailUpsertArgs>(args: SelectSubset<T, DeploymentLogDetailUpsertArgs<ExtArgs>>): Prisma__DeploymentLogDetailClient<$Result.GetResult<Prisma.$DeploymentLogDetailPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DeploymentLogDetails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogDetailCountArgs} args - Arguments to filter DeploymentLogDetails to count.
+     * @example
+     * // Count the number of DeploymentLogDetails
+     * const count = await prisma.deploymentLogDetail.count({
+     *   where: {
+     *     // ... the filter for the DeploymentLogDetails we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeploymentLogDetailCountArgs>(
+      args?: Subset<T, DeploymentLogDetailCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeploymentLogDetailCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DeploymentLogDetail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogDetailAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeploymentLogDetailAggregateArgs>(args: Subset<T, DeploymentLogDetailAggregateArgs>): Prisma.PrismaPromise<GetDeploymentLogDetailAggregateType<T>>
+
+    /**
+     * Group by DeploymentLogDetail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeploymentLogDetailGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeploymentLogDetailGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeploymentLogDetailGroupByArgs['orderBy'] }
+        : { orderBy?: DeploymentLogDetailGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeploymentLogDetailGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeploymentLogDetailGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DeploymentLogDetail model
+   */
+  readonly fields: DeploymentLogDetailFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DeploymentLogDetail.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DeploymentLogDetailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    deployment<T extends DeploymentLogDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DeploymentLogDefaultArgs<ExtArgs>>): Prisma__DeploymentLogClient<$Result.GetResult<Prisma.$DeploymentLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    application<T extends DeploymentLogDetail$applicationArgs<ExtArgs> = {}>(args?: Subset<T, DeploymentLogDetail$applicationArgs<ExtArgs>>): Prisma__ApplicationClient<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DeploymentLogDetail model
+   */
+  interface DeploymentLogDetailFieldRefs {
+    readonly id: FieldRef<"DeploymentLogDetail", 'String'>
+    readonly deploymentId: FieldRef<"DeploymentLogDetail", 'String'>
+    readonly applicationId: FieldRef<"DeploymentLogDetail", 'String'>
+    readonly appName: FieldRef<"DeploymentLogDetail", 'String'>
+    readonly appType: FieldRef<"DeploymentLogDetail", 'String'>
+    readonly version: FieldRef<"DeploymentLogDetail", 'String'>
+    readonly status: FieldRef<"DeploymentLogDetail", 'DeploymentStatus'>
+    readonly order: FieldRef<"DeploymentLogDetail", 'Int'>
+    readonly prNumber: FieldRef<"DeploymentLogDetail", 'Int'>
+    readonly installMode: FieldRef<"DeploymentLogDetail", 'String'>
+    readonly startedAt: FieldRef<"DeploymentLogDetail", 'DateTime'>
+    readonly completedAt: FieldRef<"DeploymentLogDetail", 'DateTime'>
+    readonly downloadedSizeKb: FieldRef<"DeploymentLogDetail", 'Float'>
+    readonly errorMessage: FieldRef<"DeploymentLogDetail", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DeploymentLogDetail findUnique
+   */
+  export type DeploymentLogDetailFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLogDetail to fetch.
+     */
+    where: DeploymentLogDetailWhereUniqueInput
+  }
+
+  /**
+   * DeploymentLogDetail findUniqueOrThrow
+   */
+  export type DeploymentLogDetailFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLogDetail to fetch.
+     */
+    where: DeploymentLogDetailWhereUniqueInput
+  }
+
+  /**
+   * DeploymentLogDetail findFirst
+   */
+  export type DeploymentLogDetailFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLogDetail to fetch.
+     */
+    where?: DeploymentLogDetailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeploymentLogDetails to fetch.
+     */
+    orderBy?: DeploymentLogDetailOrderByWithRelationInput | DeploymentLogDetailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeploymentLogDetails.
+     */
+    cursor?: DeploymentLogDetailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeploymentLogDetails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeploymentLogDetails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeploymentLogDetails.
+     */
+    distinct?: DeploymentLogDetailScalarFieldEnum | DeploymentLogDetailScalarFieldEnum[]
+  }
+
+  /**
+   * DeploymentLogDetail findFirstOrThrow
+   */
+  export type DeploymentLogDetailFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLogDetail to fetch.
+     */
+    where?: DeploymentLogDetailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeploymentLogDetails to fetch.
+     */
+    orderBy?: DeploymentLogDetailOrderByWithRelationInput | DeploymentLogDetailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeploymentLogDetails.
+     */
+    cursor?: DeploymentLogDetailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeploymentLogDetails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeploymentLogDetails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeploymentLogDetails.
+     */
+    distinct?: DeploymentLogDetailScalarFieldEnum | DeploymentLogDetailScalarFieldEnum[]
+  }
+
+  /**
+   * DeploymentLogDetail findMany
+   */
+  export type DeploymentLogDetailFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * Filter, which DeploymentLogDetails to fetch.
+     */
+    where?: DeploymentLogDetailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeploymentLogDetails to fetch.
+     */
+    orderBy?: DeploymentLogDetailOrderByWithRelationInput | DeploymentLogDetailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DeploymentLogDetails.
+     */
+    cursor?: DeploymentLogDetailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeploymentLogDetails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeploymentLogDetails.
+     */
+    skip?: number
+    distinct?: DeploymentLogDetailScalarFieldEnum | DeploymentLogDetailScalarFieldEnum[]
+  }
+
+  /**
+   * DeploymentLogDetail create
+   */
+  export type DeploymentLogDetailCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DeploymentLogDetail.
+     */
+    data: XOR<DeploymentLogDetailCreateInput, DeploymentLogDetailUncheckedCreateInput>
+  }
+
+  /**
+   * DeploymentLogDetail createMany
+   */
+  export type DeploymentLogDetailCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DeploymentLogDetails.
+     */
+    data: DeploymentLogDetailCreateManyInput | DeploymentLogDetailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeploymentLogDetail createManyAndReturn
+   */
+  export type DeploymentLogDetailCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * The data used to create many DeploymentLogDetails.
+     */
+    data: DeploymentLogDetailCreateManyInput | DeploymentLogDetailCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeploymentLogDetail update
+   */
+  export type DeploymentLogDetailUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DeploymentLogDetail.
+     */
+    data: XOR<DeploymentLogDetailUpdateInput, DeploymentLogDetailUncheckedUpdateInput>
+    /**
+     * Choose, which DeploymentLogDetail to update.
+     */
+    where: DeploymentLogDetailWhereUniqueInput
+  }
+
+  /**
+   * DeploymentLogDetail updateMany
+   */
+  export type DeploymentLogDetailUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DeploymentLogDetails.
+     */
+    data: XOR<DeploymentLogDetailUpdateManyMutationInput, DeploymentLogDetailUncheckedUpdateManyInput>
+    /**
+     * Filter which DeploymentLogDetails to update
+     */
+    where?: DeploymentLogDetailWhereInput
+    /**
+     * Limit how many DeploymentLogDetails to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeploymentLogDetail updateManyAndReturn
+   */
+  export type DeploymentLogDetailUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * The data used to update DeploymentLogDetails.
+     */
+    data: XOR<DeploymentLogDetailUpdateManyMutationInput, DeploymentLogDetailUncheckedUpdateManyInput>
+    /**
+     * Filter which DeploymentLogDetails to update
+     */
+    where?: DeploymentLogDetailWhereInput
+    /**
+     * Limit how many DeploymentLogDetails to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeploymentLogDetail upsert
+   */
+  export type DeploymentLogDetailUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DeploymentLogDetail to update in case it exists.
+     */
+    where: DeploymentLogDetailWhereUniqueInput
+    /**
+     * In case the DeploymentLogDetail found by the `where` argument doesn't exist, create a new DeploymentLogDetail with this data.
+     */
+    create: XOR<DeploymentLogDetailCreateInput, DeploymentLogDetailUncheckedCreateInput>
+    /**
+     * In case the DeploymentLogDetail was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeploymentLogDetailUpdateInput, DeploymentLogDetailUncheckedUpdateInput>
+  }
+
+  /**
+   * DeploymentLogDetail delete
+   */
+  export type DeploymentLogDetailDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+    /**
+     * Filter which DeploymentLogDetail to delete.
+     */
+    where: DeploymentLogDetailWhereUniqueInput
+  }
+
+  /**
+   * DeploymentLogDetail deleteMany
+   */
+  export type DeploymentLogDetailDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeploymentLogDetails to delete
+     */
+    where?: DeploymentLogDetailWhereInput
+    /**
+     * Limit how many DeploymentLogDetails to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeploymentLogDetail.application
+   */
+  export type DeploymentLogDetail$applicationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Application
+     */
+    select?: ApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Application
+     */
+    omit?: ApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
+    where?: ApplicationWhereInput
+  }
+
+  /**
+   * DeploymentLogDetail without action
+   */
+  export type DeploymentLogDetailDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeploymentLogDetail
+     */
+    select?: DeploymentLogDetailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeploymentLogDetail
+     */
+    omit?: DeploymentLogDetailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeploymentLogDetailInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11846,6 +14694,45 @@ export namespace Prisma {
   export type RelatedLinkScalarFieldEnum = (typeof RelatedLinkScalarFieldEnum)[keyof typeof RelatedLinkScalarFieldEnum]
 
 
+  export const DeploymentLogScalarFieldEnum: {
+    id: 'id',
+    customerId: 'customerId',
+    tenantId: 'tenantId',
+    environmentName: 'environmentName',
+    status: 'status',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    totalApps: 'totalApps',
+    successfulApps: 'successfulApps',
+    failedApps: 'failedApps',
+    errorMessage: 'errorMessage'
+  };
+
+  export type DeploymentLogScalarFieldEnum = (typeof DeploymentLogScalarFieldEnum)[keyof typeof DeploymentLogScalarFieldEnum]
+
+
+  export const DeploymentLogDetailScalarFieldEnum: {
+    id: 'id',
+    deploymentId: 'deploymentId',
+    applicationId: 'applicationId',
+    appName: 'appName',
+    appType: 'appType',
+    version: 'version',
+    status: 'status',
+    order: 'order',
+    prNumber: 'prNumber',
+    installMode: 'installMode',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    downloadedSizeKb: 'downloadedSizeKb',
+    errorMessage: 'errorMessage'
+  };
+
+  export type DeploymentLogDetailScalarFieldEnum = (typeof DeploymentLogDetailScalarFieldEnum)[keyof typeof DeploymentLogDetailScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -11970,6 +14857,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DeploymentStatus'
+   */
+  export type EnumDeploymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DeploymentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'DeploymentStatus[]'
+   */
+  export type ListEnumDeploymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DeploymentStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -11980,6 +14881,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -12005,6 +14920,7 @@ export namespace Prisma {
     isActive?: BoolFilter<"User"> | boolean
     passwordSetupTokens?: PasswordSetupTokenListRelationFilter
     allowedCustomers?: UserCustomerListRelationFilter
+    deployments?: DeploymentLogListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -12023,6 +14939,7 @@ export namespace Prisma {
     isActive?: SortOrder
     passwordSetupTokens?: PasswordSetupTokenOrderByRelationAggregateInput
     allowedCustomers?: UserCustomerOrderByRelationAggregateInput
+    deployments?: DeploymentLogOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -12044,6 +14961,7 @@ export namespace Prisma {
     isActive?: BoolFilter<"User"> | boolean
     passwordSetupTokens?: PasswordSetupTokenListRelationFilter
     allowedCustomers?: UserCustomerListRelationFilter
+    deployments?: DeploymentLogListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -12511,6 +15429,7 @@ export namespace Prisma {
     idRanges?: JsonNullableFilter<"Application">
     createdAt?: DateTimeFilter<"Application"> | Date | string
     updatedAt?: DateTimeFilter<"Application"> | Date | string
+    deploymentDetails?: DeploymentLogDetailListRelationFilter
   }
 
   export type ApplicationOrderByWithRelationInput = {
@@ -12527,6 +15446,7 @@ export namespace Prisma {
     idRanges?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deploymentDetails?: DeploymentLogDetailOrderByRelationAggregateInput
   }
 
   export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
@@ -12546,6 +15466,7 @@ export namespace Prisma {
     idRanges?: JsonNullableFilter<"Application">
     createdAt?: DateTimeFilter<"Application"> | Date | string
     updatedAt?: DateTimeFilter<"Application"> | Date | string
+    deploymentDetails?: DeploymentLogDetailListRelationFilter
   }, "id">
 
   export type ApplicationOrderByWithAggregationInput = {
@@ -12649,6 +15570,211 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"RelatedLink"> | Date | string
   }
 
+  export type DeploymentLogWhereInput = {
+    AND?: DeploymentLogWhereInput | DeploymentLogWhereInput[]
+    OR?: DeploymentLogWhereInput[]
+    NOT?: DeploymentLogWhereInput | DeploymentLogWhereInput[]
+    id?: UuidFilter<"DeploymentLog"> | string
+    customerId?: UuidFilter<"DeploymentLog"> | string
+    tenantId?: UuidFilter<"DeploymentLog"> | string
+    environmentName?: StringFilter<"DeploymentLog"> | string
+    status?: EnumDeploymentStatusFilter<"DeploymentLog"> | $Enums.DeploymentStatus
+    userId?: UuidFilter<"DeploymentLog"> | string
+    createdAt?: DateTimeFilter<"DeploymentLog"> | Date | string
+    startedAt?: DateTimeNullableFilter<"DeploymentLog"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"DeploymentLog"> | Date | string | null
+    totalApps?: IntFilter<"DeploymentLog"> | number
+    successfulApps?: IntFilter<"DeploymentLog"> | number
+    failedApps?: IntFilter<"DeploymentLog"> | number
+    errorMessage?: StringNullableFilter<"DeploymentLog"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    details?: DeploymentLogDetailListRelationFilter
+  }
+
+  export type DeploymentLogOrderByWithRelationInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    tenantId?: SortOrder
+    environmentName?: SortOrder
+    status?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    totalApps?: SortOrder
+    successfulApps?: SortOrder
+    failedApps?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    user?: UserOrderByWithRelationInput
+    details?: DeploymentLogDetailOrderByRelationAggregateInput
+  }
+
+  export type DeploymentLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DeploymentLogWhereInput | DeploymentLogWhereInput[]
+    OR?: DeploymentLogWhereInput[]
+    NOT?: DeploymentLogWhereInput | DeploymentLogWhereInput[]
+    customerId?: UuidFilter<"DeploymentLog"> | string
+    tenantId?: UuidFilter<"DeploymentLog"> | string
+    environmentName?: StringFilter<"DeploymentLog"> | string
+    status?: EnumDeploymentStatusFilter<"DeploymentLog"> | $Enums.DeploymentStatus
+    userId?: UuidFilter<"DeploymentLog"> | string
+    createdAt?: DateTimeFilter<"DeploymentLog"> | Date | string
+    startedAt?: DateTimeNullableFilter<"DeploymentLog"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"DeploymentLog"> | Date | string | null
+    totalApps?: IntFilter<"DeploymentLog"> | number
+    successfulApps?: IntFilter<"DeploymentLog"> | number
+    failedApps?: IntFilter<"DeploymentLog"> | number
+    errorMessage?: StringNullableFilter<"DeploymentLog"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    details?: DeploymentLogDetailListRelationFilter
+  }, "id">
+
+  export type DeploymentLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    tenantId?: SortOrder
+    environmentName?: SortOrder
+    status?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    totalApps?: SortOrder
+    successfulApps?: SortOrder
+    failedApps?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    _count?: DeploymentLogCountOrderByAggregateInput
+    _avg?: DeploymentLogAvgOrderByAggregateInput
+    _max?: DeploymentLogMaxOrderByAggregateInput
+    _min?: DeploymentLogMinOrderByAggregateInput
+    _sum?: DeploymentLogSumOrderByAggregateInput
+  }
+
+  export type DeploymentLogScalarWhereWithAggregatesInput = {
+    AND?: DeploymentLogScalarWhereWithAggregatesInput | DeploymentLogScalarWhereWithAggregatesInput[]
+    OR?: DeploymentLogScalarWhereWithAggregatesInput[]
+    NOT?: DeploymentLogScalarWhereWithAggregatesInput | DeploymentLogScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"DeploymentLog"> | string
+    customerId?: UuidWithAggregatesFilter<"DeploymentLog"> | string
+    tenantId?: UuidWithAggregatesFilter<"DeploymentLog"> | string
+    environmentName?: StringWithAggregatesFilter<"DeploymentLog"> | string
+    status?: EnumDeploymentStatusWithAggregatesFilter<"DeploymentLog"> | $Enums.DeploymentStatus
+    userId?: UuidWithAggregatesFilter<"DeploymentLog"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"DeploymentLog"> | Date | string
+    startedAt?: DateTimeNullableWithAggregatesFilter<"DeploymentLog"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"DeploymentLog"> | Date | string | null
+    totalApps?: IntWithAggregatesFilter<"DeploymentLog"> | number
+    successfulApps?: IntWithAggregatesFilter<"DeploymentLog"> | number
+    failedApps?: IntWithAggregatesFilter<"DeploymentLog"> | number
+    errorMessage?: StringNullableWithAggregatesFilter<"DeploymentLog"> | string | null
+  }
+
+  export type DeploymentLogDetailWhereInput = {
+    AND?: DeploymentLogDetailWhereInput | DeploymentLogDetailWhereInput[]
+    OR?: DeploymentLogDetailWhereInput[]
+    NOT?: DeploymentLogDetailWhereInput | DeploymentLogDetailWhereInput[]
+    id?: UuidFilter<"DeploymentLogDetail"> | string
+    deploymentId?: UuidFilter<"DeploymentLogDetail"> | string
+    applicationId?: UuidNullableFilter<"DeploymentLogDetail"> | string | null
+    appName?: StringFilter<"DeploymentLogDetail"> | string
+    appType?: StringFilter<"DeploymentLogDetail"> | string
+    version?: StringFilter<"DeploymentLogDetail"> | string
+    status?: EnumDeploymentStatusFilter<"DeploymentLogDetail"> | $Enums.DeploymentStatus
+    order?: IntFilter<"DeploymentLogDetail"> | number
+    prNumber?: IntNullableFilter<"DeploymentLogDetail"> | number | null
+    installMode?: StringNullableFilter<"DeploymentLogDetail"> | string | null
+    startedAt?: DateTimeNullableFilter<"DeploymentLogDetail"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"DeploymentLogDetail"> | Date | string | null
+    downloadedSizeKb?: FloatNullableFilter<"DeploymentLogDetail"> | number | null
+    errorMessage?: StringNullableFilter<"DeploymentLogDetail"> | string | null
+    deployment?: XOR<DeploymentLogScalarRelationFilter, DeploymentLogWhereInput>
+    application?: XOR<ApplicationNullableScalarRelationFilter, ApplicationWhereInput> | null
+  }
+
+  export type DeploymentLogDetailOrderByWithRelationInput = {
+    id?: SortOrder
+    deploymentId?: SortOrder
+    applicationId?: SortOrderInput | SortOrder
+    appName?: SortOrder
+    appType?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    order?: SortOrder
+    prNumber?: SortOrderInput | SortOrder
+    installMode?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    downloadedSizeKb?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    deployment?: DeploymentLogOrderByWithRelationInput
+    application?: ApplicationOrderByWithRelationInput
+  }
+
+  export type DeploymentLogDetailWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DeploymentLogDetailWhereInput | DeploymentLogDetailWhereInput[]
+    OR?: DeploymentLogDetailWhereInput[]
+    NOT?: DeploymentLogDetailWhereInput | DeploymentLogDetailWhereInput[]
+    deploymentId?: UuidFilter<"DeploymentLogDetail"> | string
+    applicationId?: UuidNullableFilter<"DeploymentLogDetail"> | string | null
+    appName?: StringFilter<"DeploymentLogDetail"> | string
+    appType?: StringFilter<"DeploymentLogDetail"> | string
+    version?: StringFilter<"DeploymentLogDetail"> | string
+    status?: EnumDeploymentStatusFilter<"DeploymentLogDetail"> | $Enums.DeploymentStatus
+    order?: IntFilter<"DeploymentLogDetail"> | number
+    prNumber?: IntNullableFilter<"DeploymentLogDetail"> | number | null
+    installMode?: StringNullableFilter<"DeploymentLogDetail"> | string | null
+    startedAt?: DateTimeNullableFilter<"DeploymentLogDetail"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"DeploymentLogDetail"> | Date | string | null
+    downloadedSizeKb?: FloatNullableFilter<"DeploymentLogDetail"> | number | null
+    errorMessage?: StringNullableFilter<"DeploymentLogDetail"> | string | null
+    deployment?: XOR<DeploymentLogScalarRelationFilter, DeploymentLogWhereInput>
+    application?: XOR<ApplicationNullableScalarRelationFilter, ApplicationWhereInput> | null
+  }, "id">
+
+  export type DeploymentLogDetailOrderByWithAggregationInput = {
+    id?: SortOrder
+    deploymentId?: SortOrder
+    applicationId?: SortOrderInput | SortOrder
+    appName?: SortOrder
+    appType?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    order?: SortOrder
+    prNumber?: SortOrderInput | SortOrder
+    installMode?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    downloadedSizeKb?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    _count?: DeploymentLogDetailCountOrderByAggregateInput
+    _avg?: DeploymentLogDetailAvgOrderByAggregateInput
+    _max?: DeploymentLogDetailMaxOrderByAggregateInput
+    _min?: DeploymentLogDetailMinOrderByAggregateInput
+    _sum?: DeploymentLogDetailSumOrderByAggregateInput
+  }
+
+  export type DeploymentLogDetailScalarWhereWithAggregatesInput = {
+    AND?: DeploymentLogDetailScalarWhereWithAggregatesInput | DeploymentLogDetailScalarWhereWithAggregatesInput[]
+    OR?: DeploymentLogDetailScalarWhereWithAggregatesInput[]
+    NOT?: DeploymentLogDetailScalarWhereWithAggregatesInput | DeploymentLogDetailScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"DeploymentLogDetail"> | string
+    deploymentId?: UuidWithAggregatesFilter<"DeploymentLogDetail"> | string
+    applicationId?: UuidNullableWithAggregatesFilter<"DeploymentLogDetail"> | string | null
+    appName?: StringWithAggregatesFilter<"DeploymentLogDetail"> | string
+    appType?: StringWithAggregatesFilter<"DeploymentLogDetail"> | string
+    version?: StringWithAggregatesFilter<"DeploymentLogDetail"> | string
+    status?: EnumDeploymentStatusWithAggregatesFilter<"DeploymentLogDetail"> | $Enums.DeploymentStatus
+    order?: IntWithAggregatesFilter<"DeploymentLogDetail"> | number
+    prNumber?: IntNullableWithAggregatesFilter<"DeploymentLogDetail"> | number | null
+    installMode?: StringNullableWithAggregatesFilter<"DeploymentLogDetail"> | string | null
+    startedAt?: DateTimeNullableWithAggregatesFilter<"DeploymentLogDetail"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"DeploymentLogDetail"> | Date | string | null
+    downloadedSizeKb?: FloatNullableWithAggregatesFilter<"DeploymentLogDetail"> | number | null
+    errorMessage?: StringNullableWithAggregatesFilter<"DeploymentLogDetail"> | string | null
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -12665,6 +15791,7 @@ export namespace Prisma {
     isActive?: boolean
     passwordSetupTokens?: PasswordSetupTokenCreateNestedManyWithoutUserInput
     allowedCustomers?: UserCustomerCreateNestedManyWithoutUserInput
+    deployments?: DeploymentLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -12683,6 +15810,7 @@ export namespace Prisma {
     isActive?: boolean
     passwordSetupTokens?: PasswordSetupTokenUncheckedCreateNestedManyWithoutUserInput
     allowedCustomers?: UserCustomerUncheckedCreateNestedManyWithoutUserInput
+    deployments?: DeploymentLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -12701,6 +15829,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     passwordSetupTokens?: PasswordSetupTokenUpdateManyWithoutUserNestedInput
     allowedCustomers?: UserCustomerUpdateManyWithoutUserNestedInput
+    deployments?: DeploymentLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -12719,6 +15848,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     passwordSetupTokens?: PasswordSetupTokenUncheckedUpdateManyWithoutUserNestedInput
     allowedCustomers?: UserCustomerUncheckedUpdateManyWithoutUserNestedInput
+    deployments?: DeploymentLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -13217,6 +16347,7 @@ export namespace Prisma {
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+    deploymentDetails?: DeploymentLogDetailCreateNestedManyWithoutApplicationInput
   }
 
   export type ApplicationUncheckedCreateInput = {
@@ -13233,6 +16364,7 @@ export namespace Prisma {
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+    deploymentDetails?: DeploymentLogDetailUncheckedCreateNestedManyWithoutApplicationInput
   }
 
   export type ApplicationUpdateInput = {
@@ -13249,6 +16381,7 @@ export namespace Prisma {
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentDetails?: DeploymentLogDetailUpdateManyWithoutApplicationNestedInput
   }
 
   export type ApplicationUncheckedUpdateInput = {
@@ -13265,6 +16398,7 @@ export namespace Prisma {
     idRanges?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentDetails?: DeploymentLogDetailUncheckedUpdateManyWithoutApplicationNestedInput
   }
 
   export type ApplicationCreateManyInput = {
@@ -13385,6 +16519,238 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DeploymentLogCreateInput = {
+    id?: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status?: $Enums.DeploymentStatus
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    totalApps: number
+    successfulApps?: number
+    failedApps?: number
+    errorMessage?: string | null
+    user: UserCreateNestedOneWithoutDeploymentsInput
+    details?: DeploymentLogDetailCreateNestedManyWithoutDeploymentInput
+  }
+
+  export type DeploymentLogUncheckedCreateInput = {
+    id?: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status?: $Enums.DeploymentStatus
+    userId: string
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    totalApps: number
+    successfulApps?: number
+    failedApps?: number
+    errorMessage?: string | null
+    details?: DeploymentLogDetailUncheckedCreateNestedManyWithoutDeploymentInput
+  }
+
+  export type DeploymentLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutDeploymentsNestedInput
+    details?: DeploymentLogDetailUpdateManyWithoutDeploymentNestedInput
+  }
+
+  export type DeploymentLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: DeploymentLogDetailUncheckedUpdateManyWithoutDeploymentNestedInput
+  }
+
+  export type DeploymentLogCreateManyInput = {
+    id?: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status?: $Enums.DeploymentStatus
+    userId: string
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    totalApps: number
+    successfulApps?: number
+    failedApps?: number
+    errorMessage?: string | null
+  }
+
+  export type DeploymentLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeploymentLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeploymentLogDetailCreateInput = {
+    id?: string
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+    deployment: DeploymentLogCreateNestedOneWithoutDetailsInput
+    application?: ApplicationCreateNestedOneWithoutDeploymentDetailsInput
+  }
+
+  export type DeploymentLogDetailUncheckedCreateInput = {
+    id?: string
+    deploymentId: string
+    applicationId?: string | null
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+  }
+
+  export type DeploymentLogDetailUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    deployment?: DeploymentLogUpdateOneRequiredWithoutDetailsNestedInput
+    application?: ApplicationUpdateOneWithoutDeploymentDetailsNestedInput
+  }
+
+  export type DeploymentLogDetailUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deploymentId?: StringFieldUpdateOperationsInput | string
+    applicationId?: NullableStringFieldUpdateOperationsInput | string | null
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeploymentLogDetailCreateManyInput = {
+    id?: string
+    deploymentId: string
+    applicationId?: string | null
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+  }
+
+  export type DeploymentLogDetailUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeploymentLogDetailUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deploymentId?: StringFieldUpdateOperationsInput | string
+    applicationId?: NullableStringFieldUpdateOperationsInput | string | null
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -13455,6 +16821,12 @@ export namespace Prisma {
     none?: UserCustomerWhereInput
   }
 
+  export type DeploymentLogListRelationFilter = {
+    every?: DeploymentLogWhereInput
+    some?: DeploymentLogWhereInput
+    none?: DeploymentLogWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -13465,6 +16837,10 @@ export namespace Prisma {
   }
 
   export type UserCustomerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DeploymentLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13930,6 +17306,16 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type DeploymentLogDetailListRelationFilter = {
+    every?: DeploymentLogDetailWhereInput
+    some?: DeploymentLogDetailWhereInput
+    none?: DeploymentLogDetailWhereInput
+  }
+
+  export type DeploymentLogDetailOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ApplicationCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -14055,6 +17441,237 @@ export namespace Prisma {
     _max?: NestedEnumRelationTypeFilter<$PrismaModel>
   }
 
+  export type EnumDeploymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DeploymentStatus | EnumDeploymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DeploymentStatus[] | ListEnumDeploymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DeploymentStatus[] | ListEnumDeploymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDeploymentStatusFilter<$PrismaModel> | $Enums.DeploymentStatus
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type DeploymentLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    tenantId?: SortOrder
+    environmentName?: SortOrder
+    status?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    totalApps?: SortOrder
+    successfulApps?: SortOrder
+    failedApps?: SortOrder
+    errorMessage?: SortOrder
+  }
+
+  export type DeploymentLogAvgOrderByAggregateInput = {
+    totalApps?: SortOrder
+    successfulApps?: SortOrder
+    failedApps?: SortOrder
+  }
+
+  export type DeploymentLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    tenantId?: SortOrder
+    environmentName?: SortOrder
+    status?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    totalApps?: SortOrder
+    successfulApps?: SortOrder
+    failedApps?: SortOrder
+    errorMessage?: SortOrder
+  }
+
+  export type DeploymentLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    tenantId?: SortOrder
+    environmentName?: SortOrder
+    status?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    totalApps?: SortOrder
+    successfulApps?: SortOrder
+    failedApps?: SortOrder
+    errorMessage?: SortOrder
+  }
+
+  export type DeploymentLogSumOrderByAggregateInput = {
+    totalApps?: SortOrder
+    successfulApps?: SortOrder
+    failedApps?: SortOrder
+  }
+
+  export type EnumDeploymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DeploymentStatus | EnumDeploymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DeploymentStatus[] | ListEnumDeploymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DeploymentStatus[] | ListEnumDeploymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDeploymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.DeploymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDeploymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumDeploymentStatusFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type DeploymentLogScalarRelationFilter = {
+    is?: DeploymentLogWhereInput
+    isNot?: DeploymentLogWhereInput
+  }
+
+  export type ApplicationNullableScalarRelationFilter = {
+    is?: ApplicationWhereInput | null
+    isNot?: ApplicationWhereInput | null
+  }
+
+  export type DeploymentLogDetailCountOrderByAggregateInput = {
+    id?: SortOrder
+    deploymentId?: SortOrder
+    applicationId?: SortOrder
+    appName?: SortOrder
+    appType?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    order?: SortOrder
+    prNumber?: SortOrder
+    installMode?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    downloadedSizeKb?: SortOrder
+    errorMessage?: SortOrder
+  }
+
+  export type DeploymentLogDetailAvgOrderByAggregateInput = {
+    order?: SortOrder
+    prNumber?: SortOrder
+    downloadedSizeKb?: SortOrder
+  }
+
+  export type DeploymentLogDetailMaxOrderByAggregateInput = {
+    id?: SortOrder
+    deploymentId?: SortOrder
+    applicationId?: SortOrder
+    appName?: SortOrder
+    appType?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    order?: SortOrder
+    prNumber?: SortOrder
+    installMode?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    downloadedSizeKb?: SortOrder
+    errorMessage?: SortOrder
+  }
+
+  export type DeploymentLogDetailMinOrderByAggregateInput = {
+    id?: SortOrder
+    deploymentId?: SortOrder
+    applicationId?: SortOrder
+    appName?: SortOrder
+    appType?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    order?: SortOrder
+    prNumber?: SortOrder
+    installMode?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    downloadedSizeKb?: SortOrder
+    errorMessage?: SortOrder
+  }
+
+  export type DeploymentLogDetailSumOrderByAggregateInput = {
+    order?: SortOrder
+    prNumber?: SortOrder
+    downloadedSizeKb?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type PasswordSetupTokenCreateNestedManyWithoutUserInput = {
     create?: XOR<PasswordSetupTokenCreateWithoutUserInput, PasswordSetupTokenUncheckedCreateWithoutUserInput> | PasswordSetupTokenCreateWithoutUserInput[] | PasswordSetupTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasswordSetupTokenCreateOrConnectWithoutUserInput | PasswordSetupTokenCreateOrConnectWithoutUserInput[]
@@ -14069,6 +17686,13 @@ export namespace Prisma {
     connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
   }
 
+  export type DeploymentLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<DeploymentLogCreateWithoutUserInput, DeploymentLogUncheckedCreateWithoutUserInput> | DeploymentLogCreateWithoutUserInput[] | DeploymentLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DeploymentLogCreateOrConnectWithoutUserInput | DeploymentLogCreateOrConnectWithoutUserInput[]
+    createMany?: DeploymentLogCreateManyUserInputEnvelope
+    connect?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+  }
+
   export type PasswordSetupTokenUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<PasswordSetupTokenCreateWithoutUserInput, PasswordSetupTokenUncheckedCreateWithoutUserInput> | PasswordSetupTokenCreateWithoutUserInput[] | PasswordSetupTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasswordSetupTokenCreateOrConnectWithoutUserInput | PasswordSetupTokenCreateOrConnectWithoutUserInput[]
@@ -14081,6 +17705,13 @@ export namespace Prisma {
     connectOrCreate?: UserCustomerCreateOrConnectWithoutUserInput | UserCustomerCreateOrConnectWithoutUserInput[]
     createMany?: UserCustomerCreateManyUserInputEnvelope
     connect?: UserCustomerWhereUniqueInput | UserCustomerWhereUniqueInput[]
+  }
+
+  export type DeploymentLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<DeploymentLogCreateWithoutUserInput, DeploymentLogUncheckedCreateWithoutUserInput> | DeploymentLogCreateWithoutUserInput[] | DeploymentLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DeploymentLogCreateOrConnectWithoutUserInput | DeploymentLogCreateOrConnectWithoutUserInput[]
+    createMany?: DeploymentLogCreateManyUserInputEnvelope
+    connect?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -14127,6 +17758,20 @@ export namespace Prisma {
     deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
   }
 
+  export type DeploymentLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<DeploymentLogCreateWithoutUserInput, DeploymentLogUncheckedCreateWithoutUserInput> | DeploymentLogCreateWithoutUserInput[] | DeploymentLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DeploymentLogCreateOrConnectWithoutUserInput | DeploymentLogCreateOrConnectWithoutUserInput[]
+    upsert?: DeploymentLogUpsertWithWhereUniqueWithoutUserInput | DeploymentLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: DeploymentLogCreateManyUserInputEnvelope
+    set?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+    disconnect?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+    delete?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+    connect?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+    update?: DeploymentLogUpdateWithWhereUniqueWithoutUserInput | DeploymentLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: DeploymentLogUpdateManyWithWhereWithoutUserInput | DeploymentLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: DeploymentLogScalarWhereInput | DeploymentLogScalarWhereInput[]
+  }
+
   export type PasswordSetupTokenUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<PasswordSetupTokenCreateWithoutUserInput, PasswordSetupTokenUncheckedCreateWithoutUserInput> | PasswordSetupTokenCreateWithoutUserInput[] | PasswordSetupTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasswordSetupTokenCreateOrConnectWithoutUserInput | PasswordSetupTokenCreateOrConnectWithoutUserInput[]
@@ -14153,6 +17798,20 @@ export namespace Prisma {
     update?: UserCustomerUpdateWithWhereUniqueWithoutUserInput | UserCustomerUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: UserCustomerUpdateManyWithWhereWithoutUserInput | UserCustomerUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: UserCustomerScalarWhereInput | UserCustomerScalarWhereInput[]
+  }
+
+  export type DeploymentLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<DeploymentLogCreateWithoutUserInput, DeploymentLogUncheckedCreateWithoutUserInput> | DeploymentLogCreateWithoutUserInput[] | DeploymentLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DeploymentLogCreateOrConnectWithoutUserInput | DeploymentLogCreateOrConnectWithoutUserInput[]
+    upsert?: DeploymentLogUpsertWithWhereUniqueWithoutUserInput | DeploymentLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: DeploymentLogCreateManyUserInputEnvelope
+    set?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+    disconnect?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+    delete?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+    connect?: DeploymentLogWhereUniqueInput | DeploymentLogWhereUniqueInput[]
+    update?: DeploymentLogUpdateWithWhereUniqueWithoutUserInput | DeploymentLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: DeploymentLogUpdateManyWithWhereWithoutUserInput | DeploymentLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: DeploymentLogScalarWhereInput | DeploymentLogScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutPasswordSetupTokensInput = {
@@ -14415,8 +18074,164 @@ export namespace Prisma {
     update?: XOR<XOR<EnvironmentUpdateToOneWithWhereWithoutInstalledAppsInput, EnvironmentUpdateWithoutInstalledAppsInput>, EnvironmentUncheckedUpdateWithoutInstalledAppsInput>
   }
 
+  export type DeploymentLogDetailCreateNestedManyWithoutApplicationInput = {
+    create?: XOR<DeploymentLogDetailCreateWithoutApplicationInput, DeploymentLogDetailUncheckedCreateWithoutApplicationInput> | DeploymentLogDetailCreateWithoutApplicationInput[] | DeploymentLogDetailUncheckedCreateWithoutApplicationInput[]
+    connectOrCreate?: DeploymentLogDetailCreateOrConnectWithoutApplicationInput | DeploymentLogDetailCreateOrConnectWithoutApplicationInput[]
+    createMany?: DeploymentLogDetailCreateManyApplicationInputEnvelope
+    connect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+  }
+
+  export type DeploymentLogDetailUncheckedCreateNestedManyWithoutApplicationInput = {
+    create?: XOR<DeploymentLogDetailCreateWithoutApplicationInput, DeploymentLogDetailUncheckedCreateWithoutApplicationInput> | DeploymentLogDetailCreateWithoutApplicationInput[] | DeploymentLogDetailUncheckedCreateWithoutApplicationInput[]
+    connectOrCreate?: DeploymentLogDetailCreateOrConnectWithoutApplicationInput | DeploymentLogDetailCreateOrConnectWithoutApplicationInput[]
+    createMany?: DeploymentLogDetailCreateManyApplicationInputEnvelope
+    connect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+  }
+
+  export type DeploymentLogDetailUpdateManyWithoutApplicationNestedInput = {
+    create?: XOR<DeploymentLogDetailCreateWithoutApplicationInput, DeploymentLogDetailUncheckedCreateWithoutApplicationInput> | DeploymentLogDetailCreateWithoutApplicationInput[] | DeploymentLogDetailUncheckedCreateWithoutApplicationInput[]
+    connectOrCreate?: DeploymentLogDetailCreateOrConnectWithoutApplicationInput | DeploymentLogDetailCreateOrConnectWithoutApplicationInput[]
+    upsert?: DeploymentLogDetailUpsertWithWhereUniqueWithoutApplicationInput | DeploymentLogDetailUpsertWithWhereUniqueWithoutApplicationInput[]
+    createMany?: DeploymentLogDetailCreateManyApplicationInputEnvelope
+    set?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    disconnect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    delete?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    connect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    update?: DeploymentLogDetailUpdateWithWhereUniqueWithoutApplicationInput | DeploymentLogDetailUpdateWithWhereUniqueWithoutApplicationInput[]
+    updateMany?: DeploymentLogDetailUpdateManyWithWhereWithoutApplicationInput | DeploymentLogDetailUpdateManyWithWhereWithoutApplicationInput[]
+    deleteMany?: DeploymentLogDetailScalarWhereInput | DeploymentLogDetailScalarWhereInput[]
+  }
+
+  export type DeploymentLogDetailUncheckedUpdateManyWithoutApplicationNestedInput = {
+    create?: XOR<DeploymentLogDetailCreateWithoutApplicationInput, DeploymentLogDetailUncheckedCreateWithoutApplicationInput> | DeploymentLogDetailCreateWithoutApplicationInput[] | DeploymentLogDetailUncheckedCreateWithoutApplicationInput[]
+    connectOrCreate?: DeploymentLogDetailCreateOrConnectWithoutApplicationInput | DeploymentLogDetailCreateOrConnectWithoutApplicationInput[]
+    upsert?: DeploymentLogDetailUpsertWithWhereUniqueWithoutApplicationInput | DeploymentLogDetailUpsertWithWhereUniqueWithoutApplicationInput[]
+    createMany?: DeploymentLogDetailCreateManyApplicationInputEnvelope
+    set?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    disconnect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    delete?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    connect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    update?: DeploymentLogDetailUpdateWithWhereUniqueWithoutApplicationInput | DeploymentLogDetailUpdateWithWhereUniqueWithoutApplicationInput[]
+    updateMany?: DeploymentLogDetailUpdateManyWithWhereWithoutApplicationInput | DeploymentLogDetailUpdateManyWithWhereWithoutApplicationInput[]
+    deleteMany?: DeploymentLogDetailScalarWhereInput | DeploymentLogDetailScalarWhereInput[]
+  }
+
   export type EnumRelationTypeFieldUpdateOperationsInput = {
     set?: $Enums.RelationType
+  }
+
+  export type UserCreateNestedOneWithoutDeploymentsInput = {
+    create?: XOR<UserCreateWithoutDeploymentsInput, UserUncheckedCreateWithoutDeploymentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDeploymentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type DeploymentLogDetailCreateNestedManyWithoutDeploymentInput = {
+    create?: XOR<DeploymentLogDetailCreateWithoutDeploymentInput, DeploymentLogDetailUncheckedCreateWithoutDeploymentInput> | DeploymentLogDetailCreateWithoutDeploymentInput[] | DeploymentLogDetailUncheckedCreateWithoutDeploymentInput[]
+    connectOrCreate?: DeploymentLogDetailCreateOrConnectWithoutDeploymentInput | DeploymentLogDetailCreateOrConnectWithoutDeploymentInput[]
+    createMany?: DeploymentLogDetailCreateManyDeploymentInputEnvelope
+    connect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+  }
+
+  export type DeploymentLogDetailUncheckedCreateNestedManyWithoutDeploymentInput = {
+    create?: XOR<DeploymentLogDetailCreateWithoutDeploymentInput, DeploymentLogDetailUncheckedCreateWithoutDeploymentInput> | DeploymentLogDetailCreateWithoutDeploymentInput[] | DeploymentLogDetailUncheckedCreateWithoutDeploymentInput[]
+    connectOrCreate?: DeploymentLogDetailCreateOrConnectWithoutDeploymentInput | DeploymentLogDetailCreateOrConnectWithoutDeploymentInput[]
+    createMany?: DeploymentLogDetailCreateManyDeploymentInputEnvelope
+    connect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+  }
+
+  export type EnumDeploymentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.DeploymentStatus
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutDeploymentsNestedInput = {
+    create?: XOR<UserCreateWithoutDeploymentsInput, UserUncheckedCreateWithoutDeploymentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDeploymentsInput
+    upsert?: UserUpsertWithoutDeploymentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDeploymentsInput, UserUpdateWithoutDeploymentsInput>, UserUncheckedUpdateWithoutDeploymentsInput>
+  }
+
+  export type DeploymentLogDetailUpdateManyWithoutDeploymentNestedInput = {
+    create?: XOR<DeploymentLogDetailCreateWithoutDeploymentInput, DeploymentLogDetailUncheckedCreateWithoutDeploymentInput> | DeploymentLogDetailCreateWithoutDeploymentInput[] | DeploymentLogDetailUncheckedCreateWithoutDeploymentInput[]
+    connectOrCreate?: DeploymentLogDetailCreateOrConnectWithoutDeploymentInput | DeploymentLogDetailCreateOrConnectWithoutDeploymentInput[]
+    upsert?: DeploymentLogDetailUpsertWithWhereUniqueWithoutDeploymentInput | DeploymentLogDetailUpsertWithWhereUniqueWithoutDeploymentInput[]
+    createMany?: DeploymentLogDetailCreateManyDeploymentInputEnvelope
+    set?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    disconnect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    delete?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    connect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    update?: DeploymentLogDetailUpdateWithWhereUniqueWithoutDeploymentInput | DeploymentLogDetailUpdateWithWhereUniqueWithoutDeploymentInput[]
+    updateMany?: DeploymentLogDetailUpdateManyWithWhereWithoutDeploymentInput | DeploymentLogDetailUpdateManyWithWhereWithoutDeploymentInput[]
+    deleteMany?: DeploymentLogDetailScalarWhereInput | DeploymentLogDetailScalarWhereInput[]
+  }
+
+  export type DeploymentLogDetailUncheckedUpdateManyWithoutDeploymentNestedInput = {
+    create?: XOR<DeploymentLogDetailCreateWithoutDeploymentInput, DeploymentLogDetailUncheckedCreateWithoutDeploymentInput> | DeploymentLogDetailCreateWithoutDeploymentInput[] | DeploymentLogDetailUncheckedCreateWithoutDeploymentInput[]
+    connectOrCreate?: DeploymentLogDetailCreateOrConnectWithoutDeploymentInput | DeploymentLogDetailCreateOrConnectWithoutDeploymentInput[]
+    upsert?: DeploymentLogDetailUpsertWithWhereUniqueWithoutDeploymentInput | DeploymentLogDetailUpsertWithWhereUniqueWithoutDeploymentInput[]
+    createMany?: DeploymentLogDetailCreateManyDeploymentInputEnvelope
+    set?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    disconnect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    delete?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    connect?: DeploymentLogDetailWhereUniqueInput | DeploymentLogDetailWhereUniqueInput[]
+    update?: DeploymentLogDetailUpdateWithWhereUniqueWithoutDeploymentInput | DeploymentLogDetailUpdateWithWhereUniqueWithoutDeploymentInput[]
+    updateMany?: DeploymentLogDetailUpdateManyWithWhereWithoutDeploymentInput | DeploymentLogDetailUpdateManyWithWhereWithoutDeploymentInput[]
+    deleteMany?: DeploymentLogDetailScalarWhereInput | DeploymentLogDetailScalarWhereInput[]
+  }
+
+  export type DeploymentLogCreateNestedOneWithoutDetailsInput = {
+    create?: XOR<DeploymentLogCreateWithoutDetailsInput, DeploymentLogUncheckedCreateWithoutDetailsInput>
+    connectOrCreate?: DeploymentLogCreateOrConnectWithoutDetailsInput
+    connect?: DeploymentLogWhereUniqueInput
+  }
+
+  export type ApplicationCreateNestedOneWithoutDeploymentDetailsInput = {
+    create?: XOR<ApplicationCreateWithoutDeploymentDetailsInput, ApplicationUncheckedCreateWithoutDeploymentDetailsInput>
+    connectOrCreate?: ApplicationCreateOrConnectWithoutDeploymentDetailsInput
+    connect?: ApplicationWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type DeploymentLogUpdateOneRequiredWithoutDetailsNestedInput = {
+    create?: XOR<DeploymentLogCreateWithoutDetailsInput, DeploymentLogUncheckedCreateWithoutDetailsInput>
+    connectOrCreate?: DeploymentLogCreateOrConnectWithoutDetailsInput
+    upsert?: DeploymentLogUpsertWithoutDetailsInput
+    connect?: DeploymentLogWhereUniqueInput
+    update?: XOR<XOR<DeploymentLogUpdateToOneWithWhereWithoutDetailsInput, DeploymentLogUpdateWithoutDetailsInput>, DeploymentLogUncheckedUpdateWithoutDetailsInput>
+  }
+
+  export type ApplicationUpdateOneWithoutDeploymentDetailsNestedInput = {
+    create?: XOR<ApplicationCreateWithoutDeploymentDetailsInput, ApplicationUncheckedCreateWithoutDeploymentDetailsInput>
+    connectOrCreate?: ApplicationCreateOrConnectWithoutDeploymentDetailsInput
+    upsert?: ApplicationUpsertWithoutDeploymentDetailsInput
+    disconnect?: ApplicationWhereInput | boolean
+    delete?: ApplicationWhereInput | boolean
+    connect?: ApplicationWhereUniqueInput
+    update?: XOR<XOR<ApplicationUpdateToOneWithWhereWithoutDeploymentDetailsInput, ApplicationUpdateWithoutDeploymentDetailsInput>, ApplicationUncheckedUpdateWithoutDeploymentDetailsInput>
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -14673,6 +18488,93 @@ export namespace Prisma {
     _max?: NestedEnumRelationTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumDeploymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DeploymentStatus | EnumDeploymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DeploymentStatus[] | ListEnumDeploymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DeploymentStatus[] | ListEnumDeploymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDeploymentStatusFilter<$PrismaModel> | $Enums.DeploymentStatus
+  }
+
+  export type NestedEnumDeploymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DeploymentStatus | EnumDeploymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DeploymentStatus[] | ListEnumDeploymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DeploymentStatus[] | ListEnumDeploymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDeploymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.DeploymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDeploymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumDeploymentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type PasswordSetupTokenCreateWithoutUserInput = {
     id?: string
     token: string
@@ -14716,6 +18618,48 @@ export namespace Prisma {
 
   export type UserCustomerCreateManyUserInputEnvelope = {
     data: UserCustomerCreateManyUserInput | UserCustomerCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DeploymentLogCreateWithoutUserInput = {
+    id?: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status?: $Enums.DeploymentStatus
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    totalApps: number
+    successfulApps?: number
+    failedApps?: number
+    errorMessage?: string | null
+    details?: DeploymentLogDetailCreateNestedManyWithoutDeploymentInput
+  }
+
+  export type DeploymentLogUncheckedCreateWithoutUserInput = {
+    id?: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status?: $Enums.DeploymentStatus
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    totalApps: number
+    successfulApps?: number
+    failedApps?: number
+    errorMessage?: string | null
+    details?: DeploymentLogDetailUncheckedCreateNestedManyWithoutDeploymentInput
+  }
+
+  export type DeploymentLogCreateOrConnectWithoutUserInput = {
+    where: DeploymentLogWhereUniqueInput
+    create: XOR<DeploymentLogCreateWithoutUserInput, DeploymentLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type DeploymentLogCreateManyUserInputEnvelope = {
+    data: DeploymentLogCreateManyUserInput | DeploymentLogCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -14772,6 +18716,41 @@ export namespace Prisma {
     assignedAt?: DateTimeFilter<"UserCustomer"> | Date | string
   }
 
+  export type DeploymentLogUpsertWithWhereUniqueWithoutUserInput = {
+    where: DeploymentLogWhereUniqueInput
+    update: XOR<DeploymentLogUpdateWithoutUserInput, DeploymentLogUncheckedUpdateWithoutUserInput>
+    create: XOR<DeploymentLogCreateWithoutUserInput, DeploymentLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type DeploymentLogUpdateWithWhereUniqueWithoutUserInput = {
+    where: DeploymentLogWhereUniqueInput
+    data: XOR<DeploymentLogUpdateWithoutUserInput, DeploymentLogUncheckedUpdateWithoutUserInput>
+  }
+
+  export type DeploymentLogUpdateManyWithWhereWithoutUserInput = {
+    where: DeploymentLogScalarWhereInput
+    data: XOR<DeploymentLogUpdateManyMutationInput, DeploymentLogUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type DeploymentLogScalarWhereInput = {
+    AND?: DeploymentLogScalarWhereInput | DeploymentLogScalarWhereInput[]
+    OR?: DeploymentLogScalarWhereInput[]
+    NOT?: DeploymentLogScalarWhereInput | DeploymentLogScalarWhereInput[]
+    id?: UuidFilter<"DeploymentLog"> | string
+    customerId?: UuidFilter<"DeploymentLog"> | string
+    tenantId?: UuidFilter<"DeploymentLog"> | string
+    environmentName?: StringFilter<"DeploymentLog"> | string
+    status?: EnumDeploymentStatusFilter<"DeploymentLog"> | $Enums.DeploymentStatus
+    userId?: UuidFilter<"DeploymentLog"> | string
+    createdAt?: DateTimeFilter<"DeploymentLog"> | Date | string
+    startedAt?: DateTimeNullableFilter<"DeploymentLog"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"DeploymentLog"> | Date | string | null
+    totalApps?: IntFilter<"DeploymentLog"> | number
+    successfulApps?: IntFilter<"DeploymentLog"> | number
+    failedApps?: IntFilter<"DeploymentLog"> | number
+    errorMessage?: StringNullableFilter<"DeploymentLog"> | string | null
+  }
+
   export type UserCreateWithoutPasswordSetupTokensInput = {
     id?: string
     name: string
@@ -14787,6 +18766,7 @@ export namespace Prisma {
     canAccessAdmin?: boolean
     isActive?: boolean
     allowedCustomers?: UserCustomerCreateNestedManyWithoutUserInput
+    deployments?: DeploymentLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPasswordSetupTokensInput = {
@@ -14804,6 +18784,7 @@ export namespace Prisma {
     canAccessAdmin?: boolean
     isActive?: boolean
     allowedCustomers?: UserCustomerUncheckedCreateNestedManyWithoutUserInput
+    deployments?: DeploymentLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPasswordSetupTokensInput = {
@@ -14837,6 +18818,7 @@ export namespace Prisma {
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     allowedCustomers?: UserCustomerUpdateManyWithoutUserNestedInput
+    deployments?: DeploymentLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPasswordSetupTokensInput = {
@@ -14854,6 +18836,7 @@ export namespace Prisma {
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     allowedCustomers?: UserCustomerUncheckedUpdateManyWithoutUserNestedInput
+    deployments?: DeploymentLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TenantCreateWithoutCustomerInput = {
@@ -15007,6 +18990,7 @@ export namespace Prisma {
     canAccessAdmin?: boolean
     isActive?: boolean
     passwordSetupTokens?: PasswordSetupTokenCreateNestedManyWithoutUserInput
+    deployments?: DeploymentLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAllowedCustomersInput = {
@@ -15024,6 +19008,7 @@ export namespace Prisma {
     canAccessAdmin?: boolean
     isActive?: boolean
     passwordSetupTokens?: PasswordSetupTokenUncheckedCreateNestedManyWithoutUserInput
+    deployments?: DeploymentLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAllowedCustomersInput = {
@@ -15086,6 +19071,7 @@ export namespace Prisma {
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     passwordSetupTokens?: PasswordSetupTokenUpdateManyWithoutUserNestedInput
+    deployments?: DeploymentLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAllowedCustomersInput = {
@@ -15103,6 +19089,7 @@ export namespace Prisma {
     canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     passwordSetupTokens?: PasswordSetupTokenUncheckedUpdateManyWithoutUserNestedInput
+    deployments?: DeploymentLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type EnvironmentCreateWithoutTenantInput = {
@@ -15417,6 +19404,390 @@ export namespace Prisma {
     platformVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type DeploymentLogDetailCreateWithoutApplicationInput = {
+    id?: string
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+    deployment: DeploymentLogCreateNestedOneWithoutDetailsInput
+  }
+
+  export type DeploymentLogDetailUncheckedCreateWithoutApplicationInput = {
+    id?: string
+    deploymentId: string
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+  }
+
+  export type DeploymentLogDetailCreateOrConnectWithoutApplicationInput = {
+    where: DeploymentLogDetailWhereUniqueInput
+    create: XOR<DeploymentLogDetailCreateWithoutApplicationInput, DeploymentLogDetailUncheckedCreateWithoutApplicationInput>
+  }
+
+  export type DeploymentLogDetailCreateManyApplicationInputEnvelope = {
+    data: DeploymentLogDetailCreateManyApplicationInput | DeploymentLogDetailCreateManyApplicationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DeploymentLogDetailUpsertWithWhereUniqueWithoutApplicationInput = {
+    where: DeploymentLogDetailWhereUniqueInput
+    update: XOR<DeploymentLogDetailUpdateWithoutApplicationInput, DeploymentLogDetailUncheckedUpdateWithoutApplicationInput>
+    create: XOR<DeploymentLogDetailCreateWithoutApplicationInput, DeploymentLogDetailUncheckedCreateWithoutApplicationInput>
+  }
+
+  export type DeploymentLogDetailUpdateWithWhereUniqueWithoutApplicationInput = {
+    where: DeploymentLogDetailWhereUniqueInput
+    data: XOR<DeploymentLogDetailUpdateWithoutApplicationInput, DeploymentLogDetailUncheckedUpdateWithoutApplicationInput>
+  }
+
+  export type DeploymentLogDetailUpdateManyWithWhereWithoutApplicationInput = {
+    where: DeploymentLogDetailScalarWhereInput
+    data: XOR<DeploymentLogDetailUpdateManyMutationInput, DeploymentLogDetailUncheckedUpdateManyWithoutApplicationInput>
+  }
+
+  export type DeploymentLogDetailScalarWhereInput = {
+    AND?: DeploymentLogDetailScalarWhereInput | DeploymentLogDetailScalarWhereInput[]
+    OR?: DeploymentLogDetailScalarWhereInput[]
+    NOT?: DeploymentLogDetailScalarWhereInput | DeploymentLogDetailScalarWhereInput[]
+    id?: UuidFilter<"DeploymentLogDetail"> | string
+    deploymentId?: UuidFilter<"DeploymentLogDetail"> | string
+    applicationId?: UuidNullableFilter<"DeploymentLogDetail"> | string | null
+    appName?: StringFilter<"DeploymentLogDetail"> | string
+    appType?: StringFilter<"DeploymentLogDetail"> | string
+    version?: StringFilter<"DeploymentLogDetail"> | string
+    status?: EnumDeploymentStatusFilter<"DeploymentLogDetail"> | $Enums.DeploymentStatus
+    order?: IntFilter<"DeploymentLogDetail"> | number
+    prNumber?: IntNullableFilter<"DeploymentLogDetail"> | number | null
+    installMode?: StringNullableFilter<"DeploymentLogDetail"> | string | null
+    startedAt?: DateTimeNullableFilter<"DeploymentLogDetail"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"DeploymentLogDetail"> | Date | string | null
+    downloadedSizeKb?: FloatNullableFilter<"DeploymentLogDetail"> | number | null
+    errorMessage?: StringNullableFilter<"DeploymentLogDetail"> | string | null
+  }
+
+  export type UserCreateWithoutDeploymentsInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string | null
+    githubToken?: string | null
+    githubAvatar?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
+    isActive?: boolean
+    passwordSetupTokens?: PasswordSetupTokenCreateNestedManyWithoutUserInput
+    allowedCustomers?: UserCustomerCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutDeploymentsInput = {
+    id?: string
+    name: string
+    email: string
+    password?: string | null
+    githubToken?: string | null
+    githubAvatar?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    canAccessRepos?: boolean
+    canAccessCustomers?: boolean
+    allCustomers?: boolean
+    canAccessAdmin?: boolean
+    isActive?: boolean
+    passwordSetupTokens?: PasswordSetupTokenUncheckedCreateNestedManyWithoutUserInput
+    allowedCustomers?: UserCustomerUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutDeploymentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDeploymentsInput, UserUncheckedCreateWithoutDeploymentsInput>
+  }
+
+  export type DeploymentLogDetailCreateWithoutDeploymentInput = {
+    id?: string
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+    application?: ApplicationCreateNestedOneWithoutDeploymentDetailsInput
+  }
+
+  export type DeploymentLogDetailUncheckedCreateWithoutDeploymentInput = {
+    id?: string
+    applicationId?: string | null
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+  }
+
+  export type DeploymentLogDetailCreateOrConnectWithoutDeploymentInput = {
+    where: DeploymentLogDetailWhereUniqueInput
+    create: XOR<DeploymentLogDetailCreateWithoutDeploymentInput, DeploymentLogDetailUncheckedCreateWithoutDeploymentInput>
+  }
+
+  export type DeploymentLogDetailCreateManyDeploymentInputEnvelope = {
+    data: DeploymentLogDetailCreateManyDeploymentInput | DeploymentLogDetailCreateManyDeploymentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutDeploymentsInput = {
+    update: XOR<UserUpdateWithoutDeploymentsInput, UserUncheckedUpdateWithoutDeploymentsInput>
+    create: XOR<UserCreateWithoutDeploymentsInput, UserUncheckedCreateWithoutDeploymentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDeploymentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDeploymentsInput, UserUncheckedUpdateWithoutDeploymentsInput>
+  }
+
+  export type UserUpdateWithoutDeploymentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    githubToken?: NullableStringFieldUpdateOperationsInput | string | null
+    githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    passwordSetupTokens?: PasswordSetupTokenUpdateManyWithoutUserNestedInput
+    allowedCustomers?: UserCustomerUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDeploymentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    githubToken?: NullableStringFieldUpdateOperationsInput | string | null
+    githubAvatar?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    canAccessRepos?: BoolFieldUpdateOperationsInput | boolean
+    canAccessCustomers?: BoolFieldUpdateOperationsInput | boolean
+    allCustomers?: BoolFieldUpdateOperationsInput | boolean
+    canAccessAdmin?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    passwordSetupTokens?: PasswordSetupTokenUncheckedUpdateManyWithoutUserNestedInput
+    allowedCustomers?: UserCustomerUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type DeploymentLogDetailUpsertWithWhereUniqueWithoutDeploymentInput = {
+    where: DeploymentLogDetailWhereUniqueInput
+    update: XOR<DeploymentLogDetailUpdateWithoutDeploymentInput, DeploymentLogDetailUncheckedUpdateWithoutDeploymentInput>
+    create: XOR<DeploymentLogDetailCreateWithoutDeploymentInput, DeploymentLogDetailUncheckedCreateWithoutDeploymentInput>
+  }
+
+  export type DeploymentLogDetailUpdateWithWhereUniqueWithoutDeploymentInput = {
+    where: DeploymentLogDetailWhereUniqueInput
+    data: XOR<DeploymentLogDetailUpdateWithoutDeploymentInput, DeploymentLogDetailUncheckedUpdateWithoutDeploymentInput>
+  }
+
+  export type DeploymentLogDetailUpdateManyWithWhereWithoutDeploymentInput = {
+    where: DeploymentLogDetailScalarWhereInput
+    data: XOR<DeploymentLogDetailUpdateManyMutationInput, DeploymentLogDetailUncheckedUpdateManyWithoutDeploymentInput>
+  }
+
+  export type DeploymentLogCreateWithoutDetailsInput = {
+    id?: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status?: $Enums.DeploymentStatus
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    totalApps: number
+    successfulApps?: number
+    failedApps?: number
+    errorMessage?: string | null
+    user: UserCreateNestedOneWithoutDeploymentsInput
+  }
+
+  export type DeploymentLogUncheckedCreateWithoutDetailsInput = {
+    id?: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status?: $Enums.DeploymentStatus
+    userId: string
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    totalApps: number
+    successfulApps?: number
+    failedApps?: number
+    errorMessage?: string | null
+  }
+
+  export type DeploymentLogCreateOrConnectWithoutDetailsInput = {
+    where: DeploymentLogWhereUniqueInput
+    create: XOR<DeploymentLogCreateWithoutDetailsInput, DeploymentLogUncheckedCreateWithoutDetailsInput>
+  }
+
+  export type ApplicationCreateWithoutDeploymentDetailsInput = {
+    id: string
+    name: string
+    publisher: string
+    githubRepoName: string
+    githubUrl?: string | null
+    latestReleaseVersion?: string | null
+    latestReleaseDate?: Date | string | null
+    latestPrereleaseVersion?: string | null
+    latestPrereleaseDate?: Date | string | null
+    logoBase64?: string | null
+    idRanges?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApplicationUncheckedCreateWithoutDeploymentDetailsInput = {
+    id: string
+    name: string
+    publisher: string
+    githubRepoName: string
+    githubUrl?: string | null
+    latestReleaseVersion?: string | null
+    latestReleaseDate?: Date | string | null
+    latestPrereleaseVersion?: string | null
+    latestPrereleaseDate?: Date | string | null
+    logoBase64?: string | null
+    idRanges?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApplicationCreateOrConnectWithoutDeploymentDetailsInput = {
+    where: ApplicationWhereUniqueInput
+    create: XOR<ApplicationCreateWithoutDeploymentDetailsInput, ApplicationUncheckedCreateWithoutDeploymentDetailsInput>
+  }
+
+  export type DeploymentLogUpsertWithoutDetailsInput = {
+    update: XOR<DeploymentLogUpdateWithoutDetailsInput, DeploymentLogUncheckedUpdateWithoutDetailsInput>
+    create: XOR<DeploymentLogCreateWithoutDetailsInput, DeploymentLogUncheckedCreateWithoutDetailsInput>
+    where?: DeploymentLogWhereInput
+  }
+
+  export type DeploymentLogUpdateToOneWithWhereWithoutDetailsInput = {
+    where?: DeploymentLogWhereInput
+    data: XOR<DeploymentLogUpdateWithoutDetailsInput, DeploymentLogUncheckedUpdateWithoutDetailsInput>
+  }
+
+  export type DeploymentLogUpdateWithoutDetailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutDeploymentsNestedInput
+  }
+
+  export type DeploymentLogUncheckedUpdateWithoutDetailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ApplicationUpsertWithoutDeploymentDetailsInput = {
+    update: XOR<ApplicationUpdateWithoutDeploymentDetailsInput, ApplicationUncheckedUpdateWithoutDeploymentDetailsInput>
+    create: XOR<ApplicationCreateWithoutDeploymentDetailsInput, ApplicationUncheckedCreateWithoutDeploymentDetailsInput>
+    where?: ApplicationWhereInput
+  }
+
+  export type ApplicationUpdateToOneWithWhereWithoutDeploymentDetailsInput = {
+    where?: ApplicationWhereInput
+    data: XOR<ApplicationUpdateWithoutDeploymentDetailsInput, ApplicationUncheckedUpdateWithoutDeploymentDetailsInput>
+  }
+
+  export type ApplicationUpdateWithoutDeploymentDetailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    publisher?: StringFieldUpdateOperationsInput | string
+    githubRepoName?: StringFieldUpdateOperationsInput | string
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestPrereleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    latestPrereleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    logoBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    idRanges?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApplicationUncheckedUpdateWithoutDeploymentDetailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    publisher?: StringFieldUpdateOperationsInput | string
+    githubRepoName?: StringFieldUpdateOperationsInput | string
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    latestReleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    latestPrereleaseVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    latestPrereleaseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    logoBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    idRanges?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PasswordSetupTokenCreateManyUserInput = {
     id?: string
     token: string
@@ -15428,6 +19799,21 @@ export namespace Prisma {
   export type UserCustomerCreateManyUserInput = {
     customerId: string
     assignedAt?: Date | string
+  }
+
+  export type DeploymentLogCreateManyUserInput = {
+    id?: string
+    customerId: string
+    tenantId: string
+    environmentName: string
+    status?: $Enums.DeploymentStatus
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    totalApps: number
+    successfulApps?: number
+    failedApps?: number
+    errorMessage?: string | null
   }
 
   export type PasswordSetupTokenUpdateWithoutUserInput = {
@@ -15467,6 +19853,53 @@ export namespace Prisma {
   export type UserCustomerUncheckedUpdateManyWithoutUserInput = {
     customerId?: StringFieldUpdateOperationsInput | string
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeploymentLogUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: DeploymentLogDetailUpdateManyWithoutDeploymentNestedInput
+  }
+
+  export type DeploymentLogUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: DeploymentLogDetailUncheckedUpdateManyWithoutDeploymentNestedInput
+  }
+
+  export type DeploymentLogUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    environmentName?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalApps?: IntFieldUpdateOperationsInput | number
+    successfulApps?: IntFieldUpdateOperationsInput | number
+    failedApps?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TenantCreateManyCustomerInput = {
@@ -15627,6 +20060,134 @@ export namespace Prisma {
     publisher?: StringFieldUpdateOperationsInput | string
     publishedAs?: StringFieldUpdateOperationsInput | string
     state?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeploymentLogDetailCreateManyApplicationInput = {
+    id?: string
+    deploymentId: string
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+  }
+
+  export type DeploymentLogDetailUpdateWithoutApplicationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    deployment?: DeploymentLogUpdateOneRequiredWithoutDetailsNestedInput
+  }
+
+  export type DeploymentLogDetailUncheckedUpdateWithoutApplicationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deploymentId?: StringFieldUpdateOperationsInput | string
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeploymentLogDetailUncheckedUpdateManyWithoutApplicationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deploymentId?: StringFieldUpdateOperationsInput | string
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeploymentLogDetailCreateManyDeploymentInput = {
+    id?: string
+    applicationId?: string | null
+    appName: string
+    appType: string
+    version: string
+    status?: $Enums.DeploymentStatus
+    order: number
+    prNumber?: number | null
+    installMode?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    downloadedSizeKb?: number | null
+    errorMessage?: string | null
+  }
+
+  export type DeploymentLogDetailUpdateWithoutDeploymentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    application?: ApplicationUpdateOneWithoutDeploymentDetailsNestedInput
+  }
+
+  export type DeploymentLogDetailUncheckedUpdateWithoutDeploymentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: NullableStringFieldUpdateOperationsInput | string | null
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeploymentLogDetailUncheckedUpdateManyWithoutDeploymentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: NullableStringFieldUpdateOperationsInput | string | null
+    appName?: StringFieldUpdateOperationsInput | string
+    appType?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeploymentStatusFieldUpdateOperationsInput | $Enums.DeploymentStatus
+    order?: IntFieldUpdateOperationsInput | number
+    prNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    installMode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    downloadedSizeKb?: NullableFloatFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 
