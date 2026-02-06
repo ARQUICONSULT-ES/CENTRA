@@ -344,14 +344,16 @@ export function DeploymentsPage() {
           { name: '3. Instalación', status: 'pending' as const, message: undefined },
         ];
 
-        // Actualizar estado a "in-progress" con pasos iniciales
+        // Actualizar estado a "in-progress" con pasos iniciales y timestamp de inicio
+        const startTime = Date.now();
         setProgressData(prev => prev.map(p => 
           p.applicationId === app.id 
             ? { 
                 ...p, 
                 status: 'in-progress' as const, 
                 message: undefined, 
-                steps: initialSteps 
+                steps: initialSteps,
+                startTime: startTime 
               }
             : p
         ));
@@ -377,6 +379,7 @@ export function DeploymentsPage() {
             // Error HTTP - no es SSE
             const errorData = await response.json().catch(() => ({ error: 'Error de servidor' }));
             hasError = true;
+            const endTime = Date.now();
             setProgressData(prev => prev.map(p => 
               p.applicationId === app.id 
                 ? { 
@@ -385,6 +388,7 @@ export function DeploymentsPage() {
                     error: errorData.error || 'Error desconocido',
                     message: undefined,
                     steps: initialSteps,
+                    endTime: endTime
                   }
                 : p
             ));
@@ -458,6 +462,7 @@ export function DeploymentsPage() {
           if (finalResult) {
             if (!finalResult.success) {
               hasError = true;
+              const endTime = Date.now();
               setProgressData(prev => prev.map(p => 
                 p.applicationId === app.id 
                   ? { 
@@ -466,6 +471,7 @@ export function DeploymentsPage() {
                       error: finalResult!.error || 'Error desconocido',
                       message: undefined,
                       steps: finalResult!.steps || initialSteps,
+                      endTime: endTime
                     }
                   : p
               ));
@@ -480,6 +486,7 @@ export function DeploymentsPage() {
               }));
             } else {
               // Éxito
+              const endTime = Date.now();
               setProgressData(prev => prev.map(p => 
                 p.applicationId === app.id 
                   ? { 
@@ -488,6 +495,7 @@ export function DeploymentsPage() {
                       message: `✓ Instalado: v${finalResult!.version || 'N/A'}`,
                       error: undefined,
                       steps: finalResult!.steps || initialSteps.map(s => ({ ...s, status: 'success' as const })),
+                      endTime: endTime
                     }
                   : p
               ));
@@ -495,6 +503,7 @@ export function DeploymentsPage() {
           } else {
             // No hubo resultado final - error
             hasError = true;
+            const endTime = Date.now();
             setProgressData(prev => prev.map(p => 
               p.applicationId === app.id 
                 ? { 
@@ -502,12 +511,14 @@ export function DeploymentsPage() {
                     status: 'error' as const, 
                     error: 'No se recibió respuesta del servidor',
                     message: undefined,
+                    endTime: endTime
                   }
                 : p
             ));
           }
         } catch (fetchError) {
           hasError = true;
+          const endTime = Date.now();
           const errorMessage = fetchError instanceof Error ? fetchError.message : 'Error de conexión';
           setProgressData(prev => prev.map(p => 
             p.applicationId === app.id 
@@ -517,6 +528,7 @@ export function DeploymentsPage() {
                   error: errorMessage,
                   message: undefined,
                   steps: initialSteps.map((s, idx) => idx === 0 ? { ...s, status: 'error' as const } : s),
+                  endTime: endTime
                 }
               : p
           ));

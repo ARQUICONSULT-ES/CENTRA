@@ -20,6 +20,8 @@ export interface DeploymentProgress {
   message?: string;
   error?: string;
   steps?: DeploymentStep[];
+  startTime?: number; // Timestamp cuando inició el despliegue
+  endTime?: number; // Timestamp cuando terminó (success o error)
 }
 
 interface DeploymentProgressModalProps {
@@ -39,12 +41,57 @@ export function DeploymentProgressModal({
 }: DeploymentProgressModalProps) {
   const [isComplete, setIsComplete] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [currentTime, setCurrentTime] = useState(Date.now());
+  const [totalStartTime] = useState(Date.now());
 
   const successCount = progressData.filter(p => p.status === 'success').length;
   const errorCount = progressData.filter(p => p.status === 'error').length;
   const abortedCount = progressData.filter(p => p.error?.includes('abortado')).length;
   const pendingCount = progressData.filter(p => p.status === 'pending').length;
   const inProgressCount = progressData.filter(p => p.status === 'in-progress').length;
+
+  // Timer para actualizar los contadores cada segundo
+  useEffect(() => {
+    if (!isOpen || isComplete) return;
+
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOpen, isComplete]);
+
+  // Función para formatear tiempo: primero solo segundos, luego minutos:segundos
+  const formatTime = (seconds: number): string => {
+    if (seconds < 60) {
+      return `${seconds}s`;
+    }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Calcular tiempo transcurrido para cada app
+  const getElapsedTime = (item: DeploymentProgress): string => {
+    if (!item.startTime || item.status === 'pending') return '';
+    
+    // Si tiene endTime, usar ese tiempo final (congelado)
+    const endTime = item.endTime || currentTime;
+    const elapsed = Math.floor((endTime - item.startTime) / 1000);
+    
+    // Prevenir valores negativos
+    const safeElapsed = Math.max(0, elapsed);
+    return formatTime(safeElapsed);
+  };
+
+  // Calcular tiempo total
+  const getTotalElapsedTime = (): string => {
+    const elapsed = Math.floor((currentTime - totalStartTime) / 1000);
+    
+    // Prevenir valores negativos
+    const safeElapsed = Math.max(0, elapsed);
+    return formatTime(safeElapsed);
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -238,17 +285,32 @@ export function DeploymentProgressModal({
                     {getStatusIcon(item.status, item.error)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-sm font-bold ${
-                        item.status === 'in-progress'
-                          ? 'text-blue-600 dark:text-blue-400'
-                          : 'text-gray-500 dark:text-gray-400'
-                      }`}>
-                        #{index + 1}
-                      </span>
-                      <h3 className="font-semibold text-gray-900 dark:text-white truncate">
-                        {item.applicationName}
-                      </h3>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-sm font-bold ${
+                          item.status === 'in-progress'
+                            ? 'text-blue-600 dark:text-blue-400'
+                            : 'text-gray-500 dark:text-gray-400'
+                        }`}>
+                          #{index + 1}
+                        </span>
+                        <h3 className="font-semibold text-gray-900 dark:text-white truncate">
+                          {item.applicationName}
+                        </h3>
+                      </div>
+                      {/* Timer individual */}
+                      {item.startTime && (
+                        <div className={`flex items-center gap-1 text-xs font-mono ${
+                          item.status === 'in-progress'
+                            ? 'text-blue-600 dark:text-blue-400'
+                            : 'text-gray-500 dark:text-gray-400'
+                        }`}>
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>{getElapsedTime(item)}</span>
+                        </div>
+                      )}
                     </div>
                     <p className={`text-sm mt-1 font-medium ${
                       item.error?.includes('abortado')
