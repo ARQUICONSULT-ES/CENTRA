@@ -85,15 +85,14 @@ export async function GET(request: NextRequest) {
       ],
     });
 
-    // Paso 2: Crear mapa de clientes únicos para evitar duplicar imageBase64
-    const customersMap = new Map<string, { id: string; name: string; image: string | null }>();
+    // Paso 2: Crear mapa de clientes únicos (SIN imágenes para reducir tamaño)
+    const customersMap = new Map<string, { id: string; name: string }>();
     environments.forEach(env => {
       const customer = env.tenant.customer;
       if (!customersMap.has(customer.id)) {
         customersMap.set(customer.id, {
           id: customer.id,
           name: customer.customerName,
-          image: customer.imageBase64,
         });
       }
     });
@@ -138,7 +137,7 @@ export async function GET(request: NextRequest) {
         const customerId = env.tenant.customer.id;
         const customer = customersMap.get(customerId)!;
 
-        // Transformar las apps agregando información del entorno y cliente
+        // Transformar las apps agregando información del entorno y cliente (SIN imagen)
         return apps.map((app) => ({
           tenantId: app.tenantId,
           environmentName: app.environmentName,
@@ -151,7 +150,7 @@ export async function GET(request: NextRequest) {
           latestReleaseVersion: app.latestReleaseVersion,
           customerId: customer.id,
           customerName: customer.name,
-          customerImage: customer.image,
+          // NO incluir customerImage para reducir tamaño del JSON
           environmentType: env.type,
           environmentStatus: env.status,
         }));
@@ -166,6 +165,7 @@ export async function GET(request: NextRequest) {
 
     console.log(`Returning ${allApplications.length} installed apps from ${environments.length} environments`);
 
+    // Enviar respuesta optimizada sin imágenes Base64 para evitar "Invalid string length"
     return NextResponse.json(allApplications);
   } catch (error) {
     console.error("Error fetching installed apps:", error);

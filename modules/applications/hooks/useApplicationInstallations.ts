@@ -10,6 +10,31 @@ interface UseApplicationInstallationsReturn {
   refetch: () => Promise<void>;
 }
 
+/**
+ * Carga las imágenes de clientes por separado
+ */
+async function fetchCustomerImages(): Promise<Map<string, string | null>> {
+  try {
+    const response = await fetch("/api/customers");
+    if (!response.ok) {
+      console.warn('No se pudieron cargar las imágenes de clientes');
+      return new Map();
+    }
+    
+    const customers = await response.json();
+    const imageMap = new Map<string, string | null>();
+    
+    customers.forEach((customer: any) => {
+      imageMap.set(customer.id, customer.imageBase64 || null);
+    });
+    
+    return imageMap;
+  } catch (error) {
+    console.error("Error fetching customer images:", error);
+    return new Map();
+  }
+}
+
 export function useApplicationInstallations(
   applicationId?: string
 ): UseApplicationInstallationsReturn {
@@ -27,14 +52,25 @@ export function useApplicationInstallations(
     setError(null);
 
     try {
-      const response = await fetch(`/api/applications/${applicationId}/installations`);
+      // Cargar instalaciones e imágenes en paralelo
+      const [installationsResponse, customerImages] = await Promise.all([
+        fetch(`/api/applications/${applicationId}/installations`),
+        fetchCustomerImages()
+      ]);
 
-      if (!response.ok) {
+      if (!installationsResponse.ok) {
         throw new Error("Error al cargar las instalaciones");
       }
 
-      const data = await response.json();
-      setInstallations(data);
+      const data: InstalledAppWithEnvironment[] = await installationsResponse.json();
+      
+      // Agregar las imágenes a las instalaciones
+      const dataWithImages = data.map(inst => ({
+        ...inst,
+        customerImage: customerImages.get(inst.customerId) || null
+      }));
+      
+      setInstallations(dataWithImages);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
       setInstallations([]);

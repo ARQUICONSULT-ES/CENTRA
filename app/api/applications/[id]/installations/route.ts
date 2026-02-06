@@ -55,7 +55,7 @@ export async function GET(
       });
     }
 
-    // Transformar los datos al formato InstalledAppWithEnvironment
+    // Transformar los datos al formato InstalledAppWithEnvironment (sin customerImage para reducir tamaño)
     const result = filteredInstallations.map((installation) => ({
       // Campos de InstalledApp
       tenantId: installation.tenantId,
@@ -67,10 +67,9 @@ export async function GET(
       publishedAs: installation.publishedAs,
       state: installation.state,
       latestReleaseVersion: latestReleaseVersion,
-      // Campos adicionales
+      // Campos adicionales (sin customerImage)
       customerId: installation.environment.tenant.customerId,
       customerName: installation.environment.tenant.customer.customerName,
-      customerImage: installation.environment.tenant.customer.imageBase64,
       environmentType: installation.environment.type,
       environmentStatus: installation.environment.status,
     }));

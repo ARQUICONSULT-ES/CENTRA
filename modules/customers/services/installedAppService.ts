@@ -2,18 +2,55 @@ import type { InstalledAppWithEnvironment } from "@/modules/customers/types";
 import { dataCache, CACHE_KEYS } from "@/modules/shared/utils/cache";
 
 /**
+ * Obtiene las imágenes de todos los clientes
+ */
+async function fetchCustomerImages(): Promise<Map<string, string | null>> {
+  try {
+    const response = await fetch("/api/customers");
+    if (!response.ok) {
+      console.warn('No se pudieron cargar las imágenes de clientes');
+      return new Map();
+    }
+    
+    const customers = await response.json();
+    const imageMap = new Map<string, string | null>();
+    
+    customers.forEach((customer: any) => {
+      imageMap.set(customer.id, customer.imageBase64 || null);
+    });
+    
+    return imageMap;
+  } catch (error) {
+    console.error("Error fetching customer images:", error);
+    return new Map();
+  }
+}
+
+/**
  * Obtiene todas las aplicaciones instaladas de todos los entornos desde la base de datos
+ * Carga las imágenes de clientes por separado para optimizar el tamaño de la respuesta
  */
 export async function fetchAllInstalledApps(): Promise<InstalledAppWithEnvironment[]> {
   try {
-    const response = await fetch("/api/installedapps");
+    // Cargar apps e imágenes en paralelo
+    const [appsResponse, customerImages] = await Promise.all([
+      fetch("/api/installedapps"),
+      fetchCustomerImages()
+    ]);
     
-    if (!response.ok) {
+    if (!appsResponse.ok) {
       throw new Error('Error al cargar instalaciones');
     }
     
-    const data = await response.json();
-    return data;
+    const apps: InstalledAppWithEnvironment[] = await appsResponse.json();
+    
+    // Agregar las imágenes a las apps
+    const appsWithImages = apps.map(app => ({
+      ...app,
+      customerImage: customerImages.get(app.customerId) || null
+    }));
+    
+    return appsWithImages;
   } catch (error) {
     console.error("Error fetching all installed apps:", error);
     throw error;
